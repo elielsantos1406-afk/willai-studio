@@ -1,5 +1,11 @@
 (()=>{
 'use strict';
+// Favicon do painel: identidade WillAI, independente da empresa editada.
+const favicon = document.createElement('link');
+favicon.rel = 'icon';
+favicon.type = 'image/svg+xml';
+favicon.href = '/assets/willai-favicon.svg?v=2';
+document.head.appendChild(favicon);
 const E=id=>document.getElementById(id),cfg=window.WILLAI_CONFIG,bridge=window.WillAIBridge;
 if(!cfg||!bridge)return;
 let session=null,userId=null,records=[];
