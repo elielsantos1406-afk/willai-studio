@@ -37,7 +37,7 @@
 - Auditoria de alterações no banco. Plaquinhas não possuem permissão DELETE por usuário autenticado.
 - Contadores públicos podem incluir robôs/visitas repetidas; para tráfego elevado, ativar rate limiting no Cloudflare e observar o consumo do Supabase.
 - São usadas dependências front-end de CDNs com versão fixada para QRCode, jsPDF e JSZip. Para funcionamento offline, hospede cópias locais após revisão de licenças e hashes de integridade.
-- **Atenção:** a exportação usa a URL do domínio onde o painel foi acessado. Se usar um Preview para imprimir, os QR Codes apontarão para o domínio Preview. Para impressão final, abrir o painel na URL do domínio definitivo.
+- **Atenção:** os QR Codes utilizam sempre o domínio permanente `https://willai-studio.pages.dev`, mesmo se o painel estiver em Preview. Se você decidir usar domínio próprio, configure-o ANTES de produzir as plaquinhas físicas. Nunca troque o domínio de um lote já impresso.
 - A instalação não altera as páginas antigas, que continuam sendo servidas por `/:slug`.
 
 ## Checklist funcional
