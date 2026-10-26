@@ -106,7 +106,7 @@ BEGIN
     END IF;
     NEW.updated_at=now();
     INSERT INTO public.willai_plaque_events(plaque_id,owner_id,actor_id,action,detail)
-    VALUES (NEW.id,NEW.owner_id,auth.uid(),'update',jsonb_build_object('from_status',OLD.status,'to_status',NEW.status,'old_mode',OLD.mode,'new_mode',NEW.mode,'destination_changed',OLD.destination_url IS DISTINCT FROM NEW.destination_url,'customer_changed',OLD.buyer_name IS DISTINCT FROM NEW.buyer_name));
+    VALUES (NEW.id,NEW.owner_id,auth.uid(),'update',jsonb_build_object('from_status',OLD.status,'to_status',NEW.status,'old_mode',OLD.mode,'new_mode',NEW.mode,'destination_changed',OLD.destination_url IS DISTINCT FROM NEW.destination_url,'customer_changed',OLD.buyer_name IS DISTINCT FROM NEW.buyer_name,'old_destination',OLD.destination_url,'new_destination',NEW.destination_url,'old_page',OLD.page_slug,'new_page',NEW.page_slug));
     RETURN NEW;
   END IF;
   INSERT INTO public.willai_plaque_events(plaque_id,owner_id,actor_id,action,detail)
