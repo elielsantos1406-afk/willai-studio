@@ -8,6 +8,9 @@ favicon.href = '/assets/willai-favicon.svg?v=2';
 document.head.appendChild(favicon);
 const E=id=>document.getElementById(id),cfg=window.WILLAI_CONFIG,bridge=window.WillAIBridge;
 if(!cfg||!bridge)return;
+// Atalho isolado para o módulo: preserva editor, menus e páginas existentes.
+const plaquesLink=document.createElement('a');plaquesLink.href='/studio/plaquinhas/';plaquesLink.textContent='Plaquinhas Inteligentes';plaquesLink.title='Estoque, QR Codes, NFC e impressão';plaquesLink.style.cssText='display:inline-flex;align-items:center;padding:10px 13px;border-radius:10px;background:#e9f7fc;color:#084f8f;font-size:12px;font-weight:800;text-decoration:none;border:1px solid #bde4f3;';(document.querySelector('.top-actions')||document.querySelector('.brand')?.parentElement||document.body).appendChild(plaquesLink);
+
 let session=null,userId=null,records=[];
 const storageKey='willai_cloud_domain';
 function message(v,ok=true){E('cloudStatus').textContent=v;E('cloudStatus').style.color=ok?'#206c54':'#bb4545'}
@@ -35,8 +38,8 @@ async function makeRemote(value,folder){if(typeof value==='string'){
 if(value&&typeof value==='object'){const o={};for(const [k,v] of Object.entries(value))o[k]=await makeRemote(v,folder);return o}return value;}
 async function loadList(){const rows=await call('/rest/v1/willai_pages?owner_id=eq.'+encodeURIComponent(userId)+'&select=slug,name,published,updated_at&order=updated_at.desc&limit=500');records=rows||[];E('cloudRecords').innerHTML='<option value="">Selecione uma página</option>'+records.map(r=>'<option value="'+escapeHtml(r.slug)+'">'+escapeHtml(r.name)+' — '+(r.published?'publicada':'rascunho')+'</option>').join('');}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-E('cloudLogin').onclick=async()=>{try{const email=E('cloudEmail').value.trim(),password=E('cloudPassword').value;if(!email||!password)throw Error('Informe o e-mail e a senha do usuário do Supabase Auth.');const obj=await call('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});if(!obj?.access_token||!obj?.user?.id)throw Error('Login não autorizado');session=obj;userId=obj.user.id;E('cloudPassword').value='';message('Conectado como '+email);await loadList()}catch(e){message('Não foi possível entrar: '+e.message,false)}};
-E('cloudLogout').onclick=()=>{session=null;userId=null;records=[];E('cloudRecords').innerHTML='<option value="">Não conectado</option>';message('Sessão encerrada.');};
+E('cloudLogin').onclick=async()=>{try{const email=E('cloudEmail').value.trim(),password=E('cloudPassword').value;if(!email||!password)throw Error('Informe o e-mail e a senha do usuário do Supabase Auth.');const obj=await call('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});if(!obj?.access_token||!obj?.user?.id)throw Error('Login não autorizado');session=obj;userId=obj.user.id;try{sessionStorage.setItem('willai_studio_session',JSON.stringify(obj))}catch{}E('cloudPassword').value='';message('Conectado como '+email);await loadList()}catch(e){message('Não foi possível entrar: '+e.message,false)}};
+E('cloudLogout').onclick=()=>{try{sessionStorage.removeItem('willai_studio_session')}catch{}session=null;userId=null;records=[];E('cloudRecords').innerHTML='<option value="">Não conectado</option>';message('Sessão encerrada.');};
 async function publish(published){if(!session||!userId){message('Faça login antes de publicar.',false);return}try{
  let slug=slugify(E('cloudSlug').value),currentSlug=bridge.currentSlug();if(slug!==E('cloudSlug').value.trim())E('cloudSlug').value=slug;
  let c=bridge.currentConfig();if(!c.name.trim())throw Error('Informe o nome da empresa.');
