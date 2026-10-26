@@ -12,10 +12,17 @@
 
 1. Testar os arquivos desta branch numa implantação Preview do Cloudflare Pages, sem publicar na branch `main`.
 2. Na conta/projeto **rnqaktkvwfsetbjsqdrj**, abrir o SQL Editor e executar a migração `supabase/migrations/20261026180000_willai_plaques.sql`. Fazer backup do esquema antes. Esta migração é **aditiva**.
-3. Confirmar as novas tabelas e funções; executar `select public.willai_resolve_plaque('000000000000000000000000');` que deve retornar `{ "status": "not_found" }`.
-4. Abrir `/studio/plaquinhas/` no domínio Preview e autenticar com a mesma conta do WillAI Studio. Gerar lote de 1 e verificar no Supabase antes de testar lote de 30.
-5. Para testes públicos `/p/<codigo>` em Preview: confira se a função `functions/p/[code].js` está ativa nessa implantação. Se o Cloudflare Pages mudar sua configuração de builds, verifique os logs de Functions.
-6. Após testes com QR, impressão e NFC, integrar a branch `feature/plaquinhas-inteligentes` em `main` e conferir no Cloudflare a implantação bem-sucedida.
+3. Autorizar explicitamente o usuário administrador já existente. Primeiro identifique o e-mail em Authentication → Users e execute (substitua pelo seu e-mail real, sem compartilhar senha):
+   ```sql
+   INSERT INTO plaque_private.admin_users(user_id)
+   SELECT id FROM auth.users WHERE email = 'SEU_EMAIL_DO_AUTH'
+   ON CONFLICT (user_id) DO NOTHING;
+   ```
+   Verifique se uma linha foi inserida. Não altere senhas nem chaves.
+4. Confirmar as novas tabelas e funções; executar `select public.willai_resolve_plaque('000000000000000000000000');` que deve retornar `{"status":"not_found"}`.
+5. Abrir `/studio/plaquinhas/` no domínio Preview e autenticar com a mesma conta do WillAI Studio. Gerar lote de 1 e verificar no Supabase antes de testar lote de 30.
+6. Para testes públicos `/p/<codigo>` em Preview: confira se a função `functions/p/[code].js` está ativa nessa implantação. Se o Cloudflare Pages mudar sua configuração de builds, verifique os logs de Functions.
+7. Após testes com QR, impressão e NFC, integrar a branch `feature/plaquinhas-inteligentes` em `main` e conferir no Cloudflare a implantação bem-sucedida.
 
 **Observação:** não é necessário cadastrar variáveis de ambiente para esta primeira versão, pois a função utiliza somente a chave publicável que o site já usa. Nenhuma chave `service_role` é necessária ou deve ser publicada. Se desejar usar um outro Supabase, configure `SUPABASE_URL` e `SUPABASE_PUBLISHABLE_KEY` como variáveis no projeto Cloudflare Pages.
 
