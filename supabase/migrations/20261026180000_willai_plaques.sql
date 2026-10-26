@@ -5,6 +5,22 @@ BEGIN;
 CREATE SCHEMA IF NOT EXISTS plaque_private;
 REVOKE ALL ON SCHEMA plaque_private FROM PUBLIC;
 GRANT USAGE ON SCHEMA plaque_private TO anon, authenticated;
+-- Apenas contas explicitamente autorizadas podem administrar o estoque.
+CREATE TABLE IF NOT EXISTS plaque_private.admin_users (
+ user_id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+ added_at timestamptz NOT NULL DEFAULT now()
+);
+REVOKE ALL ON plaque_private.admin_users FROM PUBLIC,anon,authenticated;
+CREATE OR REPLACE FUNCTION plaque_private.is_admin() RETURNS boolean
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path='' AS $
+ SELECT auth.uid() IS NOT NULL AND EXISTS (SELECT 1 FROM plaque_private.admin_users a WHERE a.user_id=auth.uid());
+$;
+REVOKE ALL ON FUNCTION plaque_private.is_admin() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION plaque_private.is_admin() TO authenticated;
+CREATE OR REPLACE FUNCTION public.willai_is_plaque_admin() RETURNS boolean
+LANGUAGE sql STABLE SECURITY INVOKER SET search_path='' AS $ SELECT plaque_private.is_admin() $;
+REVOKE ALL ON FUNCTION public.willai_is_plaque_admin() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.willai_is_plaque_admin() TO authenticated;
 
 CREATE TABLE IF NOT EXISTS public.willai_plaque_batches (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -83,17 +99,17 @@ GRANT SELECT, UPDATE ON public.willai_plaques TO authenticated;
 GRANT SELECT ON public.willai_plaque_events,public.willai_plaque_daily TO authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.willai_plaque_designs TO authenticated;
 DROP POLICY IF EXISTS willai_batch_owner ON public.willai_plaque_batches;
-CREATE POLICY willai_batch_owner ON public.willai_plaque_batches FOR SELECT TO authenticated USING(owner_id=(select auth.uid()));
+CREATE POLICY willai_batch_owner ON public.willai_plaque_batches FOR SELECT TO authenticated USING(owner_id=(select auth.uid()) AND (select plaque_private.is_admin()));
 DROP POLICY IF EXISTS willai_plaque_owner_select ON public.willai_plaques;
-CREATE POLICY willai_plaque_owner_select ON public.willai_plaques FOR SELECT TO authenticated USING(owner_id=(select auth.uid()));
+CREATE POLICY willai_plaque_owner_select ON public.willai_plaques FOR SELECT TO authenticated USING(owner_id=(select auth.uid()) AND (select plaque_private.is_admin()));
 DROP POLICY IF EXISTS willai_plaque_owner_update ON public.willai_plaques;
-CREATE POLICY willai_plaque_owner_update ON public.willai_plaques FOR UPDATE TO authenticated USING(owner_id=(select auth.uid())) WITH CHECK(owner_id=(select auth.uid()));
+CREATE POLICY willai_plaque_owner_update ON public.willai_plaques FOR UPDATE TO authenticated USING(owner_id=(select auth.uid()) AND (select plaque_private.is_admin())) WITH CHECK(owner_id=(select auth.uid()) AND (select plaque_private.is_admin()));
 DROP POLICY IF EXISTS willai_events_owner ON public.willai_plaque_events;
-CREATE POLICY willai_events_owner ON public.willai_plaque_events FOR SELECT TO authenticated USING(owner_id=(select auth.uid()));
+CREATE POLICY willai_events_owner ON public.willai_plaque_events FOR SELECT TO authenticated USING(owner_id=(select auth.uid()) AND (select plaque_private.is_admin()));
 DROP POLICY IF EXISTS willai_daily_owner ON public.willai_plaque_daily;
-CREATE POLICY willai_daily_owner ON public.willai_plaque_daily FOR SELECT TO authenticated USING(EXISTS (SELECT 1 FROM public.willai_plaques p WHERE p.id=plaque_id AND p.owner_id=(select auth.uid())));
+CREATE POLICY willai_daily_owner ON public.willai_plaque_daily FOR SELECT TO authenticated USING((select plaque_private.is_admin()) AND EXISTS (SELECT 1 FROM public.willai_plaques p WHERE p.id=plaque_id AND p.owner_id=(select auth.uid())));
 DROP POLICY IF EXISTS willai_design_owner ON public.willai_plaque_designs;
-CREATE POLICY willai_design_owner ON public.willai_plaque_designs FOR ALL TO authenticated USING(owner_id=(select auth.uid())) WITH CHECK(owner_id=(select auth.uid()));
+CREATE POLICY willai_design_owner ON public.willai_plaque_designs FOR ALL TO authenticated USING(owner_id=(select auth.uid()) AND (select plaque_private.is_admin())) WITH CHECK(owner_id=(select auth.uid()) AND (select plaque_private.is_admin()));
 
 -- Trilha de auditoria gerada pelo banco, não pelo navegador.
 CREATE OR REPLACE FUNCTION plaque_private.audit_plaque() RETURNS trigger
@@ -124,7 +140,7 @@ CREATE OR REPLACE FUNCTION plaque_private.make_batch(p_quantity integer,p_label 
 RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
 DECLARE uid uuid := auth.uid(); batch uuid; n integer;
 BEGIN
-  IF uid IS NULL THEN RAISE EXCEPTION 'Autenticação obrigatória'; END IF;
+  IF uid IS NULL OR NOT plaque_private.is_admin() THEN RAISE EXCEPTION 'Administrador não autorizado'; END IF;
   IF p_quantity NOT BETWEEN 1 AND 500 THEN RAISE EXCEPTION 'Quantidade deve ser entre 1 e 500'; END IF;
   IF length(trim(coalesce(p_label,''))) NOT BETWEEN 1 AND 120 THEN RAISE EXCEPTION 'Nome do lote inválido'; END IF;
   IF coalesce(p_unit_cost,0)<0 OR coalesce(p_suggested_price,0)<0 THEN RAISE EXCEPTION 'Valores negativos não permitidos'; END IF;
