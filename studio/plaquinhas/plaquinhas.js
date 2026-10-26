@@ -29,7 +29,7 @@ return path;}
 async function refreshList(append=false){if(!append){offset=0;plaques=[];chosen.clear()}const r=await api(listQuery());const items=r||[];plaques=plaques.concat(items);offset+=items.length;hasMore=items.length===LIMIT;$('loadMore').hidden=!hasMore;renderList();}
 async function reload(){try{setBusy(true);const [bs,pages,dashboard,hitsRows]=await Promise.all([
 api('/rest/v1/willai_plaque_batches?select=id,label,quantity,created_at&order=created_at.desc&limit=2000'),
-api('/rest/v1/willai_pages?select=slug,name,published&published=eq.true&order=name.asc&limit=500'),
+api('/rest/v1/willai_pages?select=slug,name,published&published=eq.true&owner_id=eq.'+encodeURIComponent(session.user.id)+'&order=name.asc&limit=500'),
 api('/rest/v1/rpc/willai_plaque_dashboard',{method:'POST',body:'{}'}),
 api('/rest/v1/rpc/willai_plaque_hit_totals',{method:'POST',body:'{}'})
 ]);batches=bs||[];pageOptions=pages||[];hits=Object.fromEntries((hitsRows||[]).map(r=>[r.plaque_id,Number(r.hits)]));
