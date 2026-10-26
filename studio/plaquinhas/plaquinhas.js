@@ -2,7 +2,7 @@
 const $=id=>document.getElementById(id);
 const cfg=window.WILLAI_CONFIG;
 let session=null, plaques=[], batches=[], pageOptions=[], current=null, hits={}, offset=0, hasMore=false, chosen=new Set(), logoImage=null, busy=false, searchTimer;
-const LIMIT=200, domain=location.origin;
+const LIMIT=200, domain=(window.WILLAI_PLAQUE_BASE_URL||'https://willai-studio.pages.dev').replace(/\/$/,'');
 const states={available:'Disponível',reserved:'Reservada',active:'Ativada',suspended:'Suspensa',replaced:'Substituída'};
 const money=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const escaped=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
