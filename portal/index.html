@@ -16,7 +16,8 @@
 <body>
  <header id="site-header"></header><main id="app"></main><footer id="site-footer"></footer>
  <div id="editor-root"></div><div id="toast" role="status" aria-live="polite"></div>
- <script>
+ <script src="/config.js"></script>
+<script>
 (()=>{'use strict';
 const KEY='WILLAI_PORTAL_DRAFT_V2';
 const adminMode=location.pathname.startsWith('/studio/portal');const cfg=window.WILLAI_CONFIG||{};let auth=null,isAdmin=false;const tokenKey='willai_portal_session';
