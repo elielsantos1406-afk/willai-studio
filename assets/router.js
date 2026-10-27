@@ -1,0 +1,7 @@
+(()=>{'use strict';
+const cfg=window.WILLAI_CONFIG||{},parts=location.pathname.split('/').filter(Boolean),slug=parts[0]||'';
+function loadCompany(){const s=document.createElement('script');s.src='/assets/company.js';document.body.append(s)}
+async function loadPortal(){const response=await fetch('/portal/index.html');if(!response.ok)throw Error('Portal indisponível');const html=await response.text(),doc=new DOMParser().parseFromString(html,'text/html');document.title=doc.title;const style=doc.querySelector('style');if(style){const element=document.createElement('style');element.textContent=style.textContent;document.head.append(element)}document.body.innerHTML=doc.body.innerHTML.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');const code=doc.querySelector('script');if(code){const exec=document.createElement('script');exec.textContent=code.textContent;document.body.append(exec)}}
+async function isPortal(){if(!parts.length||['projeto','login','pagina','plaquinhas'].includes(slug))return true;if(parts.length!==1)return false;if(['curitiba','pinhais'].includes(slug))return true;try{const r=await fetch(cfg.url+'/rest/v1/willai_portal_content?slug=eq.main&published=eq.true&select=config',{headers:{apikey:cfg.publishableKey}});if(!r.ok)return false;const rows=await r.json();return !!rows?.[0]?.config?.cities?.[slug]}catch{return false}}
+(async()=>{try{if(await isPortal())await loadPortal();else loadCompany()}catch(e){console.error(e);loadCompany()}})();
+})();
