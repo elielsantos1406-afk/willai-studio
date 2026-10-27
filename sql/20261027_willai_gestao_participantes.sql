@@ -79,7 +79,7 @@ CREATE OR REPLACE FUNCTION public.willai_access_assign(
  p_email text,p_role text,p_city_slug text DEFAULT NULL,p_company_slug text DEFAULT NULL
 ) RETURNS text LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $$
 DECLARE uid uuid; cs text := nullif(lower(trim(coalesce(p_city_slug,''))), '');
-DECLARE bs text := nullif(lower(trim(coalesce(p_company_slug,''))), '');
+        bs text := nullif(lower(trim(coalesce(p_company_slug,''))), '');
 BEGIN
  IF NOT EXISTS(SELECT 1 FROM public.willai_portal_admins a WHERE a.user_id=auth.uid()) THEN
    RAISE EXCEPTION 'Acesso negado';
