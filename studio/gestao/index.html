@@ -32,12 +32,17 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 .hidden{display:none!important}.empty{text-align:center;padding:35px;color:#70849d}
 @media(max-width:980px){.cards{grid-template-columns:repeat(2,1fr)}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:720px){.app{display:block}aside{position:relative;height:auto;padding:14px}.brand{padding:0 6px 9px}.side-label,.foot{display:none}.nav-list{display:flex;overflow:auto;gap:6px}.nav{white-space:nowrap;margin:0;padding:9px 13px;width:auto;font-size:12px}main{padding:23px 13px 65px}.panel{padding:16px}.cards{gap:8px}.card{padding:14px}.card b{font-size:23px}.fields{grid-template-columns:1fr}.search{flex-direction:column}.top{align-items:flex-start}}
+
+.quote-list{display:grid;gap:14px;margin:18px 0}.quote-item{border:1px solid #e3eaf2;background:#fbfdff;border-radius:14px;padding:20px}
+.quote-item strong{font-size:16px}.quote-item p{color:#233d56;white-space:pre-wrap;overflow-wrap:anywhere;margin:13px 0}
+.quote-select{max-width:185px;width:auto;cursor:pointer}
+@media(max-width:720px){.quote-item{padding:14px}.quote-select{width:100%;max-width:none}}
 </style></head><body>
 <div class="app"><aside><div class="brand"><img src="/assets/willai-logo-original.png" alt=""><div><strong>WillAI Studio</strong><small>GESTÃO CENTRAL</small></div></div>
 <div class="side-label">PAINEL</div><div class="nav-list">
 <button class="nav active" data-view="home">Visão geral</button>
 <button class="nav" data-view="participants">Participantes</button>
-<button class="nav hidden" data-view="access">Acessos</button>
+<button class="nav hidden" data-view="quotes">Orçamentos</button><button class="nav hidden" data-view="access">Acessos</button>
 <a id="navPortal" class="nav hidden" href="/studio/portal/">Editar portal</a>
 <a id="navCompanies" class="nav hidden" href="/studio/">Editar empresas</a>
 </div><div class="foot">Acesso controlado por permissões no Supabase. As páginas públicas não exibem este painel.</div></aside>
@@ -50,7 +55,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <div class="card"><span>Em análise</span><b id="kInterested">—</b><span>Interessados</span></div>
 </div>
 <div class="panel"><h2>Atalhos para sua operação</h2><p>Você gerencia apenas as cidades e as informações autorizadas ao seu perfil.</p>
-<div class="actions"><button class="btn" data-view="participants" id="shortcutParticipants">Gerenciar participantes</button><a class="btn subtle" href="/studio/portal/" id="shortcutPortal">Editar site institucional</a><a class="btn subtle" href="/studio/" id="shortcutCompanies">Editar páginas de empresas</a><button class="btn subtle hidden" data-view="access" id="shortcutAccess">Gerenciar acessos</button></div>
+<div class="actions"><button class="btn" data-view="participants" id="shortcutParticipants">Gerenciar participantes</button><a class="btn subtle" href="/studio/portal/" id="shortcutPortal">Editar site institucional</a><a class="btn subtle" href="/studio/" id="shortcutCompanies">Editar páginas de empresas</a><button class="btn subtle hidden" data-view="quotes" id="shortcutQuotes">Ver orçamentos</button><button class="btn subtle hidden" data-view="access" id="shortcutAccess">Gerenciar acessos</button></div>
 </div><div class="panel"><h2>Resumo da cidade</h2><div class="fields"><div><label for="summaryCity">Cidade</label><input id="summaryCity" placeholder="curitiba"></div><div style="align-self:end"><button class="btn" id="summaryBtn">Consultar indicadores</button></div></div><p id="summaryResult" class="muted">Selecione uma cidade para consultar.</p></div>
 </section>
 <section id="participantsView" class="hidden">
@@ -66,6 +71,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <div class="panel"><h2>Pesquisar cadastros</h2><div class="search"><input id="search" placeholder="Nome, estabelecimento, cidade…"><button class="btn subtle" id="refresh">Atualizar lista</button><button class="btn gray" id="exportCSV">Exportar CSV</button></div>
 <p class="muted" id="listInfo">Carregando…</p><div class="scroll"><table><thead><tr><th>Participante</th><th>Estabelecimento</th><th>Cidade</th><th>WhatsApp</th><th>Situação</th><th>Ação</th></tr></thead><tbody id="tableBody"></tbody></table></div></div>
 </section>
+<section id="quotesView" class="hidden"><div class="panel"><h2>Orçamentos recebidos</h2><p class="muted">Somente superadministradores podem visualizar nomes, WhatsApp e descrição das solicitações.</p><div class="actions"><button id="loadQuotesBtn" class="btn subtle">Atualizar solicitações</button></div><p id="quotesInfo" class="muted">Nenhuma consulta realizada.</p><div id="quotesList" class="quote-list"></div></div></section>
 <section id="accessView" class="hidden"><div class="panel"><h2>Autorizar acesso existente</h2>
 <p class="muted">Crie primeiro a conta em Supabase → Authentication → Users. Aqui você atribui permissões por cidade ou empresa. Não existe cadastro público.</p>
 <form id="accessForm" class="fields">
@@ -80,7 +86,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 const cfg=window.WILLAI_CONFIG||{}, $=id=>document.getElementById(id);
 const sessionKey='willai_portal_session';
 let session=null,admin=false,role=null,rows=[],view='home';
-const names={home:['Painel de gestão','Visão geral dos recursos e atividades.'],participants:['Participantes','Cadastros e acompanhamento do Projeto de Inclusão Digital.'],access:['Acessos','Perfis administrativos e permissões por cidade.']};
+const names={home:['Painel de gestão','Visão geral dos recursos e atividades.'],participants:['Participantes','Cadastros e acompanhamento do Projeto de Inclusão Digital.'],quotes:['Orçamentos','Pedidos recebidos pelo site institucional.'],access:['Acessos','Perfis administrativos e permissões por cidade.']};
 const valid=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function inform(msg,bad=false){const o=$('message');o.className='msg'+(bad?' bad':'');o.textContent=msg;if(!msg)o.classList.add('hidden')}
@@ -95,11 +101,11 @@ async function api(path,opt={}){
  if(!r.ok){const data=await r.json().catch(()=>({}));throw Error(data.message||data.error_description||data.error||'HTTP '+r.status)}
  if(r.status===204)return null;const txt=await r.text();return txt?JSON.parse(txt):null;
 }
-function authorizeView(next){if(next==='access'&&!admin)return; if(next==='participants'&&!admin&&role?.role!=='city_manager')return;view=next;
+function authorizeView(next){if(['access','quotes'].includes(next)&&!admin)return; if(next==='participants'&&!admin&&role?.role!=='city_manager')return;view=next;
  Object.keys(names).forEach(k=>$(k+'View').classList.toggle('hidden',k!==view));
  document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
  $('title').textContent=names[next][0];$('subtitle').textContent=names[next][1];window.scrollTo(0,0);
- if(next==='participants')loadParticipants();if(next==='access')loadAccess();}
+ if(next==='participants')loadParticipants();if(next==='access')loadAccess();if(next==='quotes')loadQuotes();}
 function showStats(data){$('kTotal').textContent=data.total??'—';$('kProgress').textContent=data.in_progress??'—';$('kComplete').textContent=data.completed??'—';$('kInterested').textContent=data.interested??'—'}
 async function summary(city){try{
  if(!valid.test(city))throw Error('Informe a cidade sem espaços e sem acentos (ex.: curitiba)');
@@ -123,6 +129,23 @@ async function edit(id){const r=rows.find(x=>x.id===id);if(!r)return;
  const notes=prompt('Observações internas',r.notes||'');if(notes===null)return;
  try{await api('/rest/v1/willai_project_participants?id=eq.'+encodeURIComponent(r.id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:choice,notes})});inform('Cadastro atualizado.');await loadParticipants();if(role?.city_slug)await summary(role.city_slug)}
  catch(e){inform(e.message,true)}}
+
+const quoteStatuses={new:'Novo',contacted:'Contatado',in_progress:'Em análise',closed:'Concluído'};
+let quoteRows=[];
+async function loadQuotes(){
+ if(!admin)return;
+ try{
+  quoteRows=await api('/rest/v1/willai_quote_requests?select=id,name,whatsapp,email,service,description,status,created_at&order=created_at.desc&limit=100');
+  $('quotesInfo').textContent=quoteRows.length+' solicitações recentes (até 100).';
+  $('quotesList').innerHTML=quoteRows.length?quoteRows.map(q=>{
+    const phone=String(q.whatsapp||'').replace(/\D/g,'');
+    const whatsapp=phone.length>=10?'<a class="btn subtle" href="https://wa.me/'+encodeURIComponent(phone)+'" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>':'';
+    return '<article class="quote-item"><div class="top"><div><strong>'+esc(q.name)+'</strong><div class="muted">'+esc(q.service)+' · '+esc(new Date(q.created_at).toLocaleDateString('pt-BR'))+'</div></div><span class="status">'+esc(quoteStatuses[q.status]||q.status)+'</span></div>'+
+    '<p>'+esc(q.description)+'</p><div class="muted">'+esc(q.whatsapp)+(q.email?' · '+esc(q.email):'')+'</div>'+
+    '<div class="actions">'+whatsapp+'<select class="quote-select" data-quote-status="'+esc(q.id)+'">'+Object.entries(quoteStatuses).map(([k,v])=>'<option value="'+k+'" '+(q.status===k?'selected':'')+'>'+v+'</option>').join('')+'</select></div></article>';
+  }).join(''):'<div class="empty">Ainda não há orçamentos registrados.</div>';
+ }catch(e){$('quotesInfo').textContent='Não foi possível carregar os orçamentos. Confira se executou o SQL específico de orçamentos.';inform(e.message,true)}
+}
 async function loadAccess(){if(!admin)return;try{const arr=await api('/rest/v1/rpc/willai_access_directory',{method:'POST',body:'{}'});$('accessTable').innerHTML=arr.length?arr.map(r=>'<tr><td>'+esc(r.email)+'</td><td>'+esc(r.role)+'</td><td>'+esc(r.city_slug)+'</td><td>'+esc(r.company_slug)+'</td></tr>').join(''):'<tr><td colspan="4">Nenhum perfil atribuído</td></tr>'}catch(e){inform('Não foi possível obter acessos: '+e.message,true)}}
 async function init(){try{
  session=JSON.parse(sessionStorage.getItem(sessionKey)||'null');
@@ -133,8 +156,8 @@ async function init(){try{
  role=r?.[0]||null}
  if(!admin&&!role){inform('Este usuário ainda não recebeu acesso ao painel. Solicite autorização administrativa.',true);$('profile').textContent='Sem permissão';return}
  $('profile').textContent=admin?'Superadministrador':role.role==='city_manager'?'Gestor • '+role.city_slug:role.role==='sponsor'?'Patrocinador • '+role.city_slug:'Empresa • '+role.company_slug;
- document.querySelectorAll('[data-view="access"]').forEach(x=>x.classList.toggle('hidden',!admin));$('navPortal').classList.toggle('hidden',!admin);$('navCompanies').classList.toggle('hidden',!admin);
- $('shortcutPortal').classList.toggle('hidden',!admin);$('shortcutCompanies').classList.toggle('hidden',!admin&&role?.role!=='company');if(role?.role==='company'){$('shortcutCompanies').href='/'+encodeURIComponent(role.company_slug);$('shortcutCompanies').textContent='Ver página da minha empresa';}$('shortcutParticipants').classList.toggle('hidden',!admin&&role?.role!=='city_manager');
+ document.querySelectorAll('[data-view="access"],[data-view="quotes"]').forEach(x=>x.classList.toggle('hidden',!admin));$('navPortal').classList.toggle('hidden',!admin);$('navCompanies').classList.toggle('hidden',!admin);
+ $('shortcutQuotes').classList.toggle('hidden',!admin);$('shortcutPortal').classList.toggle('hidden',!admin);$('shortcutCompanies').classList.toggle('hidden',!admin&&role?.role!=='company');if(role?.role==='company'){$('shortcutCompanies').href='/'+encodeURIComponent(role.company_slug);$('shortcutCompanies').textContent='Ver página da minha empresa';}$('shortcutParticipants').classList.toggle('hidden',!admin&&role?.role!=='city_manager');
  if(role?.role==='sponsor'||role?.role==='company'){document.querySelectorAll('[data-view="participants"]').forEach(b=>b.classList.add('hidden'))}
  if(role?.city_slug){$('summaryCity').value=role.city_slug;$('summaryCity').readOnly=true;$('participantCity').value=role.city_slug;$('participantCity').readOnly=true;await summary(role.city_slug)}
  if(admin){$('summaryCity').value='curitiba';await summary('curitiba');}
@@ -142,6 +165,8 @@ async function init(){try{
 document.addEventListener('click',e=>{const v=e.target.closest('[data-view]');if(v){authorizeView(v.dataset.view);return}const ed=e.target.closest('[data-edit]');if(ed)edit(ed.dataset.edit)});
 $('search').addEventListener('input',redraw);
 $('refresh').onclick=loadParticipants;
+$('loadQuotesBtn').onclick=loadQuotes;
+document.addEventListener('change',async e=>{const sel=e.target.closest('[data-quote-status]');if(!sel||!admin)return;sel.disabled=true;try{await api('/rest/v1/willai_quote_requests?id=eq.'+encodeURIComponent(sel.dataset.quoteStatus),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:sel.value,updated_at:new Date().toISOString()})});inform('Situação do orçamento atualizada.')}catch(err){inform('Falha ao atualizar: '+err.message,true);await loadQuotes()}finally{sel.disabled=false}});
 $('summaryBtn').onclick=()=>summary($('summaryCity').value.trim().toLowerCase());
 $('exportCSV').onclick=()=>{const fields=['participant_name','business_name','city_slug','whatsapp','status','notes','created_at'];let output=[fields.join(',')].concat(rows.map(r=>fields.map(f=>'"'+String(r[f]||'').replace(/"/g,'""').replace(/^[=+\-@]/,'\u0027$&')+'"').join(','))).join('\r\n');const u=URL.createObjectURL(new Blob(['\ufeff'+output],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='willai-participantes.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 $('participantForm').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));d.city_slug=String(d.city_slug).trim().toLowerCase();if(role&&!admin&&d.city_slug!==role.city_slug){inform('Cidade não autorizada.',true);return}try{
