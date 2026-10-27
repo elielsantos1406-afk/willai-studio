@@ -19,7 +19,8 @@ REVOKE ALL ON public.willai_quote_requests FROM PUBLIC,anon,authenticated;
 -- A pessoa sem login pode ENVIAR somente dados de contato; não pode definir status.
 GRANT INSERT(name,whatsapp,email,service,description) ON public.willai_quote_requests TO anon,authenticated;
 -- Somente administrador consegue LER/ATUALIZAR os pedidos.
-GRANT SELECT,UPDATE(status,updated_at) ON public.willai_quote_requests TO authenticated;
+GRANT SELECT ON public.willai_quote_requests TO authenticated;
+GRANT UPDATE(status,updated_at) ON public.willai_quote_requests TO authenticated;
 DROP POLICY IF EXISTS willai_quote_create ON public.willai_quote_requests;
 CREATE POLICY willai_quote_create ON public.willai_quote_requests
 FOR INSERT TO anon,authenticated WITH CHECK (status='new');
