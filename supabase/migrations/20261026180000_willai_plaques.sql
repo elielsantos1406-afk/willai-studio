@@ -12,13 +12,13 @@ CREATE TABLE IF NOT EXISTS plaque_private.admin_users (
 );
 REVOKE ALL ON plaque_private.admin_users FROM PUBLIC,anon,authenticated;
 CREATE OR REPLACE FUNCTION plaque_private.is_admin() RETURNS boolean
-LANGUAGE sql STABLE SECURITY DEFINER SET search_path='' AS $
+LANGUAGE sql STABLE SECURITY DEFINER SET search_path='' AS $$
  SELECT auth.uid() IS NOT NULL AND EXISTS (SELECT 1 FROM plaque_private.admin_users a WHERE a.user_id=auth.uid());
-$;
+$$;
 REVOKE ALL ON FUNCTION plaque_private.is_admin() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION plaque_private.is_admin() TO authenticated;
 CREATE OR REPLACE FUNCTION public.willai_is_plaque_admin() RETURNS boolean
-LANGUAGE sql STABLE SECURITY INVOKER SET search_path='' AS $ SELECT plaque_private.is_admin() $;
+LANGUAGE sql STABLE SECURITY INVOKER SET search_path='' AS $$ SELECT plaque_private.is_admin() $$;
 REVOKE ALL ON FUNCTION public.willai_is_plaque_admin() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.willai_is_plaque_admin() TO authenticated;
 
