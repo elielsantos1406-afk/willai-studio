@@ -38,8 +38,8 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <button class="nav active" data-view="home">Visão geral</button>
 <button class="nav" data-view="participants">Participantes</button>
 <button class="nav hidden" data-view="access">Acessos</button>
-<a class="nav" href="/studio/portal/">Editar portal</a>
-<a class="nav" href="/studio/">Editar empresas</a>
+<a id="navPortal" class="nav hidden" href="/studio/portal/">Editar portal</a>
+<a id="navCompanies" class="nav hidden" href="/studio/">Editar empresas</a>
 </div><div class="foot">Acesso controlado por permissões no Supabase. As páginas públicas não exibem este painel.</div></aside>
 <main><div class="top"><div><span class="eyebrow">WILLAI • ADMINISTRAÇÃO</span><h1 id="title">Painel de gestão</h1><p id="subtitle">Controle de cidades, participantes e páginas.</p></div><span class="chip" id="profile">Conferindo acesso…</span></div>
 <div id="message" class="hidden"></div>
@@ -133,8 +133,8 @@ async function init(){try{
  role=r?.[0]||null}
  if(!admin&&!role){inform('Este usuário ainda não recebeu acesso ao painel. Solicite autorização administrativa.',true);$('profile').textContent='Sem permissão';return}
  $('profile').textContent=admin?'Superadministrador':role.role==='city_manager'?'Gestor • '+role.city_slug:role.role==='sponsor'?'Patrocinador • '+role.city_slug:'Empresa • '+role.company_slug;
- document.querySelectorAll('[data-view="access"]').forEach(x=>x.classList.toggle('hidden',!admin));
- $('shortcutPortal').classList.toggle('hidden',!admin);$('shortcutCompanies').classList.toggle('hidden',!admin&&!['company'].includes(role?.role));$('shortcutParticipants').classList.toggle('hidden',!admin&&role?.role!=='city_manager');
+ document.querySelectorAll('[data-view="access"]').forEach(x=>x.classList.toggle('hidden',!admin));$('navPortal').classList.toggle('hidden',!admin);$('navCompanies').classList.toggle('hidden',!admin);
+ $('shortcutPortal').classList.toggle('hidden',!admin);$('shortcutCompanies').classList.toggle('hidden',!admin&&role?.role!=='company');if(role?.role==='company'){$('shortcutCompanies').href='/'+encodeURIComponent(role.company_slug);$('shortcutCompanies').textContent='Ver página da minha empresa';}$('shortcutParticipants').classList.toggle('hidden',!admin&&role?.role!=='city_manager');
  if(role?.role==='sponsor'||role?.role==='company'){document.querySelectorAll('[data-view="participants"]').forEach(b=>b.classList.add('hidden'))}
  if(role?.city_slug){$('summaryCity').value=role.city_slug;$('summaryCity').readOnly=true;$('participantCity').value=role.city_slug;$('participantCity').readOnly=true;await summary(role.city_slug)}
  if(admin){$('summaryCity').value='curitiba';await summary('curitiba');}
