@@ -11,7 +11,10 @@
 @media(max-width:590px){.container{padding:0 19px}.brand{min-width:0}.brand-type strong{font-size:18px}.brand-type small{font-size:8px}.nav-actions .manage-btn{font-size:0;padding:10px}.nav-actions .manage-btn svg{width:18px}.hero-grid{padding-top:47px}.hero h1{font-size:45px}.hero-art{height:315px}.hero-float{padding:9px}.hero-float.one{top:0}.hero-float.two{bottom:4px}.hero-card.main{padding:15px}.mock-banner{height:120px;margin:10px 0}.mock-banner h3{font-size:17px}.mock-orb{width:70px;height:70px;border-width:8px}.hero-copy p{font-size:14px}.section{padding:65px 0}.section-head{align-items:flex-start;flex-direction:column}.grid.three,.grid.two,.city-gallery{grid-template-columns:1fr}.wide-panel{padding:30px 24px}.wide-panel h2{font-size:31px}.footer-grid{grid-template-columns:1fr;gap:20px}.footer-bottom{flex-direction:column}.small-grid-stat{grid-template-columns:1fr}.city-top{padding:38px 0 44px}.city-top h1{font-size:43px}.company-hero{padding:25px 17px}.fab-edit{right:14px;bottom:14px}.stat-row{grid-template-columns:1fr 1fr}.buttonline .btn{width:100%}.editor-body{padding:15px}.login-card{padding:24px}.trust{margin-top:25px}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
- .portfolio-card{border:1px solid #dbe7f3;transition:transform .2s,box-shadow .2s}.portfolio-card:hover{transform:translateY(-4px);box-shadow:0 16px 32px #082f631c} </style>
+ .portfolio-card{border:1px solid #dbe7f3;transition:transform .2s,box-shadow .2s}.portfolio-card:hover{transform:translateY(-4px);box-shadow:0 16px 32px #082f631c} #app > section{animation:willai-page-in .18s ease-out both}
+@keyframes willai-page-in{from{opacity:.83;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){#app > section{animation:none}}
+</style>
 </head>
 <body>
  <header id="site-header"></header><main id="app"></main><footer id="site-footer"></footer>
@@ -82,6 +85,35 @@ function pagesFields(){return `<h4>Suas páginas personalizadas</h4><div class="
 function backupFields(){return `<h4>Salvar e transportar seu trabalho</h4><div class="mini-note"><strong>Armazenamento local:</strong> o que você editar fica salvo apenas neste navegador. Um backup JSON permite transferir o conteúdo para outro computador ou preparar a implantação futura.</div><div class="minor-actions" style="margin-top:20px"><button data-action="export">${icon('download',16)} Baixar backup JSON</button><button data-action="import">Importar backup JSON</button></div><input type="file" accept="application/json,.json" id="backup-input" hidden><div class="minor-actions"><button data-action="reset">Restaurar protótipo original</button></div><p class="small-helper">O login e a publicação definitiva precisarão ser integrados ao Supabase e ao Cloudflare. A publicação no Supabase exige seu login autorizado.</p>`}
 function editor(){if(!ui.editor||!adminMode||!isAdmin)return '';const tabs=[['page','Página'],['brand','Identidade'],['services','Serviços'],['portfolio','Portfólio'],['cities','Cidades'],['companies','Empresas'],['pages','Novas páginas'],['backup','Backup']];const bodies={page:pageFields,brand:brandFields,services:servicesFields,portfolio:portfolioFields,cities:citiesFields,companies:companiesFields,pages:pagesFields,backup:backupFields};return `<div class="editor-shade" data-action="close-editor"></div><aside class="editor" aria-label="Editor de conteúdo" role="dialog"><div class="editor-top"><div class="editor-topline"><div><small style="color:#9cdbea">WILLAI STUDIO • EDIÇÃO</small><h3>Editor visual</h3></div><button data-action="close-editor" class="icon-btn" title="Fechar editor">${icon('close',19)}</button></div><p style="font-size:12px;color:#c5deef;margin:8px 0 0">Personalize a página sem editar códigos.</p></div><div class="editor-tabs">${tabs.map(([k,v])=>`<button data-tab="${k}" class="${ui.tab===k?'sel':''}">${v}</button>`).join('')}</div><div class="editor-body">${(bodies[ui.tab]||pageFields)()}</div><div class="editor-footer"><button data-action="export">${icon('download',16)} Backup JSON</button><button data-action="publish-portal" class="strong">Publicar alterações ${icon('arrow',15)}</button><button data-action="close-editor">Fechar</button></div></aside>`}
 function render(){document.getElementById('site-header').innerHTML=header();renderContent();document.getElementById('site-footer').innerHTML=footer();document.getElementById('editor-root').innerHTML=editor();if(!adminMode){document.querySelectorAll('a[href^="#/"]').forEach(a=>a.setAttribute('href','/'+a.getAttribute('href').slice(2)))}}
+const portalPublicRoutes=new Set(['','projeto','servicos','portfolio','sobre','contato','login','plaquinhas']);
+function isPortalNavigation(href){
+ try{
+  const u=new URL(href,location.href);
+  if(u.origin!==location.origin||u.search||u.hash)return false;
+  const bits=u.pathname.split('/').filter(Boolean),first=bits[0]||'';
+  if(bits.length===0)return true;
+  if(bits.length===1)return portalPublicRoutes.has(first)||Boolean(state.cities[first]);
+  return bits.length===2&&first==='pagina'&&Boolean(state.pages[bits[1]]);
+ }catch{return false}
+}
+function navigatePortal(href,pop=false){
+ const u=new URL(href,location.href);
+ if(!pop&&u.pathname===location.pathname)return;
+ if(!pop)history.pushState({portal:true},'',u.pathname);
+ ui.menu=false;
+ render();
+ window.scrollTo({top:0,behavior:'instant'});
+ try{const main=document.getElementById('app');main?.setAttribute('tabindex','-1')}catch{}
+}
+document.addEventListener('click',e=>{
+ if(adminMode||e.defaultPrevented||e.button!==0||e.ctrlKey||e.metaKey||e.shiftKey||e.altKey)return;
+ const a=e.target.closest('a[href]');
+ if(!a||a.hasAttribute('download')||(a.target&&a.target!=='_self'))return;
+ const href=a.getAttribute('href');
+ if(!href||href.startsWith('#')||!isPortalNavigation(href))return;
+ e.preventDefault();navigatePortal(href);
+});
+window.addEventListener('popstate',()=>{if(!adminMode&&isPortalNavigation(location.href))navigatePortal(location.href,true)});
 function refreshEditor(){document.getElementById('editor-root').innerHTML=editor()}
 function fileDownload(content,name,mime){const blob=new Blob([content],{type:mime||'application/json'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
 function slugify(x){return String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,50)}
@@ -98,12 +130,60 @@ window.addEventListener('hashchange',()=>{if(adminMode){ui.menu=false;render();w
 async function request(path,opts={},credentials=auth){const headers={apikey:cfg.publishableKey,Accept:'application/json','Content-Type':'application/json',...(credentials?.access_token?{Authorization:'Bearer '+credentials.access_token}:{})};let res=await fetch(cfg.url+path,{...opts,headers:{...headers,...opts.headers}});if(!res.ok){let e;try{e=await res.json()}catch{}throw Error(e?.message||e?.error_description||e?.error||'HTTP '+res.status)}if(res.status===204)return null;return res.json()}
 async function checkAccessRole(){try{if(!auth?.access_token)return false;const rows=await request('/rest/v1/willai_access_roles?select=role&limit=1');return Array.isArray(rows)&&rows.length>0}catch{return false}}
 async function checkAdmin(){try{if(!auth?.access_token)return false;const rows=await request('/rest/v1/willai_portal_admins?select=user_id&limit=1');return Array.isArray(rows)&&rows.length>0}catch{return false}}
-async function loadPublic(){try{const rows=await request('/rest/v1/willai_portal_content?slug=eq.main&published=eq.true&select=config&limit=1');if(rows?.[0]?.config)state={...state,...rows[0].config,portfolio:rows[0].config.portfolio||state.portfolio}}catch(e){console.warn('Portal: configuração ainda não disponível',e.message)}state.companyCities||={};try{const pages=await request('/rest/v1/willai_pages?published=eq.true&select=slug,name,config&limit=1000');if(Array.isArray(pages)){const c={};for(const p of pages){const d=p.config||{};const city=state.companyCities[p.slug]||d.city||'curitiba';if(!state.cities[city])continue;c[p.slug]={slug:p.slug,city,name:p.name,photo:d.logo||d.photo||'',category:d.category||'Empresa participante',google:d.google||'',whatsapp:d.whatsapp||'',instagram:d.instagram||'',site:d.site||'',tagline:'Sua opinião faz a diferença!'}}state.companies=c}}catch(e){console.warn('Empresas indisponíveis',e.message)}}
+const publicCacheKey='willai_portal_public_cache_v1';
+function restorePublicCache(){
+ try{const record=JSON.parse(sessionStorage.getItem(publicCacheKey)||'null');
+ if(record&&Date.now()-record.savedAt<600000&&record.config&&typeof record.config==='object')
+ state={...state,...record.config,portfolio:record.config.portfolio||state.portfolio};}catch(e){}
+}
+function cachePublicConfig(config){
+ try{const data=JSON.stringify({savedAt:Date.now(),config});
+ if(data.length<450000)sessionStorage.setItem(publicCacheKey,data);}catch(e){}
+}
+async function loadPublic(){
+ const [portal,pages]=await Promise.allSettled([
+  request('/rest/v1/willai_portal_content?slug=eq.main&published=eq.true&select=config&limit=1'),
+  request('/rest/v1/willai_pages?published=eq.true&select=slug,name,config&limit=1000')
+ ]);
+ if(portal.status==='fulfilled'){
+  const config=portal.value?.[0]?.config;
+  if(config&&typeof config==='object'){state={...state,...config,portfolio:config.portfolio||state.portfolio};cachePublicConfig(config)}
+ }else console.warn('Portal: não foi possível atualizar dados',portal.reason);
+ state.companyCities||={};
+ if(pages.status==='fulfilled'&&Array.isArray(pages.value)){
+  const companies={};
+  for(const p of pages.value){const d=p.config||{},city=state.companyCities[p.slug]||d.city||'curitiba';
+   if(!state.cities[city])continue;
+   companies[p.slug]={slug:p.slug,city,name:p.name,photo:d.logo||d.photo||'',
+   category:d.category||'Empresa participante',google:d.google||'',whatsapp:d.whatsapp||'',
+   instagram:d.instagram||'',site:d.site||'',tagline:'Sua opinião faz a diferença!'};
+  }
+  state.companies=companies;
+ }else if(pages.status==='rejected')console.warn('Empresas indisponíveis',pages.reason);
+}
 async function uploadData(url){const m=/^data:image\/(png|jpeg|webp);base64,(.*)$/s.exec(url);if(!m)return url;let bin=atob(m[2]),arr=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);const path=auth.user.id+'/portal/'+crypto.randomUUID()+'.'+(m[1]==='jpeg'?'jpg':m[1]);const res=await fetch(cfg.url+'/storage/v1/object/'+cfg.bucket+'/'+path,{method:'POST',headers:{apikey:cfg.publishableKey,Authorization:'Bearer '+auth.access_token,'Content-Type':'image/'+m[1],'x-upsert':'false'},body:arr});if(!res.ok)throw Error('Não foi possível enviar a imagem: '+res.status);return cfg.url+'/storage/v1/object/public/'+cfg.bucket+'/'+path}
 async function replaceMedia(v){if(typeof v==='string')return uploadData(v);if(Array.isArray(v))return Promise.all(v.map(replaceMedia));if(v&&typeof v==='object'){const e=await Promise.all(Object.entries(v).map(async ([k,x])=>[k,await replaceMedia(x)]));return Object.fromEntries(e)}return v}
 async function publishPortal(){if(!adminMode||!isAdmin){toast('Acesso negado');return}try{toast('Enviando para Supabase...');const data=await replaceMedia(structuredClone(state));const rows=await request('/rest/v1/willai_portal_content?slug=eq.main',{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({config:data,updated_at:new Date().toISOString()})});if(!rows?.length)throw Error('Sem autorização para alterar o conteúdo');state=data;render();toast('Portal publicado!')}catch(e){toast('Falha ao publicar: '+e.message)}}
 document.addEventListener('submit',async e=>{if(e.target.id!=='portal-login-form')return;e.preventDefault();const status=document.getElementById('portalLoginStatus');status.textContent='Validando...';try{const email=document.getElementById('portalEmail').value,password=document.getElementById('portalPassword').value;const result=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})},null);auth=result;if(!(await checkAdmin())&&!(await checkAccessRole()))throw Error('Seu usuário não está autorizado para acessar o painel');sessionStorage.setItem(tokenKey,JSON.stringify(result));location.href='/studio/gestao/'}catch(e){status.textContent=e.message}});
-(async()=>{await loadPublic();if(adminMode){try{auth=JSON.parse(sessionStorage.getItem(tokenKey)||'null')}catch{}isAdmin=await checkAdmin();if(!isAdmin){state=structuredClone(seed);document.getElementById('site-header').innerHTML='';document.getElementById('site-footer').innerHTML='';document.getElementById('app').innerHTML=login();return}ui.editor=true;}render();})();
+(async()=>{
+ if(!adminMode){
+  restorePublicCache();
+  render();
+  loadPublic().then(()=>render()).catch(e=>console.warn('Falha na atualização pública',e));
+  return;
+ }
+ await loadPublic();
+ try{auth=JSON.parse(sessionStorage.getItem(tokenKey)||'null')}catch{}
+ isAdmin=await checkAdmin();
+ if(!isAdmin){
+  state=structuredClone(seed);
+  document.getElementById('site-header').innerHTML='';
+  document.getElementById('site-footer').innerHTML='';
+  document.getElementById('app').innerHTML=login();
+  return;
+ }
+ ui.editor=true;render();
+})();
 })();
 
 </script>
