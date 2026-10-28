@@ -19,7 +19,32 @@ function render(){
  if(inventory.some(r=>r.code===current))sel.value=current;
  window.WILLAI_ARTES?.useRealInventory(inventory);sel.dispatchEvent(new Event('change'));
 }
-async function reload(){status('Consultando banco de dados…');try{const r=await rpc('willai_qr_admin_inventory',{});inventory=Array.isArray(r)?r:[];render();status('Estoque real carregado: '+inventory.length+' código(s).')}catch(e){status('Não foi possível consultar o estoque real: '+e.message)}}
+async function refreshClaims(){
+ const tbody=$('realClaimRows');
+ if(!tbody)return;
+ try{
+  const r=await rpc('willai_qr_admin_claim_requests',{});
+  const rows=Array.isArray(r)?r:[];
+  tbody.innerHTML=rows.length?rows.map(x=>{
+   const date=x.requested_at?new Date(x.requested_at).toLocaleString('pt-BR'):'';
+   return '<tr><td><strong>'+safe(x.code)+'</strong></td><td>'+safe(x.email||'Email indisponivel')+'</td><td>'+safe(date)+'</td><td><button class="btn primary" data-approve-code="'+safe(x.code)+'" data-approve-user="'+safe(x.user_id)+'">Confirmar entrega e aprovar</button></td></tr>';
+  }).join(''):'<tr><td colspan="4">Nenhuma solicitação pendente.</td></tr>';
+ }catch(e){tbody.innerHTML='<tr><td colspan="4">Não foi possível consultar as solicitações. Verifique o acesso administrativo.</td></tr>';status('Falha ao consultar pedidos: '+e.message)}
+}
+$('realRefreshClaims').onclick=refreshClaims;
+$('realClaimRows').onclick=async e=>{
+ const button=e.target.closest('[data-approve-code]');
+ if(!button)return;
+ const code=button.dataset.approveCode,user_id=button.dataset.approveUser;
+ if(!confirm('Você CONFIRMOU a entrega de '+code+' ao titular da conta? Nunca aprove apenas porque alguém conhece o número do QR Code.'))return;
+ button.disabled=true;
+ try{
+  await rpc('willai_qr_admin_approve_claim',{p_code:code,p_user_id:user_id});
+  status('Ativação de '+code+' aprovada para o proprietário confirmado.');
+  await reload();
+ }catch(err){status('Aprovação não concluída: '+err.message);button.disabled=false}
+};
+async function reload(){status('Consultando banco de dados…');try{const r=await rpc('willai_qr_admin_inventory',{});inventory=Array.isArray(r)?r:[];render();await refreshClaims();status('Estoque real carregado: '+inventory.length+' código(s).')}catch(e){status('Não foi possível consultar o estoque real: '+e.message)}}
 $('realRefresh').onclick=reload;
 $('realGenerate').onclick=async()=>{if(!confirm('Gerar 50 QR Codes REAIS no Supabase? Cada um terá segredo único, que deve ser baixado imediatamente.'))return;const btn=$('realGenerate');btn.disabled=true;status('Criando códigos e segredos individuais no banco…');try{const b=await rpc('willai_qr_admin_generate_batch',{p_count:50});lastSecrets=Array.isArray(b?.items)?b.items:[];activeBatch=b.batch_id||'';window.WILLAI_ARTES?.setActivationSecrets(lastSecrets);if(lastSecrets.length!==50)throw Error('Resposta incompleta. Consulte o banco antes de tentar novamente.');$('realExportSecrets').disabled=false;status('Lote criado e BLOQUEADO. Baixe agora o CSV com os segredos, imprima os QRs e libere cada unidade apenas depois da entrega.');await reload();$('realStatus').textContent='50 códigos bloqueados no banco. Baixe o CSV, imprima usando esta sessão e libere cada unidade após entregar.'}catch(e){status('Geração não confirmada: '+e.message)}finally{btn.disabled=false}};
 $('realExportSecrets').onclick=()=>{if(!lastSecrets.length)return status('Nenhum segredo novo nesta sessão. Segredos antigos não ficam disponíveis para download.');const q=x=>'"'+String(x??'').replace(/"/g,'""')+'"';const csv='codigo;endereco_publico;url_qr_ativacao;segredo_de_ativacao\n'+lastSecrets.map(r=>[r.code,r.link,r.link+'#ativar='+r.secret,r.secret].map(q).join(';')).join('\n');downloadText(csv,'WillAI-QR-segredos-'+Date.now()+'.csv');status('CSV exportado. Guarde em local seguro. Imprima o QR COM a credencial embutida; nao entregue o CSV ao comerciante.')};
