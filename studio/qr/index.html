@@ -41,6 +41,14 @@
 <input id="realRedirect" type="url" placeholder="https://... link direto (opcional)" style="flex:1;min-width:220px;border:1px solid #dce6f1;border-radius:12px;padding:10px">
 <button id="realSaveRedirect" class="btn">Vincular / atualizar link</button></div>
 <div style="overflow:auto;max-height:380px"><table class="stock-table"><thead><tr><th>Código</th><th>Status</th><th>Destino</th><th>Ação</th></tr></thead><tbody id="realRows"><tr><td colspan="4">Consulte o estoque para carregar os registros reais.</td></tr></tbody></table></div>
+<div style="margin-top:22px;border-top:1px solid #e3eaf4;padding-top:18px">
+<h2>Solicitações de ativação sem código secreto</h2>
+<p class="hint">Para plaquinhas antigas que possuem somente a URL impressa. Confira pessoalmente a entrega e o e-mail do solicitante antes de aprovar. Nenhuma solicitação ativa uma plaquinha automaticamente.</p>
+<button class="btn ghost" id="realRefreshClaims" type="button">Atualizar solicitações</button>
+<div style="overflow:auto;max-height:310px;margin-top:12px"><table class="stock-table">
+<thead><tr><th>Plaquinha</th><th>Conta solicitante</th><th>Solicitado</th><th>Confirmação de entrega</th></tr></thead>
+<tbody id="realClaimRows"><tr><td colspan="4">Consultando solicitações do Supabase...</td></tr></tbody>
+</table></div></div>
 </section><div class="art-panel" id="artStudio">
  <div class="stock-top"><div><span class="sidecap">PRODUÇÃO DE PLAQUINHAS</span><h2>Arte pronta para gráfica</h2><p class="hint">Escolha um dos SVG que você enviou, selecione o código e baixe a arte completa no tamanho exato de 10 × 15 cm.</p></div><span class="pill">10 × 15 cm</span></div>
  <div class="art-controls">
