@@ -3,6 +3,8 @@
 -- Faça backup. Após instalar: valide o login e a W001 antes de imprimir lotes.
 BEGIN;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE TABLE IF NOT EXISTS public.willai_portal_admins (user_id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE, added_at timestamptz NOT NULL DEFAULT now());
+ALTER TABLE public.willai_portal_admins ENABLE ROW LEVEL SECURITY;
 CREATE TABLE IF NOT EXISTS public.willai_qr_plaques(
  code text PRIMARY KEY CHECK (code ~ '^W[0-9]{3,8}$'),
  secret_hash text NOT NULL,
@@ -23,7 +25,7 @@ REVOKE ALL ON public.willai_qr_plaques FROM anon,authenticated;
 
 -- Publicação: fornece somente status e dados publicados. Nunca revela segredo.
 CREATE OR REPLACE FUNCTION public.willai_qr_public(p_code text)
-RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path=public,pg_temp AS $$
+RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path=public,extensions,pg_temp AS $$
 SELECT CASE WHEN p.redirect_url IS NOT NULL AND p.status='available'
  THEN jsonb_build_object('code',p.code,'status','redirect','redirect_url',p.redirect_url)
  WHEN p.status='active'
@@ -36,7 +38,7 @@ GRANT EXECUTE ON FUNCTION public.willai_qr_public(text) TO anon,authenticated;
 
 -- Vínculo inicial: conta autenticada + segredo exclusivo, informado uma única vez.
 CREATE OR REPLACE FUNCTION public.willai_qr_activate(p_code text,p_secret text,p_page jsonb DEFAULT '{}'::jsonb)
-RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=public,pg_temp AS $$
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=public,extensions,pg_temp AS $$
 DECLARE r public.willai_qr_plaques%rowtype;
 BEGIN
  IF auth.uid() IS NULL THEN RAISE EXCEPTION 'Faça login para ativar'; END IF;
@@ -54,7 +56,7 @@ REVOKE ALL ON FUNCTION public.willai_qr_activate(text,text,jsonb) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.willai_qr_activate(text,text,jsonb) TO authenticated;
 
 CREATE OR REPLACE FUNCTION public.willai_qr_owned(p_code text)
-RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path=public,pg_temp AS $$
+RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path=public,extensions,pg_temp AS $$
 SELECT jsonb_build_object('code',code,'status',status,'page',page)
 FROM public.willai_qr_plaques WHERE code=upper(p_code) AND owner_id=auth.uid() AND status='active'
 $$;
@@ -62,7 +64,7 @@ REVOKE ALL ON FUNCTION public.willai_qr_owned(text) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.willai_qr_owned(text) TO authenticated;
 
 CREATE OR REPLACE FUNCTION public.willai_qr_save(p_code text,p_page jsonb)
-RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=public,pg_temp AS $$
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=public,extensions,pg_temp AS $$
 BEGIN
  IF auth.uid() IS NULL THEN RAISE EXCEPTION 'Login necessário'; END IF;
  IF jsonb_typeof(p_page)<>'object' OR length(p_page::text)>750000 THEN RAISE EXCEPTION 'Página inválida'; END IF;
@@ -77,7 +79,7 @@ GRANT EXECUTE ON FUNCTION public.willai_qr_save(text,jsonb) TO authenticated;
 -- Administração: NÃO recebe permissões a partir de metadados editáveis pelo usuário.
 -- Somente contas explicitamente inscritas em willai_portal_admins.
 CREATE OR REPLACE FUNCTION public.willai_qr_admin_generate_batch(p_count integer DEFAULT 50)
-RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=public,pg_temp AS $$
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=public,extensions,pg_temp AS $$
 DECLARE n bigint; i integer; c text; s text; b uuid:=gen_random_uuid(); result jsonb:='[]'::jsonb;
 BEGIN
  IF auth.uid() IS NULL OR NOT EXISTS(SELECT 1 FROM public.willai_portal_admins WHERE user_id=auth.uid())
@@ -98,7 +100,7 @@ REVOKE ALL ON FUNCTION public.willai_qr_admin_generate_batch(integer) FROM PUBLI
 GRANT EXECUTE ON FUNCTION public.willai_qr_admin_generate_batch(integer) TO authenticated;
 
 CREATE OR REPLACE FUNCTION public.willai_qr_admin_inventory()
-RETURNS jsonb LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path=public,pg_temp AS $$
+RETURNS jsonb LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path=public,extensions,pg_temp AS $$
 DECLARE out_data jsonb;
 BEGIN
  IF auth.uid() IS NULL OR NOT EXISTS(SELECT 1 FROM public.willai_portal_admins WHERE user_id=auth.uid())
@@ -112,7 +114,7 @@ REVOKE ALL ON FUNCTION public.willai_qr_admin_inventory() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.willai_qr_admin_inventory() TO authenticated;
 
 CREATE OR REPLACE FUNCTION public.willai_qr_admin_redirect(p_code text,p_url text)
-RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=public,pg_temp AS $$
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=public,extensions,pg_temp AS $$
 DECLARE u text;
 BEGIN
  IF auth.uid() IS NULL OR NOT EXISTS(SELECT 1 FROM public.willai_portal_admins WHERE user_id=auth.uid())
