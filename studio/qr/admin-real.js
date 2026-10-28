@@ -45,7 +45,7 @@ $('realA4').onclick=()=>{
  try{
  const items=codes.map(code=>'<div class="item"><img alt="'+code+'" src="'+window.WILLAI_ARTES.qrPng(code,260)+'"><b>'+code+'</b><small>willai.com.br/qr/'+code+'</small></div>').join('');
  tab.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><title>WillAI QR A4</title><style>@page{size:A4;margin:10mm}body{font:12px Arial;margin:0;color:#163454}h1{font-size:16px;margin:0 0 9mm}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5mm}.item{break-inside:avoid;text-align:center;padding:2mm;border:1px solid #ddd}.item img{width:100%;aspect-ratio:1}.item b,.item small{display:block}.item small{font-size:7px}@media print{.item{border:1px solid #ddd}}</style></head><body><h1>WillAI — QR Codes do lote</h1><div class="grid">'+items+'</div></body></html>');tab.document.close();
- tab.onload=()=>tab.print();status('Folha A4 aberta: escolha Imprimir ou Salvar em PDF no navegador.');
+ setTimeout(()=>{try{tab.focus();tab.print()}catch(_){}},700);status('Folha A4 aberta: escolha Imprimir ou Salvar em PDF no navegador.');
  }catch(e){tab.close();status('Falha ao imprimir: '+e.message)}
 };
 const originalReload=reload;
