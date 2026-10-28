@@ -3,6 +3,28 @@ let data={name:'Meu estabelecimento',category:'',description:'Conheça nossos se
 const esc=x=>String(x??'').replace(/[&<>"']/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[a]));
 const url=x=>{try{let u=new URL(x);return ['https:','http:'].includes(u.protocol)?u.href:'#'}catch{return '#'}};
 const message=(s,error=false)=>{const n=$('notice');n.textContent=s;n.className='message'+(error?'':' success')};
+const PASSWORD_RULES=[
+ {id:'passwordRuleLength',label:'8 caracteres ou mais',test:p=>p.length>=8},
+ {id:'passwordRuleUpper',label:'uma letra maiúscula',test:p=>/[A-ZÀ-ÖØ-Þ]/.test(p)},
+ {id:'passwordRuleLower',label:'uma letra minúscula',test:p=>/[a-zà-öø-ÿ]/.test(p)},
+ {id:'passwordRuleNumber',label:'um número',test:p=>/[0-9]/.test(p)},
+ {id:'passwordRuleSymbol',label:'um símbolo (@, #, ! etc.)',test:p=>/[^A-Za-zÀ-ÿ0-9\s]/.test(p)}
+];
+function passwordFailures(p){return PASSWORD_RULES.filter(r=>!r.test(p))}
+function showAccountError(text){$('accountError').textContent=text;$('accountError').classList.remove('hidden');message(text,true)}
+function clearAccountError(){$('accountError').textContent='';$('accountError').classList.add('hidden')}
+function updatePasswordRequirements(){
+ const registering=mode==='register',pass=$('password'),box=$('passwordRequirements');
+ box.classList.toggle('hidden',!registering);
+ if(registering){pass.minLength=8;pass.setAttribute('aria-describedby','passwordRequirements')}
+ else{pass.removeAttribute('minlength');pass.removeAttribute('aria-describedby')}
+ for(const rule of PASSWORD_RULES){
+  const el=$(rule.id),matched=rule.test(pass.value);
+  el.classList.toggle('met',matched);
+  el.setAttribute('aria-label',(matched?'Atendido: ':'Pendente: ')+el.textContent);
+ }
+}
+
 function show(p){for(const id of pages)$(id).classList.toggle('hidden',id!==p)}
 async function api(path,opts={},token){const res=await fetch(base+path,{...opts,cache:'no-store',headers:{apikey:key,Accept:'application/json','Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{}),...(opts.headers||{})}});let b=null;try{b=await res.json()}catch{}if(!res.ok)throw Error(b?.message||b?.error_description||'Erro HTTP '+res.status);return b}
 async function rpc(name,args={},token){return api('/rest/v1/rpc/'+name,{method:'POST',body:JSON.stringify(args)},token)}
