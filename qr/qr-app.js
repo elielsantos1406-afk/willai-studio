@@ -26,7 +26,37 @@ function updatePasswordRequirements(){
 }
 
 function show(p){for(const id of pages)$(id).classList.toggle('hidden',id!==p)}
-async function api(path,opts={},token){const res=await fetch(base+path,{...opts,cache:'no-store',headers:{apikey:key,Accept:'application/json','Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{}),...(opts.headers||{})}});let b=null;try{b=await res.json()}catch{}if(!res.ok)throw Error(b?.message||b?.error_description||'Erro HTTP '+res.status);return b}
+
+function friendlyApiError(payload,status,path){
+ const raw=String(payload?.msg||payload?.message||payload?.error_description||'').trim();
+ const code=String(payload?.code||payload?.error_code||payload?.error||'').toLowerCase();
+ const lower=raw.toLowerCase();
+ if(path.startsWith('/auth/v1/')){
+  if(/email_exists|user_already_exists/.test(code)||/already registered|already exists|already in use|email is already/.test(lower))
+   return 'Este e-mail já possui uma conta. Clique em “Já tenho conta” e entre com a senha cadastrada.';
+  if(code==='email_address_invalid'||/invalid email|email.*invalid/.test(lower))
+   return 'O e-mail informado não foi aceito. Confira o endereço e tente novamente.';
+  if(code==='email_not_confirmed'||/email not confirmed/.test(lower))
+   return 'Confirme seu e-mail pela mensagem recebida antes de entrar.';
+  if(code==='invalid_credentials'||/invalid login credentials/.test(lower))
+   return 'E-mail ou senha incorretos. Confira seus dados e tente novamente.';
+  if(code==='signup_disabled'||code==='email_provider_disabled')
+   return 'O cadastro por e-mail está temporariamente indisponível. Entre em contato com o suporte da WillAI.';
+  if(code==='over_email_send_rate_limit'||code==='over_request_rate_limit'||status===429)
+   return 'Muitas tentativas em pouco tempo. Aguarde antes de tentar novamente.';
+  if(code==='weak_password'||/password.*(weak|short|length|character|digit|uppercase|lowercase|symbol|special)/.test(lower)){
+   if(/uppercase/.test(lower))return 'Senha recusada: inclua pelo menos uma letra maiúscula.';
+   if(/lowercase/.test(lower))return 'Senha recusada: inclua pelo menos uma letra minúscula.';
+   if(/digit|number/.test(lower))return 'Senha recusada: inclua pelo menos um número.';
+   if(/symbol|special|non-alphanumeric/.test(lower))return 'Senha recusada: inclua um símbolo, como @, # ou !.';
+   if(/length|short|character/.test(lower))return 'Senha recusada: o tamanho mínimo exigido pelo Supabase não foi atingido.';
+   return 'O Supabase recusou a senha. Confira os requisitos informados abaixo do campo.';
+  }
+  if(status===422)return raw?'O cadastro ou login foi recusado: '+raw:'Cadastro recusado. Confira o e-mail, a senha e se você já possui uma conta.';
+ }
+ return raw||'Não foi possível concluir esta solicitação (HTTP '+status+'). Tente novamente.';
+}
+async function api(path,opts={},token){const res=await fetch(base+path,{...opts,cache:'no-store',headers:{apikey:key,Accept:'application/json','Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{}),...(opts.headers||{})}});let b=null;try{b=await res.json()}catch{}if(!res.ok)throw Error(friendlyApiError(b,res.status,path));return b}
 async function rpc(name,args={},token){return api('/rest/v1/rpc/'+name,{method:'POST',body:JSON.stringify(args)},token)}
 const sessionKey='willai_qr_owner_auth'; // Apenas tokens de sessao; paginas e proprietarios ficam no Supabase.
 function rememberSession(s){if(!s?.access_token)return;jwt=s.access_token;try{localStorage.setItem(sessionKey,JSON.stringify({access_token:s.access_token,refresh_token:s.refresh_token,expires_at:s.expires_at||Math.floor(Date.now()/1000)+(s.expires_in||3600)}))}catch{}}
