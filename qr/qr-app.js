@@ -94,24 +94,40 @@ function render(){ $('preview').innerHTML=card(data);$('buttonEditor').innerHTML
 function fill(){document.querySelectorAll('[data-key]').forEach(el=>{el.value=data[el.dataset.key]??''});$('editorLink').textContent='Endereço permanente: willai.com.br/qr/'+code;render()}
 async function boot(){if(!/^W[0-9]{3,8}$/.test(code)){message('Código inválido',true);return show('unavailable')} $('title').textContent='Plaquinha '+code;if(!base||!key){message('Configuração do sistema incompleta',true);return show('unavailable')}try{const res=await rpc('willai_qr_public',{p_code:code});record=res;if(!res){message('Esta plaquinha ainda não foi registrada.',true);return show('unavailable')}if(res.status==='redirect'){try{const target=new URL(res.redirect_url);if(!['http:','https:'].includes(target.protocol))throw Error('Redirecionamento inválido');location.replace(target.href);return}catch(e){message('O link vinculado está inválido. Entre em contato com a WillAI.',true);show('unavailable');return}}if(res.status==='active'){data={...data,...res.page};active=true;$('publishedPreview').innerHTML=card(data,true);message('Página publicada • link permanente');show('public')}else if(res.status==='pending'){active=true;message('Página em preparação. Somente o proprietário pode entrar e publicar.');show('pending')}else if(res.status==='available'){message(activationToken?'Plaquinha liberada para ativação':'Plaquinha liberada. Faça seu cadastro para solicitar a ativação segura.');show('start')}else{message('Esta plaquinha ainda não foi liberada para entrega ou está indisponível.',true);show('unavailable')}}catch(e){message('O módulo de plaquinhas ainda está aguardando a configuração segura do banco. Nenhuma ativação foi realizada.',true);show('unavailable')}}
 
-$('showRegister').onclick=()=>{mode='register';$('accountTitle').textContent='Criar minha conta';$('password').autocomplete='new-password';show('account')};
+$('showRegister').onclick=()=>{mode='register';$('accountTitle').textContent='Criar minha conta';$('password').autocomplete='new-password';clearAccountError();updatePasswordRequirements();show('account')};
 async function requestLogin(){
  try{if(await restoreSession()){await openEditorAfterAuth();return}}catch(e){message(e.message,true)}
- mode='login';$('accountTitle').textContent='Entrar na minha conta';$('password').autocomplete='current-password';show('account');
+ mode='login';$('accountTitle').textContent='Entrar na minha conta';$('password').autocomplete='current-password';clearAccountError();updatePasswordRequirements();show('account');
 }
 $('showLogin').onclick=$('ownerLogin').onclick=$('pendingLogin').onclick=requestLogin;
-$('cancelAccount').onclick=()=>show(record?.status==='pending'?'pending':active?'public':'start');
+$('cancelAccount').onclick=()=>{clearAccountError();show(record?.status==='pending'?'pending':active?'public':'start')};
+$('password').addEventListener('input',()=>{clearAccountError();updatePasswordRequirements()});
+$('email').addEventListener('input',clearAccountError);
+$('togglePassword').onclick=()=>{
+ const el=$('password'),visible=el.type==='text';
+ el.type=visible?'password':'text';
+ $('togglePassword').textContent=visible?'Mostrar':'Ocultar';
+ $('togglePassword').setAttribute('aria-label',visible?'Mostrar senha':'Ocultar senha');
+ $('togglePassword').setAttribute('aria-pressed',String(!visible));
+ el.focus();
+};
 $('accountForm').addEventListener('submit',async e=>{e.preventDefault();
  const email=$('email').value.trim(),password=$('password').value;
- if(!email||password.length<8)return message('Informe um e-mail e uma senha com pelo menos 8 caracteres.',true);
+ clearAccountError();
+ if(!email)return showAccountError('Informe um e-mail válido.');
+ if(!password)return showAccountError('Informe sua senha.');
+ if(mode==='register'){
+  const missing=passwordFailures(password);
+  if(missing.length)return showAccountError('Para criar sua conta, a senha ainda precisa de: '+missing.map(r=>r.label).join(', ')+'.');
+ }
  const btn=$('submitAccount');btn.disabled=true;
  try{
   let response;
   if(mode==='register'){
    response=await api('/auth/v1/signup',{method:'POST',body:JSON.stringify({email,password})});
    if(!response?.access_token){
-    mode='login';$('accountTitle').textContent='Entrar na minha conta';$('password').autocomplete='current-password';
-    return message('Conta criada. Confirme o e-mail, se o Supabase solicitar, e depois entre com sua senha.');
+    mode='login';$('accountTitle').textContent='Entrar na minha conta';$('password').autocomplete='current-password';updatePasswordRequirements();
+    return message('Confira seu e-mail para confirmar a conta, se solicitado. Se já possui cadastro, use “Já tenho conta”.');
    }
   }else{
    response=await api('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
@@ -119,7 +135,7 @@ $('accountForm').addEventListener('submit',async e=>{e.preventDefault();
   if(!response?.access_token)throw Error('Não foi possível autenticar sua conta.');
   rememberSession(response);
   await openEditorAfterAuth();
- }catch(e){message(e.message,true)}finally{btn.disabled=false}
+ }catch(e){showAccountError(e.message||'Não foi possível concluir o acesso. Tente novamente.')}finally{btn.disabled=false}
 });
 $('activate').onclick=async()=>{try{if(!jwt&&!(await restoreSession()))return message('Entre na sua conta.',true);await openEditorAfterAuth()}catch(e){message(e.message,true)}};
 document.querySelectorAll('[data-key]').forEach(el=>el.addEventListener('input',()=>{data[el.dataset.key]=el.value;render()}));
@@ -138,5 +154,6 @@ $('approvalCheck').onclick=async()=>{
   data={...data,...own.page};active=true;owner=true;fill();show('editor');message('Entrega aprovada! Personalize e publique sua página.');
  }catch(e){message(e.message,true)}finally{button.disabled=false}
 };
+updatePasswordRequirements();
 window.WILLAI_QR_BOOTSTRAPPED=true;
 boot();})();
