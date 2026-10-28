@@ -1,24 +1,16 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07316e"><title>WillAI | Página digital</title><link rel="icon" href="/assets/willai-logo-original.png?v=5" type="image/png"><link rel="preload" as="style" href="/assets/page.css"><link rel="stylesheet" href="/assets/page.css"><style>body{background:#f5f9fd}.loading{padding:65px 18px;text-align:center;max-width:440px;margin:0 auto;color:#1c3b60;font-family:system-ui}.loading strong{display:block;font-size:25px;line-height:1.25;margin-bottom:10px}.loading small{color:#667b93;line-height:1.5}.loading a{color:#0678b7}#app{min-height:50vh}</style></head>
-<body><main id="app"><div class="loading"><strong>Abrindo página...</strong><small>Conectando aos dados da empresa</small></div></main><aside id="dock" class="banner-dock" aria-label="Carrossel institucional"></aside><div id="toast" class="toast" role="status" aria-live="polite"></div><div id="infoDialog" class="dialogwrap"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><p id="modalText"></p><button type="button" class="done">Fechar</button></div></div>
-<script src="/config.js"></script><script>
-(async()=>{
- const root=document.getElementById('app'),cfg=window.WILLAI_CONFIG;
- const slug=decodeURIComponent(location.pathname.split('/').filter(Boolean)[0]||'');
- function notice(title,description){document.title=title+' | WillAI';root.innerHTML='';const n=document.createElement('div');n.className='loading';const h=document.createElement('strong');h.textContent=title;const p=document.createElement('small');p.textContent=description;n.append(h,p);root.append(n)}
- if(!slug||slug==='index.html'){notice('WillAI • Páginas digitais','Acesse a página da empresa usando o link fornecido ou o QR Code.');return}
- if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)){notice('Endereço inválido','Verifique o endereço recebido.');return}
- try{
-  const url=cfg.url+'/rest/v1/willai_pages?slug=eq.'+encodeURIComponent(slug)+'&published=eq.true&select=name,config&limit=1';
-  const response=await fetch(url,{headers:{apikey:cfg.publishableKey,'Accept':'application/json'}});
-  if(!response.ok)throw Error('Erro ao consultar a página ('+response.status+').');
-  const rows=await response.json();if(!rows?.[0]?.config){notice('Página não encontrada','A empresa ainda não publicou esta página ou o endereço está incorreto.');return}
-  const data=rows[0].config;window.WILLAI_PAGE=data;
-  const colors=data.colors||{};const rootStyle=document.documentElement.style;
-  for(const [k,prop] of [['primary','--primary'],['accent','--accent'],['background','--bg']])if(/^#[0-9a-f]{6}$/i.test(colors[k]||''))rootStyle.setProperty(prop,colors[k]);
-  document.title=(rows[0].name||data.name||'Empresa')+' | '+(data.mode==='reviews'?'Avaliações':'Cartão digital');
-  if(data.name){let d=document.querySelector('meta[name="description"]');if(!d){d=document.createElement('meta');d.name='description';document.head.append(d)}d.content=(data.name+' — '+(data.category||'')).slice(0,155)}
-  const sc=document.createElement('script');sc.src='/assets/page.js';sc.defer=true;document.body.append(sc);
- }catch(err){console.error(err);notice('Não foi possível abrir esta página','Tente novamente. Se persistir, confirme a conexão do Supabase e a publicação desta empresa.');}
-})();
-</script></body></html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#07316e"><title>WillAI | Tecnologia & Soluções Digitais</title><meta name="description" content="WillAI: sites, sistemas inteligentes, automações e soluções digitais para negócios."><link rel="icon" href="/assets/willai-logo-original.png?v=5" type="image/png"><link rel="preload" as="style" href="/assets/page.css"><link rel="stylesheet" href="/assets/page.css"><style>
+body{margin:0;background:#f4f8fd;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#153961}
+.loading{min-height:86vh;display:grid;align-content:center;justify-items:center;padding:38px 18px;text-align:center;max-width:640px;margin:auto}
+.loading-symbol{width:74px;height:74px;display:grid;place-items:center;margin:0 0 24px;background:#e8f3ff;border:1px solid #d5e9fb;border-radius:23px;box-shadow:0 18px 42px #00578c18}
+.loading-symbol img{width:49px;height:49px;object-fit:contain}
+.loading strong{display:block;font-weight:850;letter-spacing:-.045em;font-size:clamp(27px,4vw,37px);line-height:1.12;margin-bottom:11px}
+.loading small{font-size:14px;color:#687f9b;line-height:1.55}
+.loading-track{height:4px;width:175px;overflow:hidden;border-radius:20px;background:#dceaf7;margin-top:26px}
+.loading-track::after{content:"";display:block;width:43%;height:100%;border-radius:20px;background:linear-gradient(90deg,#073e80,#1cc3e5);animation:willai-progress 1.1s ease-in-out infinite alternate}
+@keyframes willai-progress{from{transform:translateX(-110%)}to{transform:translateX(330%)}}
+@media(prefers-reduced-motion:reduce){.loading-track::after{animation:none;width:100%}}
+#app{min-height:50vh}
+</style></head>
+<body><main id="app"><div class="loading" role="status" aria-live="polite"><div class="loading-symbol"><img src="/assets/willai-logo-original.png" alt="WillAI"></div><strong>Preparando sua experiência.</strong><small>WillAI — Tecnologia & Soluções Digitais</small><div class="loading-track" aria-hidden="true"></div></div></main><aside id="dock" class="banner-dock" aria-label="Carrossel institucional"></aside><div id="toast" class="toast" role="status" aria-live="polite"></div><div id="infoDialog" class="dialogwrap"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><p id="modalText"></p><button type="button" class="done">Fechar</button></div></div>
+<script src="/config.js"></script><script src="/assets/router.js"></script></body></html>
