@@ -1,3 +1,6 @@
+/qr /qr/index.html 200
+/qr/ /qr/index.html 200
+/qr/* /qr/index.html 200
 /studio/portal /studio/portal/index.html 200
 /studio/portal/ /studio/portal/index.html 200
 /studio/gestao /studio/gestao/index.html 200
