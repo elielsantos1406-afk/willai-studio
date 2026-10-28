@@ -86,4 +86,5 @@ $('approvalCheck').onclick=async()=>{
   data={...data,...own.page};active=true;owner=true;fill();show('editor');message('Entrega aprovada! Personalize e publique sua página.');
  }catch(e){message(e.message,true)}finally{button.disabled=false}
 };
+window.WILLAI_QR_BOOTSTRAPPED=true;
 boot();})();

@@ -1,1 +1,11 @@
-{"version":1,"include":["/qr/*"],"exclude":[]}
+{
+  "version": 1,
+  "include": [
+    "/qr/*"
+  ],
+  "exclude": [
+    "/qr/qr-app.js",
+    "/qr/index.html",
+    "/qr/"
+  ]
+}
