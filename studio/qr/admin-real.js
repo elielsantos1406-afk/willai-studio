@@ -9,7 +9,7 @@ function render(){
  const prev=$('realBatch').value;
  $('realBatch').innerHTML='<option value="">Selecione um lote real</option>'+batches.map(id=>'<option value="'+safe(id)+'">'+(id==='none'?'Códigos sem lote':safe(id.slice(0,8)))+' — '+inventory.filter(r=>(r.batch_id||'none')===id).length+' código(s)</option>').join('');
  $('realBatch').value=batches.includes(prev)?prev:(batches.includes(activeBatch)?activeBatch:(batches[0]||''));
- $('realRows').innerHTML=inventory.length?inventory.map(r=>'<tr><td><b>'+safe(r.code)+'</b></td><td>'+safe(r.status)+'</td><td style="max-width:280px;overflow-wrap:anywhere">'+safe(r.redirect_url||'Página WillAI / aguardando ativação')+'</td><td><button type="button" class="btn" data-print="'+safe(r.code)+'">Preparar arte</button> <a class="btn" href="/qr/'+safe(r.code)+'" target="_blank" rel="noopener noreferrer">Abrir QR</a></td></tr>').join(''):'<tr><td colspan="4">Nenhuma plaquinha cadastrada no Supabase. Clique em Gerar 50 códigos reais.</td></tr>';
+ $('realRows').innerHTML=inventory.length?inventory.map(r=>'<tr><td><b>'+safe(r.code)+'</b></td><td>'+safe(r.status)+'</td><td style="max-width:280px;overflow-wrap:anywhere">'+safe(r.redirect_url||'Página WillAI / aguardando ativação')+'</td><td>'+(r.status==='held'?'<button type="button" class="btn primary" data-release="'+safe(r.code)+'">Liberar após entrega</button> ':'')+'<button type="button" class="btn" data-print="'+safe(r.code)+'">Preparar arte</button> <a class="btn" href="/qr/'+safe(r.code)+'" target="_blank" rel="noopener noreferrer">Abrir QR</a></td></tr>').join(''):'<tr><td colspan="4">Nenhuma plaquinha cadastrada no Supabase. Clique em Gerar 50 códigos reais.</td></tr>';
  $('stockGenerated').textContent=inventory.length;
  $('stockAvailable').textContent=inventory.filter(x=>x.status==='available').length;
  $('stockBatches').textContent=batches.filter(x=>x!=='none').length;
@@ -17,15 +17,48 @@ function render(){
  const sel=$('artCode'),current=sel.value;
  sel.innerHTML=inventory.length?inventory.map(r=>'<option value="'+safe(r.code)+'">'+safe(r.code)+'</option>').join(''):'<option value="">Nenhum código registrado</option>';
  if(inventory.some(r=>r.code===current))sel.value=current;
- sel.dispatchEvent(new Event('change'));
+ window.WILLAI_ARTES?.useRealInventory(inventory);sel.dispatchEvent(new Event('change'));
 }
-async function reload(){status('Consultando banco de dados…');try{const r=await rpc('willai_qr_admin_inventory',{});inventory=Array.isArray(r)?r:[];render();status('Estoque real carregado: '+inventory.length+' código(s).')}catch(e){status('Não foi possível consultar o estoque real: '+e.message)}}
+async function refreshClaims(){
+ const tbody=$('realClaimRows');
+ if(!tbody)return;
+ try{
+  const r=await rpc('willai_qr_admin_claim_requests',{});
+  const rows=Array.isArray(r)?r:[];
+  tbody.innerHTML=rows.length?rows.map(x=>{
+   const date=x.requested_at?new Date(x.requested_at).toLocaleString('pt-BR'):'';
+   return '<tr><td><strong>'+safe(x.code)+'</strong></td><td>'+safe(x.email||'Email indisponivel')+'</td><td>'+safe(date)+'</td><td><button class="btn primary" data-approve-code="'+safe(x.code)+'" data-approve-user="'+safe(x.user_id)+'">Confirmar entrega e aprovar</button></td></tr>';
+  }).join(''):'<tr><td colspan="4">Nenhuma solicitação pendente.</td></tr>';
+ }catch(e){tbody.innerHTML='<tr><td colspan="4">Não foi possível consultar as solicitações. Verifique o acesso administrativo.</td></tr>';status('Falha ao consultar pedidos: '+e.message)}
+}
+$('realRefreshClaims').onclick=refreshClaims;
+$('realClaimRows').onclick=async e=>{
+ const button=e.target.closest('[data-approve-code]');
+ if(!button)return;
+ const code=button.dataset.approveCode,user_id=button.dataset.approveUser;
+ if(!confirm('Você CONFIRMOU a entrega de '+code+' ao titular da conta? Nunca aprove apenas porque alguém conhece o número do QR Code.'))return;
+ button.disabled=true;
+ try{
+  await rpc('willai_qr_admin_approve_claim',{p_code:code,p_user_id:user_id});
+  status('Ativação de '+code+' aprovada para o proprietário confirmado.');
+  await reload();
+ }catch(err){status('Aprovação não concluída: '+err.message);button.disabled=false}
+};
+async function reload(){status('Consultando banco de dados…');try{const r=await rpc('willai_qr_admin_inventory',{});inventory=Array.isArray(r)?r:[];render();await refreshClaims();status('Estoque real carregado: '+inventory.length+' código(s).')}catch(e){status('Não foi possível consultar o estoque real: '+e.message)}}
 $('realRefresh').onclick=reload;
-$('realGenerate').onclick=async()=>{if(!confirm('Gerar 50 QR Codes REAIS no Supabase? Cada um terá segredo único, que deve ser baixado imediatamente.'))return;const btn=$('realGenerate');btn.disabled=true;status('Criando códigos e segredos individuais no banco…');try{const b=await rpc('willai_qr_admin_generate_batch',{p_count:50});lastSecrets=Array.isArray(b?.items)?b.items:[];activeBatch=b.batch_id||'';if(lastSecrets.length!==50)throw Error('Resposta incompleta. Consulte o banco antes de tentar novamente.');$('realExportSecrets').disabled=false;status('50 códigos gerados! Baixe AGORA os 50 segredos de ativação antes de sair da página.');await reload();$('realStatus').textContent='50 códigos gerados no banco. ATENÇÃO: baixe imediatamente a relação com os segredos de ativação.'}catch(e){status('Geração não confirmada: '+e.message)}finally{btn.disabled=false}};
-$('realExportSecrets').onclick=()=>{if(!lastSecrets.length)return status('Nenhum segredo novo nesta sessão. Segredos antigos não ficam disponíveis para download.');const q=x=>'"'+String(x??'').replace(/"/g,'""')+'"';const csv='codigo;endereco;segredo_de_ativacao\n'+lastSecrets.map(r=>[r.code,r.link,r.secret].map(q).join(';')).join('\n');downloadText(csv,'WillAI-QR-segredos-'+Date.now()+'.csv');status('Segredos exportados. Guarde o arquivo em local seguro e entregue cada segredo separadamente ao comprador.')};
+$('realGenerate').onclick=async()=>{if(!confirm('Gerar 50 QR Codes REAIS no Supabase? Cada um terá segredo único, que deve ser baixado imediatamente.'))return;const btn=$('realGenerate');btn.disabled=true;status('Criando códigos e segredos individuais no banco…');try{const b=await rpc('willai_qr_admin_generate_batch',{p_count:50});lastSecrets=Array.isArray(b?.items)?b.items:[];activeBatch=b.batch_id||'';window.WILLAI_ARTES?.setActivationSecrets(lastSecrets);if(lastSecrets.length!==50)throw Error('Resposta incompleta. Consulte o banco antes de tentar novamente.');$('realExportSecrets').disabled=false;status('Lote criado e BLOQUEADO. Baixe agora o CSV com os segredos, imprima os QRs e libere cada unidade apenas depois da entrega.');await reload();$('realStatus').textContent='50 códigos bloqueados no banco. Baixe o CSV, imprima usando esta sessão e libere cada unidade após entregar.'}catch(e){status('Geração não confirmada: '+e.message)}finally{btn.disabled=false}};
+$('realExportSecrets').onclick=()=>{if(!lastSecrets.length)return status('Nenhum segredo novo nesta sessão. Segredos antigos não ficam disponíveis para download.');const q=x=>'"'+String(x??'').replace(/"/g,'""')+'"';const csv='codigo;endereco_publico;url_qr_ativacao;segredo_de_ativacao\n'+lastSecrets.map(r=>[r.code,r.link,r.link+'#ativar='+r.secret,r.secret].map(q).join(';')).join('\n');downloadText(csv,'WillAI-QR-segredos-'+Date.now()+'.csv');status('CSV exportado. Guarde em local seguro. Imprima o QR COM a credencial embutida; nao entregue o CSV ao comerciante.')};
 $('realCode').onchange=e=>{let r=inventory.find(x=>x.code===e.target.value);$('realRedirect').value=r?.redirect_url||''};
 $('realSaveRedirect').onclick=async()=>{const c=$('realCode').value;if(!c)return status('Selecione primeiro uma plaquinha no estoque real.');const u=$('realRedirect').value.trim();if(u&&(!/^https?:\/\//i.test(u)||u.length>2048))return status('Cole um endereço HTTP(S) completo.');try{await rpc('willai_qr_admin_redirect',{p_code:c,p_url:u});await reload();status('Destino de '+c+' atualizado no banco. O QR impresso continua igual.')}catch(e){status('Falha ao vincular o link: '+e.message)}};
-$('realRows').onclick=e=>{const b=e.target.closest('[data-print]');if(!b)return;const c=b.dataset.print,sel=$('artCode');if(![...sel.options].some(x=>x.value===c))sel.add(new Option(c,c));sel.value=c;sel.dispatchEvent(new Event('change'));$('artStudio').scrollIntoView({behavior:'smooth'});status('Arte de '+c+' selecionada. Escolha WillAI ou Google e exporte o SVG/PDF.')};
+$('realRows').onclick=async e=>{const release=e.target.closest('[data-release]');if(release){
+ const c=release.dataset.release;
+ if(!confirm('Confirmar a entrega da plaquinha '+c+'? Somente depois desta acao a primeira conta com o QR original podera ativa-la.'))return;
+ release.disabled=true;
+ try{await rpc('willai_qr_admin_release',{p_code:c});await reload();status('Plaquinha '+c+' liberada apos confirmacao de entrega.');}
+ catch(err){status('Nao foi possivel liberar '+c+': '+err.message);release.disabled=false}
+ return;
+}
+const b=e.target.closest('[data-print]');if(!b)return;const c=b.dataset.print,sel=$('artCode');if(![...sel.options].some(x=>x.value===c))sel.add(new Option(c,c));sel.value=c;sel.dispatchEvent(new Event('change'));$('artStudio').scrollIntoView({behavior:'smooth'});status('Arte de '+c+' selecionada. Escolha WillAI ou Google e exporte o SVG/PDF.')};
 
 $('generate50').onclick=()=>{if(!auth())return status('Entre na central WillAI para gerar códigos reais.');$('realGenerate').click();};
 $('stockReset').disabled=true;$('stockZip').disabled=true;$('stockA4').disabled=true;
@@ -48,7 +81,22 @@ $('realA4').onclick=()=>{
  setTimeout(()=>{try{tab.focus();tab.print()}catch(_){}},700);status('Folha A4 aberta: escolha Imprimir ou Salvar em PDF no navegador.');
  }catch(e){tab.close();status('Falha ao imprimir: '+e.message)}
 };
-const originalReload=reload;
+// QR para estoque nao registrado ou sem segredo NAO deve ser impresso.
+window.WILLAI_ARTES?.useRealInventory([]);
+$('realImportSecrets').onchange=async e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ if(file.size>300000||!/\.csv$/i.test(file.name))return status('Escolha o CSV de segredos exportado pelo WillAI QR Studio.');
+ try{
+  const rows=(await file.text()).replace(/^\uFEFF/,'').trim().split(/\r?\n/).slice(1).map(l=>{
+   const p=l.split(';').map(v=>v.trim().replace(/^"|"$/g,'').replace(/""/g,'"'));
+   return {code:p[0],secret:p[p.length-1]};
+  }).filter(r=>/^W[0-9]{3,8}$/.test(r.code)&&/^[a-f0-9]{48}$/.test(r.secret));
+  if(!rows.length)throw Error('CSV nao contem segredos validos.');
+  window.WILLAI_ARTES?.setActivationSecrets(rows);
+  status(rows.length+' segredos carregados apenas na memoria desta aba. Agora e possivel reimprimir os QRs desse lote.');
+ }catch(err){status('Falha ao importar CSV: '+err.message)}
+ e.target.value='';
+};
 if(auth())reload();
 status('Estoque real disponível somente para administradores autorizados. Clique em Consultar estoque real para verificar a conexão.');
 })();
