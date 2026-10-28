@@ -280,7 +280,7 @@ async function checkAdmin(){try{if(!auth?.access_token)return false;const rows=a
 const publicCacheKey='willai_portal_public_cache_v1';
 function restorePublicCache(){
  try{const record=JSON.parse(sessionStorage.getItem(publicCacheKey)||'null');
- if(record&&Date.now()-record.savedAt<600000&&record.config&&typeof record.config==='object')
+ if(record&&Date.now()-record.savedAt<30000&&record.config&&typeof record.config==='object')
  state={...state,...record.config,portfolio:record.config.portfolio||state.portfolio};}catch(e){}
 }
 function cachePublicConfig(config){
@@ -289,7 +289,7 @@ function cachePublicConfig(config){
 }
 async function loadPublic(){
  const [portal,pages]=await Promise.allSettled([
-  request('/rest/v1/willai_portal_content?slug=eq.main&published=eq.true&select=config&limit=1'),
+  request('/rest/v1/willai_portal_content?slug=eq.main&published=eq.true&select=config&limit=1',{cache:'no-store'}),
   request('/rest/v1/willai_pages?published=eq.true&select=slug,name,config&limit=1000')
  ]);
  if(portal.status==='fulfilled'){
@@ -349,7 +349,21 @@ async function publishPortal(){
       body:JSON.stringify({config:data,updated_at:new Date().toISOString()})
    });
    if(!Array.isArray(rows)||!rows.length)throw Error('O banco não confirmou a gravação. Confira suas permissões.');
-   state=data;cachePublicConfig(data);clearAdminDraft();
+   // Confirmar o conteúdo gravado, e não apenas o retorno HTTP do PATCH.
+   const check=await request('/rest/v1/willai_portal_content?slug=eq.main&published=eq.true&select=config&limit=1',{cache:'no-store'});
+   const saved=check?.[0]?.config;
+   if(!saved)throw Error('A publicação não pôde ser verificada: conteúdo público indisponível.');
+   for(const [cityId,cityData] of Object.entries(data.cities||{})){
+     const publishedCity=saved.cities?.[cityId];
+     if(!publishedCity)throw Error('A cidade '+cityId+' não apareceu no conteúdo publicado.');
+     for(const key of ['sponsor','sponsorRole','sponsorAbout','sponsorQuote','sponsorUrl','sponsorLogo','sponsorImage','howTitle','howText']){
+       if((publishedCity[key]??'')!==(cityData[key]??'')){
+         throw Error('A informação '+key+' de '+cityId+' não corresponde ao texto publicado. Suas alterações permanecem no rascunho.');
+       }
+     }
+   }
+   state=saved;cachePublicConfig(saved);clearAdminDraft();
+   try{localStorage.setItem('willai_portal_updated_at',String(Date.now()))}catch(e){}
    ui.editor=true;render();
    const success=document.getElementById('editorSaveStatus');
    if(success)success.textContent='✓ Alterações publicadas! Abra o site público para conferir.';
@@ -371,6 +385,12 @@ document.addEventListener('submit',async e=>{if(e.target.id!=='portal-login-form
   restorePublicCache();
   render();
   loadPublic().then(()=>render()).catch(e=>console.warn('Falha na atualização pública',e));
+  // Se o editor publicar em outra aba, atualiza automaticamente esta visualização.
+  window.addEventListener('storage',e=>{
+    if(e.key==='willai_portal_updated_at'){
+      loadPublic().then(()=>render()).catch(err=>console.warn('Falha ao atualizar conteúdo publicado',err));
+    }
+  });
   return;
  }
  await loadPublic();
