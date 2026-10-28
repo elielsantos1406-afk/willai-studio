@@ -13,6 +13,27 @@ function loadCompany(){
 function showError(message){
  document.getElementById('app').innerHTML='<div class="loading" role="alert"><strong>Não foi possível abrir o site.</strong><small>'+message+'</small><p><a href="/">Voltar para WillAI</a></p></div>';
 }
+// Rota QR dedicada mesmo quando a hospedagem servir o SPA principal como fallback.
+async function loadQrRoute(){
+ if(parts.length!==2||!/^W[0-9]{3,8}$/i.test(parts[1])){
+  showError('Codigo de plaquinha invalido. Leia o QR Code original da WillAI.');
+  return;
+ }
+ const response=await fetch('/qr/index.html',{cache:'no-cache'});
+ if(!response.ok)throw Error('Nao foi possivel carregar a tela de ativacao QR');
+ const doc=new DOMParser().parseFromString(await response.text(),'text/html');
+ const style=doc.querySelector('style');
+ const qrScript=doc.querySelector('script[src="/qr/qr-app.js"]');
+ if(!style||!qrScript)throw Error('Arquivos QR Studio incompletos');
+ document.head.append(style.cloneNode(true));
+ document.title=doc.title;
+ // Scripts inseridos por innerHTML sao inertes; carregamos apenas o modulo QR necessario.
+ document.body.innerHTML=doc.body.innerHTML;
+ const loader=document.createElement('script');
+ loader.src='/qr/qr-app.js';
+ loader.onerror=()=>showError('Nao foi possivel iniciar o QR Studio. Atualize a pagina.');
+ document.body.append(loader);
+}
 async function isPortalRoute(){
  if(publicRoutes.has(first)||knownCities.has(first))return true;
  if(parts.length!==1||!cfg.url||!cfg.publishableKey)return false;
@@ -41,6 +62,7 @@ async function loadPortal(){
 }
 (async()=>{
  try{
+  if(first==='qr'){await loadQrRoute();return;}
   if(await isPortalRoute())await loadPortal();
   else loadCompany();
  }catch(error){
