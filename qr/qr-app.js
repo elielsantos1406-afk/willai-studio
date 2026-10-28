@@ -16,6 +16,8 @@ function clearAccountError(){$('accountError').textContent='';$('accountError').
 function updatePasswordRequirements(){
  const registering=mode==='register',pass=$('password'),box=$('passwordRequirements');
  box.classList.toggle('hidden',!registering);
+ $('accountSwitchPrompt').textContent=registering?'Já tem conta?':'Ainda não tem conta?';
+ $('switchAccountMode').textContent=registering?'Entrar com meu e-mail':'Criar uma conta';
  if(registering){pass.minLength=8;pass.setAttribute('aria-describedby','passwordRequirements')}
  else{pass.removeAttribute('minlength');pass.removeAttribute('aria-describedby')}
  for(const rule of PASSWORD_RULES){
@@ -100,6 +102,7 @@ async function requestLogin(){
  mode='login';$('accountTitle').textContent='Entrar na minha conta';$('password').autocomplete='current-password';clearAccountError();updatePasswordRequirements();show('account');
 }
 $('showLogin').onclick=$('ownerLogin').onclick=$('pendingLogin').onclick=requestLogin;
+$('switchAccountMode').onclick=()=>{if(mode==='register')requestLogin();else $('showRegister').onclick()};
 $('cancelAccount').onclick=()=>{clearAccountError();show(record?.status==='pending'?'pending':active?'public':'start')};
 $('password').addEventListener('input',()=>{clearAccountError();updatePasswordRequirements()});
 $('email').addEventListener('input',clearAccountError);
