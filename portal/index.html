@@ -63,6 +63,24 @@
 .sponsor-photo-placeholder{min-height:280px;background:linear-gradient(145deg,#e5f5ff,#f6fbff 56%,#dceefb);border:1px solid #daedfa;border-radius:18px;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;color:#2077ad}
 .sponsor-photo-placeholder span{font-size:12px;font-weight:700}
 @media(max-width:760px){.sponsor-template{grid-template-columns:1fr}.sponsor-template-photo{order:-1}.sponsor-photo-placeholder{min-height:210px}}
+
+/* Página institucional Sobre nós: regras isoladas desta página. */
+.about-willai{background:linear-gradient(180deg,#f5faff 0%,#fff 40%)}
+.about-intro{max-width:910px;margin:14px auto 54px;text-align:left}
+.about-intro h1{margin-top:15px;margin-bottom:22px}
+.about-intro p{font-size:16px;line-height:1.85;color:#506b86;margin:16px 0}
+.about-intro .about-highlight{font-size:clamp(19px,2.2vw,26px);font-weight:800;line-height:1.4;color:#103d77;margin-bottom:27px}
+.about-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-bottom:52px}
+.about-value{padding:clamp(23px,3vw,40px);border-radius:22px;border:1px solid #deebf7;background:#fff;box-shadow:0 18px 45px #0b408011}
+.about-value h2{font-size:clamp(25px,2.4vw,33px);margin:16px 0}
+.about-value p{color:#57718b;font-size:15px;margin-bottom:0}
+.about-contact{display:flex;justify-content:space-between;gap:26px;align-items:center;padding:clamp(25px,4vw,45px);background:linear-gradient(120deg,#072651,#0b5495);color:#fff;border-radius:24px}
+.about-contact .eyebrow{color:#93e2fb}.about-contact h2{font-size:clamp(25px,3vw,37px);margin:12px 0}
+.about-contact p{color:#d5e5f6;max-width:690px;margin-bottom:0}
+.about-contact .btn{flex-shrink:0;white-space:nowrap}
+.about-brand{display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:37px;color:#153d70}
+.about-brand strong{font-size:16px}.about-brand span{font-size:10px;letter-spacing:.2em;font-weight:700;color:#6b8196}
+@media(max-width:750px){.about-intro{margin:0 auto 32px}.about-intro p{font-size:15px}.about-values{grid-template-columns:1fr;gap:14px;margin-bottom:32px}.about-contact{flex-direction:column;align-items:stretch}.about-contact .btn{align-self:flex-start}.about-brand{text-align:center}}
 </style>
 </head>
 <body>
@@ -189,7 +207,29 @@ function singlePlate(code){let obj=state.plaques.find(x=>x.code===code);return `
 function customPage(slug){let p=state.pages[slug];if(!p)return notFound();return `<section class="city-top"><div class="container city-grid"><div><span class="eyebrow">${esc(p.tag||'WILLAI')}</span><h1>${esc(p.title)}</h1><p>${esc(p.subtitle)}</p><div class="buttonline"><a href="${link(p.buttonUrl||'#/login')}" class="btn btn-dark">${esc(p.button||'Saiba mais')} ${icon('arrow',17)}</a></div></div><div>${p.photo?`<img class="city-img" src="${esc(p.photo)}" alt="${esc(p.title)}">`:`<div class="photo-placeholder">${icon('camera',50)}<span>Insira uma imagem pelo editor</span></div>`}</div></div></section><section class="section"><div class="container" style="max-width:850px"><div class="eyebrow">SOBRE ESTA PÁGINA</div><h2>${esc(p.sectionTitle||'Conheça mais')}</h2><p>${esc(p.body||'Personalize os textos, as imagens e os botões no modo de edição.')}</p></div></section>`}
 function notFound(){return `<section class="page-simple"><div class="container" style="text-align:center"><h1>Página não encontrada.</h1><p class="muted">Confira o endereço ou volte para a página inicial.</p><a href="#/" class="btn btn-dark">Ir para início</a></div></section>`}
 function portfolioPage(){const items=(state.portfolio||[]).filter(x=>x.visible!==false);return `<section class="section soft"><div class="container"><div class="section-head"><div><div class="eyebrow">PORTFÓLIO</div><h1>Projetos e soluções digitais.</h1></div><p>Conheça demonstrações e trabalhos de tecnologia desenvolvidos pela WillAI.</p></div><div class="grid three">${items.length?items.map(p=>`<article class="service-card portfolio-card">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.title)}" style="width:100%;height:180px;object-fit:cover;border-radius:14px;margin-bottom:14px">`:''}<span class="eyebrow">${esc(p.category||'Projeto')}</span><h3 style="margin-top:14px">${esc(p.title)}</h3><p>${esc(p.desc||'')}</p>${/^https:\/\//i.test(p.url||'')?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" class="link-plain">Ver projeto ${icon('arrow',16)}</a>`:''}</article>`).join(''):'<p>Novos projetos serão apresentados em breve.</p>'}</div></div></section>`}
-function aboutPage(){return `<section class="section"><div class="container"><span class="eyebrow">QUEM SOMOS</span><h1>Tecnologia com propósito.</h1><p class="muted" style="max-width:780px">A WillAI cria sites, soluções digitais, sistemas de gestão e automações para ajudar negócios a organizar processos e melhorar a experiência de seus clientes.</p><a class="btn btn-main" href="#/contato">Apresente sua ideia ${icon('arrow',16)}</a></div></section>`}
+function aboutPage(){return `<section class="section about-willai"><div class="container">
+ <div class="about-intro">
+  <span class="eyebrow">QUEM SOMOS</span>
+  <h1>Tecnologia com propósito.</h1>
+  <p class="about-highlight">Transformamos ideias em soluções digitais.</p>
+  <p>A WillAI nasceu com um propósito: tornar a tecnologia mais acessível, prática e útil para empresas, empreendedores e pessoas que desejam crescer no mundo digital.</p>
+  <p>Desenvolvemos sites profissionais, landing pages, sistemas de gestão, automações inteligentes, soluções com inteligência artificial e ferramentas digitais personalizadas.</p>
+  <p>Mais do que criar páginas e sistemas, buscamos compreender cada necessidade e desenvolver soluções que facilitem processos, organizem negócios e abram novas oportunidades.</p>
+ </div>
+ <div class="about-values">
+  <article class="about-value"><span class="eyebrow">NOSSA ESSÊNCIA</span><h2>O que nos move</h2>
+   <p>Acreditamos que a tecnologia deve simplificar, conectar e transformar. Por isso, unimos criatividade, estratégia e inovação para tirar ideias do papel.</p>
+  </article>
+  <article class="about-value"><span class="eyebrow">IMPACTO DIGITAL</span><h2>Tecnologia acessível a mais pessoas</h2>
+   <p>Além das soluções comerciais, apoiamos iniciativas de inclusão digital que aproximam pequenos empreendedores das oportunidades oferecidas pela internet.</p>
+  </article>
+ </div>
+ <div class="about-contact"><div><span class="eyebrow">VAMOS CRIAR JUNTOS</span><h2>Sua ideia merece sair do papel.</h2>
+  <p>Conte o que você precisa. Vamos conversar sobre como a tecnologia pode contribuir para o seu negócio.</p></div>
+  <a class="btn btn-main" href="${adminMode?'#/contato':'/contato'}">Solicitar orçamento ${icon('arrow',16)}</a>
+ </div>
+ <div class="about-brand"><strong>WillAI — Tecnologia &amp; Soluções Digitais</strong><span>By ELIX SOLUTIONS</span></div>
+</div></section>`}
 function contactPage(){
  const items=(state.services||[]).map(s=>`<option value="${esc(s.title)}">${esc(s.title)}</option>`).join('');
  return `<section class="section quote-section"><div class="container quote-layout">
