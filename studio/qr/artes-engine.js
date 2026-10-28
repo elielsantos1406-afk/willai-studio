@@ -1,10 +1,23 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const defs={willai:{x:240,y:260,w:520,marker:'<rect x="240" y="260" width="520" height="520" fill="#ffffff"/>'},google:{x:102,y:955,w:330,marker:'<rect x="102" y="955" width="330" height="330" fill="white"/>'}};
-const modelSVG={};let model='willai',currentURL=null,working=false;
+const modelSVG={};let model='willai',currentURL=null,working=false;const statuses=new Map(),activationSecrets=new Map();let realInventoryChecked=false;
 const code=()=>($('artCode')?.value||'W001').toUpperCase();
 const address=c=>'https://willai.com.br/qr/'+c;
-function qrMatrix(c){if(typeof qrcode!=='function')throw Error('Gerador de QR indisponível. Verifique a conexão de internet.');const q=qrcode(0,'M');q.addData(address(c));q.make();return q;}
+function qrAddress(c){
+ if(realInventoryChecked){
+  if(!statuses.has(c))throw Error('Codigo sem registro real no estoque. Gere um lote no Supabase.');
+  if(['held','available'].includes(statuses.get(c))){
+   const secret=activationSecrets.get(c);
+   if(!secret)throw Error('Para imprimir '+c+' antes da ativacao, importe o CSV de segredos do lote. O link publico sozinho nao ativa a plaquinha.');
+   return address(c)+'#ativar='+secret;
+  }
+ }
+ return address(c);
+}
+function qrMatrix(c){if(typeof qrcode!=='function')throw Error('Gerador de QR indisponível. Verifique a conexão de internet.');const q=qrcode(0,'M');q.addData(qrAddress(c));q.make();return q;}
+function useRealInventory(rows){realInventoryChecked=true;statuses.clear();for(const r of rows||[])if(/^W[0-9]{3,8}$/.test(r.code))statuses.set(r.code,r.status);refresh()}
+function setActivationSecrets(rows){for(const r of rows||[])if(/^W[0-9]{3,8}$/.test(r.code)&&/^[a-f0-9]{48}$/.test(r.secret))activationSecrets.set(r.code,r.secret);refresh()}
 function pngData(c,px=460){const q=qrMatrix(c),n=q.getModuleCount(),pad=4,size=px/(n+pad*2),canvas=document.createElement('canvas');canvas.width=canvas.height=px;const ctx=canvas.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,px,px);ctx.fillStyle='#080a0e';for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(q.isDark(y,x)){const a=Math.round((x+pad)*size),b=Math.round((y+pad)*size),c=Math.round((x+pad+1)*size),d=Math.round((y+pad+1)*size);ctx.fillRect(a,b,c-a,d-b)}return canvas.toDataURL('image/png')}
 window.WILLAI_QR_PNG=i=>{try{return pngData('W'+String(i).padStart(3,'0'))}catch{return ''}};
 function qrVector(c,d){const q=qrMatrix(c),n=q.getModuleCount(),pad=4,size=d.w/(n+pad*2),p=[];for(let y=0;y<n;y++)for(let x=0;x<n;x++)if(q.isDark(y,x)){const xx=d.x+(x+pad)*size,yy=d.y+(y+pad)*size;p.push('M'+xx.toFixed(3)+' '+yy.toFixed(3)+'h'+size.toFixed(3)+'v'+size.toFixed(3)+'h-'+size.toFixed(3)+'Z')}return '<path fill="#070b0e" d="'+p.join('')+'"/>'}
@@ -24,6 +37,6 @@ function batchRange(){const i=Math.max(0,Number($('stockBatch')?.value)||0),star
 async function zipBatch(){const{start,end}=batchRange();if(!window.JSZip)return status('Biblioteca de ZIP indisponível. Verifique a internet.');const z=new JSZip();status('Preparando 50 códigos PNG…');for(let n=start;n<=end;n++){const c='W'+String(n).padStart(3,'0');z.file('WillAI-'+c+'.png',pngData(c).split(',')[1],{base64:true})}download(await z.generateAsync({type:'blob',compression:'DEFLATE'}),'WillAI-QR-'+start+'-'+end+'.zip','application/zip');status('ZIP dos 50 QR Codes preparado.')}
 async function pdfA4(){const{start}=batchRange(),images=[];status('Preparando duas folhas A4 com 25 QR Codes por página…');for(let pg=0;pg<2;pg++){const c=document.createElement('canvas');c.width=1240;c.height=1754;const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle='#173457';ctx.font='bold 36px Arial';ctx.fillText('WillAI — lote de QR Codes',62,75);for(let i=0;i<25;i++){const n=start+pg*25+i,col=i%5,row=Math.floor(i/5),x=60+col*233,y=115+row*316;const img=new Image();img.src=pngData('W'+String(n).padStart(3,'0'),180);await img.decode();ctx.drawImage(img,x+17,y,190,190);ctx.fillStyle='#153354';ctx.font='bold 25px Arial';ctx.textAlign='center';ctx.fillText('W'+String(n).padStart(3,'0'),x+112,y+226);ctx.textAlign='left';ctx.fillStyle='#68778a';ctx.font='14px Arial';ctx.fillText('willai.com.br/qr/',x+23,y+250)}images.push(jpeg(c))}download(pdfPages(images,595.2756,841.8898),'WillAI-QR-A4-'+start+'-'+(start+49)+'.pdf','application/pdf');status('PDF A4 de duas páginas pronto.')}
 function wire(){if(!$('artCode'))return;for(const id of ['artWillai','artGoogle'])$(id).onclick=()=>setModel(id==='artGoogle'?'google':'willai');$('artCode').onchange=refresh;$('artSVG').onclick=async()=>{try{download(await makeSvg(code(),model),'WillAI-'+code()+'-'+model+'-10x15.svg','image/svg+xml');status('SVG original com QR vetorial pronto')}catch(e){status(e.message)}};$('artPDF').onclick=pdf10x15;$('generate50').addEventListener('click',()=>setTimeout(()=>{options();refresh()},25));$('stockReset').addEventListener('click',()=>setTimeout(()=>{options();refresh()},25));$('stockZip').onclick=()=>zipBatch().catch(e=>status(e.message));$('stockA4').onclick=()=>pdfA4().catch(e=>status(e.message));$('stockInventory').addEventListener('click',e=>{if(e.target.closest('a'))return;const c=e.target.closest('.stock-card')?.querySelector('strong')?.textContent;if(c){$('artCode').value=c;refresh();$('artStudio').scrollIntoView({behavior:'smooth'})}});options();refresh()}
-window.WILLAI_ARTES=Object.freeze({makeSvg,qrPng:pngData,download});
+window.WILLAI_ARTES=Object.freeze({makeSvg,qrPng:pngData,download,useRealInventory,setActivationSecrets});
 wire();
 })();
