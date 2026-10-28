@@ -25,7 +25,37 @@ async function svgTemplate(m){if(!modelSVG[m]){const r=await fetch('/studio/qr/m
 async function makeSvg(c,m){const src=await svgTemplate(m),d=defs[m];if(!src.includes(d.marker))throw Error('O espaço do QR não corresponde ao modelo SVG original');return src.replace(d.marker,d.marker+'\n<!-- '+c+' · '+address(c)+' -->\n'+qrVector(c,d))}
 const download=(data,name,type)=>{const blob=data instanceof Blob?data:new Blob([data],{type}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),6000)};
 const status=s=>{if($('artStatus'))$('artStatus').textContent=s};
-async function refresh(){try{status('Preparando prévia para impressão…');const svg=await makeSvg(code(),model);if(currentURL)URL.revokeObjectURL(currentURL);currentURL=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));$('artPreview').src=currentURL;$('artLink').textContent=address(code());status('Prévia pronta • '+code()+' • '+(model==='willai'?'WillAI':'Google'))}catch(e){status('Erro: '+e.message)}}
+let refreshId=0;
+function emptyPreview(text,message){
+ const preview=$('artPreview'),placeholder=$('artEmpty');
+ preview.removeAttribute('src');preview.style.display='none';
+ if(placeholder){placeholder.style.display='flex';placeholder.textContent=message||text;}
+ $('artSVG').disabled=true;$('artPDF').disabled=true;
+ $('artLink').textContent=text;
+ status(message||text);
+}
+async function refresh(){
+ const id=++refreshId,c=code(),m=model;
+ if(!c||!realInventoryChecked||!statuses.has(c)){
+  emptyPreview('Nenhuma plaquinha real selecionada','Primeiro gere um lote real na seção Estoque real • Supabase. A prévia e as exportações serão liberadas após o cadastro.');
+  return;
+ }
+ $('artLink').textContent=address(c);
+ try{
+  status('Preparando prévia para impressão…');
+  const svg=await makeSvg(c,m);
+  if(id!==refreshId)return;
+  if(currentURL)URL.revokeObjectURL(currentURL);
+  currentURL=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+  $('artPreview').src=currentURL;$('artPreview').style.display='block';
+  if($('artEmpty'))$('artEmpty').style.display='none';
+  $('artSVG').disabled=false;$('artPDF').disabled=false;
+  status('Prévia pronta • '+c+' • '+(m==='willai'?'WillAI':'Google'));
+ }catch(e){
+  if(id!==refreshId)return;
+  emptyPreview(address(c),e.message);
+ }
+}
 const setModel=m=>{model=m;for(let key of ['willai','google'])$('art'+key[0].toUpperCase()+key.slice(1))?.classList.toggle('selected',m===key);refresh()};
 function options(){const el=$('artCode');if(!el)return;el.innerHTML='<option value="">Aguardando estoque real</option>';}
 function bytes(b64){return Uint8Array.from(atob(b64),x=>x.charCodeAt(0))}
