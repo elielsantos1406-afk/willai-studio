@@ -1,3 +1,7 @@
+/studio/qr /studio/qr/index.html 200
+/studio/qr/ /studio/qr/index.html 200
+/preview/central /preview/central/index.html 200
+/preview/central/ /preview/central/index.html 200
 /qr /qr/index.html 200
 /qr/ /qr/index.html 200
 /qr/* /qr/index.html 200
