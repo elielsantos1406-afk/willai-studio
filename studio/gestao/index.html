@@ -41,7 +41,9 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <div class="app"><aside><div class="brand"><img src="/assets/willai-logo-original.png" alt=""><div><strong>WillAI Studio</strong><small>GESTÃO CENTRAL</small></div></div>
 <div class="side-label">PAINEL</div><div class="nav-list">
 <button class="nav active" data-view="home">Visão geral</button>
-<button class="nav" data-view="participants">Participantes</button>
+<button class="nav" data-view="participants">Participantes / Empresas</button>
+<button class="nav" data-view="qr">QR Codes / Estoque</button>
+<a class="nav" href="/studio/portal/?edit=cities">Cidades</a>
 <button class="nav hidden" data-view="quotes">Orçamentos</button><button class="nav hidden" data-view="access">Acessos</button>
 <a id="navPortal" class="nav hidden" href="/studio/portal/">Editar portal</a><a id="navCity" class="nav hidden" href="/studio/portal/?edit=cities">Cidades / Projetos</a><a id="navPortfolio" class="nav hidden" href="/studio/portal/?edit=portfolio">Portfólio</a>
 <a id="navCompanies" class="nav hidden" href="/studio/">Editar empresas</a>
@@ -66,11 +68,24 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <div><label>WhatsApp</label><input name="whatsapp" maxlength="40"></div>
 <div><label>Cidade (slug) *</label><input required name="city_slug" id="participantCity" pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="curitiba"></div>
 <div><label>Situação</label><select name="status"><option value="interested">Interessado</option><option value="registered" selected>Cadastrado</option><option value="in_progress">Em atendimento</option><option value="benefit">Benefício concedido</option><option value="completed">Concluído</option><option value="inactive">Inativo</option></select></div>
+<div><label>Data de nascimento</label><input type="date" id="participantBirth" autocomplete="bday"></div>
+<div><label>E-mail</label><input type="email" id="participantEmail" autocomplete="email"></div>
+<div><label>Categoria do negócio</label><input id="participantCategory" placeholder="Barbearia, restaurante, beleza…"></div>
+<div><label>CEP</label><input id="participantZip" inputmode="numeric"></div>
+<div><label>Rua / número</label><input id="participantStreet"></div>
+<div><label>Bairro</label><input id="participantDistrict"></div>
+<div><label>Horário de funcionamento</label><input id="participantHours"></div>
+<div><label>Tipo de página</label><select id="participantPageType"><option value="pagina">Página institucional</option><option value="cardapio">Cardápio digital</option><option value="catalogo">Catálogo</option><option value="agendamento">Agendamento</option></select></div>
 <div class="field-wide"><label>Observações internas</label><textarea name="notes" rows="2" maxlength="3000"></textarea></div>
 <div class="field-wide"><button class="btn" type="submit">Salvar participante</button></div></form></div>
 <div class="panel"><h2>Pesquisar cadastros</h2><div class="search"><input id="search" placeholder="Nome, estabelecimento, cidade…"><button class="btn subtle" id="refresh">Atualizar lista</button><button class="btn gray" id="exportCSV">Exportar CSV</button></div>
 <p class="muted" id="listInfo">Carregando…</p><div class="scroll"><table><thead><tr><th>Participante</th><th>Estabelecimento</th><th>Cidade</th><th>WhatsApp</th><th>Situação</th><th>Ação</th></tr></thead><tbody id="tableBody"></tbody></table></div></div>
 </section>
+<section id="qrView" class="hidden">
+<div class="panel"><h2>Estoque de plaquinhas QR Code</h2><p>Cada código usa um endereço permanente do domínio WillAI. A ativação é feita pelo proprietário com login e código secreto individual.</p>
+<div class="actions"><a class="btn" href="/qr/W001" target="_blank" rel="noopener">Testar W001</a><button class="btn subtle" id="qrPreviewBatch">Preparar lista W001–W050</button><a class="btn gray" href="/studio/">Páginas empresariais</a></div>
+<p class="muted">A criação definitiva do estoque e dos segredos de ativação depende da migração segura no Supabase. Não imprima nem comercialize códigos antes de confirmar que cada um foi registrado no banco.</p>
+<div class="scroll"><table><thead><tr><th>Código</th><th>Endereço permanente</th><th>Teste</th><th>Estado</th></tr></thead><tbody id="qrTable"><tr><td colspan="4" class="empty">Clique em preparar lista para visualizar os códigos planejados.</td></tr></tbody></table></div></div></section>
 <section id="quotesView" class="hidden"><div class="panel"><h2>Orçamentos recebidos</h2><p class="muted">Somente superadministradores podem visualizar nomes, WhatsApp e descrição das solicitações.</p><div class="actions"><button id="loadQuotesBtn" class="btn subtle">Atualizar solicitações</button></div><p id="quotesInfo" class="muted">Nenhuma consulta realizada.</p><div id="quotesList" class="quote-list"></div></div></section>
 <section id="accessView" class="hidden"><div class="panel"><h2>Autorizar acesso existente</h2>
 <p class="muted">Crie primeiro a conta em Supabase → Authentication → Users. Aqui você atribui permissões por cidade ou empresa. Não existe cadastro público.</p>
@@ -86,7 +101,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 const cfg=window.WILLAI_CONFIG||{}, $=id=>document.getElementById(id);
 const sessionKey='willai_portal_session';
 let session=null,admin=false,role=null,rows=[],view='home';
-const names={home:['Painel de gestão','Visão geral dos recursos e atividades.'],participants:['Participantes','Cadastros e acompanhamento do Projeto de Inclusão Digital.'],quotes:['Orçamentos','Pedidos recebidos pelo site institucional.'],access:['Acessos','Perfis administrativos e permissões por cidade.']};
+const names={home:['Painel de gestão','Visão geral dos recursos e atividades.'],participants:['Participantes','Cadastros e acompanhamento do Projeto de Inclusão Digital.'],qr:['QR Codes e plaquinhas','Gerencie os endereços permanentes e acompanhe o preparo do estoque.'],quotes:['Orçamentos','Pedidos recebidos pelo site institucional.'],access:['Acessos','Perfis administrativos e permissões por cidade.']};
 const valid=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function inform(msg,bad=false){const o=$('message');o.className='msg'+(bad?' bad':'');o.textContent=msg;if(!msg)o.classList.add('hidden')}
@@ -165,11 +180,16 @@ async function init(){try{
 document.addEventListener('click',e=>{const v=e.target.closest('[data-view]');if(v){authorizeView(v.dataset.view);return}const ed=e.target.closest('[data-edit]');if(ed)edit(ed.dataset.edit)});
 $('search').addEventListener('input',redraw);
 $('refresh').onclick=loadParticipants;
+$('qrPreviewBatch').onclick=()=>{
+ const out=[];for(let i=1;i<=50;i++){const code='W'+String(i).padStart(3,'0');out.push('<tr><td><b>'+code+'</b></td><td><code>willai.com.br/qr/'+code+'</code></td><td><a class="btn subtle" href="/qr/'+code+'" target="_blank" rel="noopener">Abrir</a></td><td>Registro no banco pendente de verificação</td></tr>')}
+ $('qrTable').innerHTML=out.join('');
+ inform('Lista de 50 links preparada para conferência. Eles ainda não constituem estoque ativado.');
+};
 $('loadQuotesBtn').onclick=loadQuotes;
 document.addEventListener('change',async e=>{const sel=e.target.closest('[data-quote-status]');if(!sel||!admin)return;sel.disabled=true;try{await api('/rest/v1/willai_quote_requests?id=eq.'+encodeURIComponent(sel.dataset.quoteStatus),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:sel.value,updated_at:new Date().toISOString()})});inform('Situação do orçamento atualizada.')}catch(err){inform('Falha ao atualizar: '+err.message,true);await loadQuotes()}finally{sel.disabled=false}});
 $('summaryBtn').onclick=()=>summary($('summaryCity').value.trim().toLowerCase());
 $('exportCSV').onclick=()=>{const fields=['participant_name','business_name','city_slug','whatsapp','status','notes','created_at'];let output=[fields.join(',')].concat(rows.map(r=>fields.map(f=>'"'+String(r[f]||'').replace(/"/g,'""').replace(/^[=+\-@]/,'\u0027$&')+'"').join(','))).join('\r\n');const u=URL.createObjectURL(new Blob(['\ufeff'+output],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='willai-participantes.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
-$('participantForm').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));d.city_slug=String(d.city_slug).trim().toLowerCase();if(role&&!admin&&d.city_slug!==role.city_slug){inform('Cidade não autorizada.',true);return}try{
+$('participantForm').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const detail={birth_date:$('participantBirth').value,email:$('participantEmail').value,category:$('participantCategory').value,zip:$('participantZip').value,street:$('participantStreet').value,district:$('participantDistrict').value,hours:$('participantHours').value,page_type:$('participantPageType').value};d.notes=[d.notes||'', 'DADOS ADICIONAIS: '+JSON.stringify(detail)].filter(Boolean).join('\\n');d.city_slug=String(d.city_slug).trim().toLowerCase();if(role&&!admin&&d.city_slug!==role.city_slug){inform('Cidade não autorizada.',true);return}try{
  await api('/rest/v1/willai_project_participants',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(d)});
  inform('Participante cadastrado.');e.target.reset();if(role?.city_slug)$('participantCity').value=role.city_slug;await loadParticipants();if($('summaryCity').value)await summary($('summaryCity').value);
  }catch(err){inform('Falha ao cadastrar: '+err.message,true)}};
