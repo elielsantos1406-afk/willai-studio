@@ -43,7 +43,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <button class="nav active" data-view="home">Visão geral</button>
 <button class="nav" data-view="participants">Participantes</button>
 <button class="nav hidden" data-view="quotes">Orçamentos</button><button class="nav hidden" data-view="access">Acessos</button>
-<a id="navPortal" class="nav hidden" href="/studio/portal/">Editar portal</a>
+<a id="navPortal" class="nav hidden" href="/studio/portal/">Editar portal</a><a id="navCity" class="nav hidden" href="/studio/portal/?edit=cities">Cidades / Projetos</a><a id="navPortfolio" class="nav hidden" href="/studio/portal/?edit=portfolio">Portfólio</a>
 <a id="navCompanies" class="nav hidden" href="/studio/">Editar empresas</a>
 </div><div class="foot">Acesso controlado por permissões no Supabase. As páginas públicas não exibem este painel.</div></aside>
 <main><div class="top"><div><span class="eyebrow">WILLAI • ADMINISTRAÇÃO</span><h1 id="title">Painel de gestão</h1><p id="subtitle">Controle de cidades, participantes e páginas.</p></div><span class="chip" id="profile">Conferindo acesso…</span></div>
@@ -55,7 +55,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <div class="card"><span>Em análise</span><b id="kInterested">—</b><span>Interessados</span></div>
 </div>
 <div class="panel"><h2>Atalhos para sua operação</h2><p>Você gerencia apenas as cidades e as informações autorizadas ao seu perfil.</p>
-<div class="actions"><button class="btn" data-view="participants" id="shortcutParticipants">Gerenciar participantes</button><a class="btn subtle" href="/studio/portal/" id="shortcutPortal">Editar site institucional</a><a class="btn subtle" href="/studio/" id="shortcutCompanies">Editar páginas de empresas</a><button class="btn subtle hidden" data-view="quotes" id="shortcutQuotes">Ver orçamentos</button><button class="btn subtle hidden" data-view="access" id="shortcutAccess">Gerenciar acessos</button></div>
+<div class="actions"><button class="btn" data-view="participants" id="shortcutParticipants">Gerenciar participantes</button><a class="btn subtle" href="/studio/portal/" id="shortcutPortal">Editar site institucional</a><a class="btn subtle hidden" id="shortcutCities" href="/studio/portal/?edit=cities">Criar nova cidade</a><a class="btn subtle hidden" id="shortcutPortfolio" href="/studio/portal/?edit=portfolio">Cadastrar projeto no portfólio</a><a class="btn subtle" href="/studio/" id="shortcutCompanies">Editar páginas de empresas</a><button class="btn subtle hidden" data-view="quotes" id="shortcutQuotes">Ver orçamentos</button><button class="btn subtle hidden" data-view="access" id="shortcutAccess">Gerenciar acessos</button></div>
 </div><div class="panel"><h2>Resumo da cidade</h2><div class="fields"><div><label for="summaryCity">Cidade</label><input id="summaryCity" placeholder="curitiba"></div><div style="align-self:end"><button class="btn" id="summaryBtn">Consultar indicadores</button></div></div><p id="summaryResult" class="muted">Selecione uma cidade para consultar.</p></div>
 </section>
 <section id="participantsView" class="hidden">
@@ -156,8 +156,8 @@ async function init(){try{
  role=r?.[0]||null}
  if(!admin&&!role){inform('Este usuário ainda não recebeu acesso ao painel. Solicite autorização administrativa.',true);$('profile').textContent='Sem permissão';return}
  $('profile').textContent=admin?'Superadministrador':role.role==='city_manager'?'Gestor • '+role.city_slug:role.role==='sponsor'?'Patrocinador • '+role.city_slug:'Empresa • '+role.company_slug;
- document.querySelectorAll('[data-view="access"],[data-view="quotes"]').forEach(x=>x.classList.toggle('hidden',!admin));$('navPortal').classList.toggle('hidden',!admin);$('navCompanies').classList.toggle('hidden',!admin);
- $('shortcutQuotes').classList.toggle('hidden',!admin);$('shortcutPortal').classList.toggle('hidden',!admin);$('shortcutCompanies').classList.toggle('hidden',!admin&&role?.role!=='company');if(role?.role==='company'){$('shortcutCompanies').href='/'+encodeURIComponent(role.company_slug);$('shortcutCompanies').textContent='Ver página da minha empresa';}$('shortcutParticipants').classList.toggle('hidden',!admin&&role?.role!=='city_manager');
+ document.querySelectorAll('[data-view="access"],[data-view="quotes"]').forEach(x=>x.classList.toggle('hidden',!admin));$('navPortal').classList.toggle('hidden',!admin);$('navCity').classList.toggle('hidden',!admin);$('navPortfolio').classList.toggle('hidden',!admin);$('navCompanies').classList.toggle('hidden',!admin);
+ $('shortcutQuotes').classList.toggle('hidden',!admin);$('shortcutPortal').classList.toggle('hidden',!admin);$('shortcutCities').classList.toggle('hidden',!admin);$('shortcutPortfolio').classList.toggle('hidden',!admin);$('shortcutCompanies').classList.toggle('hidden',!admin&&role?.role!=='company');if(role?.role==='company'){$('shortcutCompanies').href='/'+encodeURIComponent(role.company_slug);$('shortcutCompanies').textContent='Ver página da minha empresa';}$('shortcutParticipants').classList.toggle('hidden',!admin&&role?.role!=='city_manager');
  if(role?.role==='sponsor'||role?.role==='company'){document.querySelectorAll('[data-view="participants"]').forEach(b=>b.classList.add('hidden'))}
  if(role?.city_slug){$('summaryCity').value=role.city_slug;$('summaryCity').readOnly=true;$('participantCity').value=role.city_slug;$('participantCity').readOnly=true;await summary(role.city_slug)}
  if(admin){$('summaryCity').value='curitiba';await summary('curitiba');}
