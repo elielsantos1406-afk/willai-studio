@@ -131,11 +131,11 @@ async function rpc(name,args={},token){return api('/rest/v1/rpc/'+name,{method:'
 const sessionKey='willai_qr_owner_auth'; // Apenas tokens de sessao; paginas e proprietarios ficam no Supabase.
 function rememberSession(s){if(!s?.access_token)return;jwt=s.access_token;try{localStorage.setItem(sessionKey,JSON.stringify({access_token:s.access_token,refresh_token:s.refresh_token,expires_at:s.expires_at||Math.floor(Date.now()/1000)+(s.expires_in||3600)}))}catch{}}
 async function restoreSession(){
- let s;try{s=JSON.parse(localStorage.getItem(sessionKey)||'null')}catch{return false}
+ let s,portal=false;try{s=JSON.parse(localStorage.getItem(sessionKey)||'null');if(!s?.access_token){s=JSON.parse(sessionStorage.getItem('willai_portal_session')||'null');portal=!!s?.access_token}}catch{return false}
  if(!s?.access_token)return false;
  if(s.expires_at&&s.expires_at<Math.floor(Date.now()/1000)+90){
   if(!s.refresh_token)return false;
-  try{s=await api('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})});rememberSession(s)}catch{try{localStorage.removeItem(sessionKey)}catch{};return false}
+  try{s=await api('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:s.refresh_token})});rememberSession(s);if(portal)sessionStorage.setItem('willai_portal_session',JSON.stringify(s))}catch{try{localStorage.removeItem(sessionKey)}catch{};return false}
  }
  jwt=s.access_token;return true;
 }
