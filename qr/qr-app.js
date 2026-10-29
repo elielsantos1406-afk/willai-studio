@@ -2,7 +2,7 @@
 const premium=window.WILLAI_QR_PREMIUM;if(!premium)throw Error('Módulo Premium indisponível');let data=premium.normalize({});
 const esc=x=>String(x??'').replace(/[&<>"']/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[a]));
 const url=x=>{try{let u=new URL(x);return ['https:','http:'].includes(u.protocol)?u.href:'#'}catch{return '#'}};
-const message=(s,error=false)=>{const n=$('notice');n.textContent=s;n.className='message'+(error?'':' success')};
+const message=(s,error=false)=>{const n=$('notice');n.textContent=s;n.className='message'+(error?'':' success');if(error&&!document.body.classList.contains('public-mode'))n.scrollIntoView({behavior:'smooth',block:'center'})};
 const PASSWORD_RULES=[
  {id:'passwordRuleLength',label:'8 caracteres ou mais',test:p=>p.length>=8},
  {id:'passwordRuleUpper',label:'uma letra maiúscula',test:p=>/[A-ZÀ-ÖØ-Þ]/.test(p)},
