@@ -93,7 +93,7 @@ function render(){
  const prev=$('realBatch').value;
  $('realBatch').innerHTML='<option value="">Selecione um lote real</option>'+batches.map(id=>'<option value="'+safe(id)+'">'+(id==='none'?'Códigos sem lote':safe(id.slice(0,8)))+' — '+inventory.filter(r=>(r.batch_id||'none')===id).length+' código(s)</option>').join('');
  $('realBatch').value=batches.includes(prev)?prev:(batches.includes(activeBatch)?activeBatch:(batches[0]||''));
- $('realRows').innerHTML=inventory.length?inventory.map(r=>'<tr><td><b>'+safe(r.code)+'</b></td><td>'+safe(r.status)+'</td><td style="max-width:280px;overflow-wrap:anywhere">'+safe(r.redirect_url||'Página WillAI / aguardando ativação')+'</td><td>'+(r.status==='held'?'<button type="button" class="btn primary" data-release="'+safe(r.code)+'">Liberar após entrega</button> ':'')+'<button type="button" class="btn" data-print="'+safe(r.code)+'">Preparar arte</button> <a class="btn" href="/qr/'+safe(r.code)+'" target="_blank" rel="noopener noreferrer">Abrir QR</a></td></tr>').join(''):'<tr><td colspan="4">Nenhuma plaquinha cadastrada no Supabase. Clique em Gerar 50 códigos reais.</td></tr>';
+ $('realRows').innerHTML=inventory.length?inventory.map(r=>'<tr><td><b>'+safe(r.code)+'</b></td><td>'+safe(r.status)+'</td><td style="max-width:280px;overflow-wrap:anywhere">'+safe(r.redirect_url||(r.status==='active'?'Página vinculada ao proprietário':r.status==='held'?'Aguardando liberação de entrega':'Aguardando ativação'))+'</td><td>'+(r.status==='held'?'<button type="button" class="btn primary" data-release="'+safe(r.code)+'">Liberar após entrega</button> ':'')+'<button type="button" class="btn" data-print="'+safe(r.code)+'">Preparar arte</button> <a class="btn" href="/qr/'+safe(r.code)+'" target="_blank" rel="noopener noreferrer">Abrir QR</a></td></tr>').join(''):'<tr><td colspan="4">Nenhuma plaquinha cadastrada no Supabase. Clique em Gerar 50 códigos reais.</td></tr>';
  $('stockGenerated').textContent=inventory.length;
  $('stockAvailable').textContent=inventory.filter(x=>x.status==='available').length;
  $('stockBatches').textContent=batches.filter(x=>x!=='none').length;
@@ -182,5 +182,17 @@ $('realImportSecrets').onchange=async e=>{
  }catch(err){status('Falha ao importar CSV: '+err.message)}
  e.target.value='';
 };
+window.WILLAI_REAL_STOCK={render};
+function openSelectedOwner(){
+ const code=$('artCode').value;
+ if(!inventory.some(r=>r.code===code)){status('Selecione uma plaquinha do estoque real.');$('navStock').click();return;}
+ location.assign('/qr/'+encodeURIComponent(code)+'?editar=1');
+}
+$('publishBtn').onclick=openSelectedOwner;
+$('navActivate').onclick=openSelectedOwner;
+$('loginHere').onclick=openSelectedOwner;
+$('qrHere').onclick=()=>{$('navStock').click();$('artStudio').scrollIntoView({behavior:'smooth'});};
+$('navQR').onclick=()=>{$('navStock').click();$('artStudio').scrollIntoView({behavior:'smooth'});};
+$('navStock').click();
 if(auth())reload();else status(LOGIN_EXPIRED);
 })();

@@ -50,7 +50,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 </div><div class="foot">Acesso controlado por permissões no Supabase. As páginas públicas não exibem este painel.</div></aside>
 <main><div class="top"><div><span class="eyebrow">WILLAI • ADMINISTRAÇÃO</span><h1 id="title">Painel de gestão</h1><p id="subtitle">Controle de cidades, participantes e páginas.</p></div><span class="chip" id="profile">Conferindo acesso…</span></div>
 <div id="message" class="hidden"></div>
-<section id="homeView"><div class="cards">
+<section id="homeView"><p class="muted" id="statsScope">Indicadores da cidade consultada</p><div class="cards">
 <div class="card"><span>Participantes</span><b id="kTotal">—</b><span>Registros disponíveis para seu perfil</span></div>
 <div class="card"><span>Em atendimento</span><b id="kProgress">—</b><span>Acompanhamento</span></div>
 <div class="card"><span>Concluídos</span><b id="kComplete">—</b><span>Atendimentos</span></div>
@@ -61,7 +61,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 </div><div class="panel"><h2>Resumo da cidade</h2><div class="fields"><div><label for="summaryCity">Cidade</label><input id="summaryCity" placeholder="curitiba"></div><div style="align-self:end"><button class="btn" id="summaryBtn">Consultar indicadores</button></div></div><p id="summaryResult" class="muted">Selecione uma cidade para consultar.</p></div>
 </section>
 <section id="participantsView" class="hidden">
-<div class="panel"><h2>Cadastrar participante</h2><p class="muted">Somente administradores e gestores autorizados podem registrar ou editar participantes.</p>
+<div class="panel"><h2 id="participantHeading">Cadastrar participante</h2><p class="muted">Somente administradores e gestores autorizados podem registrar ou editar participantes.</p>
 <form id="participantForm" class="fields">
 <div><label>Nome completo *</label><input required name="participant_name" minlength="2" maxlength="160"></div>
 <div><label>Estabelecimento</label><input name="business_name" maxlength="160"></div>
@@ -77,7 +77,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <div><label>Horário de funcionamento</label><input id="participantHours"></div>
 <div><label>Tipo de página</label><select id="participantPageType"><option value="pagina">Página institucional</option><option value="cardapio">Cardápio digital</option><option value="catalogo">Catálogo</option><option value="agendamento">Agendamento</option></select></div>
 <div class="field-wide"><label>Observações internas</label><textarea name="notes" rows="2" maxlength="3000"></textarea></div>
-<div class="field-wide"><button class="btn" type="submit">Salvar participante</button></div></form></div>
+<div class="field-wide"><button class="btn" type="submit" id="saveParticipant">Salvar participante</button><button class="btn subtle hidden" type="button" id="cancelParticipantEdit">Cancelar edição</button></div></form></div>
 <div class="panel"><h2>Pesquisar cadastros</h2><div class="search"><input id="search" placeholder="Nome, estabelecimento, cidade…"><button class="btn subtle" id="refresh">Atualizar lista</button><button class="btn gray" id="exportCSV">Exportar CSV</button></div>
 <p class="muted" id="listInfo">Carregando…</p><div class="scroll"><table><thead><tr><th>Participante</th><th>Estabelecimento</th><th>Cidade</th><th>WhatsApp</th><th>Situação</th><th>Ação</th></tr></thead><tbody id="tableBody"></tbody></table></div></div>
 </section>
@@ -100,7 +100,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 (()=>{'use strict';
 const cfg=window.WILLAI_CONFIG||{}, $=id=>document.getElementById(id);
 const sessionKey='willai_portal_session';
-let session=null,admin=false,role=null,rows=[],view='home';
+let session=null,admin=false,role=null,rows=[],view='home',editingParticipantId=null;
 const names={home:['Painel de gestão','Visão geral dos recursos e atividades.'],participants:['Participantes','Cadastros e acompanhamento do Projeto de Inclusão Digital.'],qr:['QR Codes e plaquinhas','Gerencie os endereços permanentes e acompanhe o preparo do estoque.'],quotes:['Orçamentos','Pedidos recebidos pelo site institucional.'],access:['Acessos','Perfis administrativos e permissões por cidade.']};
 const valid=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -126,7 +126,7 @@ async function summary(city){try{
  if(!valid.test(city))throw Error('Informe a cidade sem espaços e sem acentos (ex.: curitiba)');
  if(role&&!admin&&role.city_slug!==city)throw Error('Você não possui acesso a essa cidade.');
  const d=await api('/rest/v1/rpc/willai_city_summary',{method:'POST',body:JSON.stringify({p_city_slug:city})});
- showStats(d);$('summaryResult').textContent=city.toUpperCase()+': '+d.total+' participante(s), '+d.in_progress+' em atendimento e '+d.completed+' concluídos.';
+ showStats(d);$('statsScope').textContent='Indicadores de '+city.toUpperCase();$('summaryResult').textContent=city.toUpperCase()+': '+d.total+' participante(s), '+d.in_progress+' em atendimento e '+d.completed+' concluídos.';
  }catch(e){inform(e.message,true)}}
 async function loadParticipants(){if(role?.role==='sponsor'||role?.role==='company')return;
  try{const q=role&&!admin?'&city_slug=eq.'+encodeURIComponent(role.city_slug):'';
@@ -138,12 +138,29 @@ const statuses={interested:'Interessado',registered:'Cadastrado',in_progress:'Em
 function redraw(){const text=$('search').value.toLocaleLowerCase('pt-BR');const show=rows.filter(r=>[r.participant_name,r.business_name,r.city_slug,r.whatsapp].some(x=>String(x||'').toLocaleLowerCase('pt-BR').includes(text)));
  $('tableBody').innerHTML=show.length?show.map(r=>'<tr><td><b>'+esc(r.participant_name)+'</b></td><td>'+esc(r.business_name)+'</td><td>'+esc(r.city_slug)+'</td><td>'+esc(r.whatsapp)+'</td><td><span class="status">'+esc(statuses[r.status]||r.status)+'</span></td><td><button class="btn subtle" data-edit="'+esc(r.id)+'">Editar</button></td></tr>').join(''):'<tr><td colspan="6" class="empty">Nenhum cadastro encontrado</td></tr>';
 }
-async function edit(id){const r=rows.find(x=>x.id===id);if(!r)return;
- const choice=prompt('Situação: interested, registered, in_progress, benefit, completed ou inactive',r.status);
- if(choice===null)return;if(!statuses[choice]){inform('Situação inválida.',true);return}
- const notes=prompt('Observações internas',r.notes||'');if(notes===null)return;
- try{await api('/rest/v1/willai_project_participants?id=eq.'+encodeURIComponent(r.id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:choice,notes})});inform('Cadastro atualizado.');await loadParticipants();if(role?.city_slug)await summary(role.city_slug)}
- catch(e){inform(e.message,true)}}
+const detailFields={birth_date:'participantBirth',email:'participantEmail',category:'participantCategory',zip:'participantZip',street:'participantStreet',district:'participantDistrict',hours:'participantHours',page_type:'participantPageType'};
+function splitNotes(value){
+ const text=String(value||''),at=text.lastIndexOf('DADOS ADICIONAIS: ');
+ if(at<0)return {notes:text,detail:{}};
+ try{return {notes:text.slice(0,at).replace(/(?:\\n|\n)+$/g,''),detail:JSON.parse(text.slice(at+18))}}catch{return {notes:text,detail:{}}}
+}
+function resetParticipantForm(){
+ $('participantForm').reset();editingParticipantId=null;
+ $('participantHeading').textContent='Cadastrar participante';$('saveParticipant').textContent='Salvar participante';
+ $('cancelParticipantEdit').classList.add('hidden');
+ if(role?.city_slug)$('participantCity').value=role.city_slug;
+}
+function edit(id){
+ const r=rows.find(x=>x.id===id);if(!r)return;
+ resetParticipantForm();editingParticipantId=id;
+ const form=$('participantForm'),saved=splitNotes(r.notes);
+ for(const key of ['participant_name','business_name','whatsapp','city_slug','status'])form.elements.namedItem(key).value=r[key]||'';
+ form.elements.namedItem('notes').value=saved.notes;
+ for(const [key,id] of Object.entries(detailFields))$(id).value=saved.detail[key]||(key==='page_type'?'pagina':'');
+ $('participantHeading').textContent='Editar participante';$('saveParticipant').textContent='Salvar alterações';
+ $('cancelParticipantEdit').classList.remove('hidden');form.scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('cancelParticipantEdit').onclick=resetParticipantForm;
 
 const quoteStatuses={new:'Novo',contacted:'Contatado',in_progress:'Em análise',closed:'Concluído'};
 let quoteRows=[];
@@ -190,8 +207,11 @@ document.addEventListener('change',async e=>{const sel=e.target.closest('[data-q
 $('summaryBtn').onclick=()=>summary($('summaryCity').value.trim().toLowerCase());
 $('exportCSV').onclick=()=>{const fields=['participant_name','business_name','city_slug','whatsapp','status','notes','created_at'];let output=[fields.join(',')].concat(rows.map(r=>fields.map(f=>'"'+String(r[f]||'').replace(/"/g,'""').replace(/^[=+\-@]/,'\u0027$&')+'"').join(','))).join('\r\n');const u=URL.createObjectURL(new Blob(['\ufeff'+output],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='willai-participantes.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 $('participantForm').onsubmit=async e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const detail={birth_date:$('participantBirth').value,email:$('participantEmail').value,category:$('participantCategory').value,zip:$('participantZip').value,street:$('participantStreet').value,district:$('participantDistrict').value,hours:$('participantHours').value,page_type:$('participantPageType').value};d.notes=[d.notes||'', 'DADOS ADICIONAIS: '+JSON.stringify(detail)].filter(Boolean).join('\\n');d.city_slug=String(d.city_slug).trim().toLowerCase();if(role&&!admin&&d.city_slug!==role.city_slug){inform('Cidade não autorizada.',true);return}try{
- await api('/rest/v1/willai_project_participants',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(d)});
- inform('Participante cadastrado.');e.target.reset();if(role?.city_slug)$('participantCity').value=role.city_slug;await loadParticipants();if($('summaryCity').value)await summary($('summaryCity').value);
+ const btn=$('saveParticipant');btn.disabled=true;try{
+ const result=await api('/rest/v1/willai_project_participants'+(editingParticipantId?'?id=eq.'+encodeURIComponent(editingParticipantId):''),{method:editingParticipantId?'PATCH':'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(d)});
+ if(!Array.isArray(result)||result.length!==1)throw Error('O banco não confirmou a gravação.');
+ }finally{btn.disabled=false}
+ inform(editingParticipantId?'Participante atualizado.':'Participante cadastrado.');resetParticipantForm();if(role?.city_slug)$('participantCity').value=role.city_slug;await loadParticipants();if($('summaryCity').value)await summary($('summaryCity').value);
  }catch(err){inform('Falha ao cadastrar: '+err.message,true)}};
 $('accessForm').onsubmit=async e=>{e.preventDefault();if(!admin)return;const d=Object.fromEntries(new FormData(e.target));const scope=$('accessScope').value.trim().toLowerCase();const params={p_email:d.email,p_role:d.role,p_city_slug:d.role==='company'?null:scope,p_company_slug:d.role==='company'?scope:null};try{await api('/rest/v1/rpc/willai_access_assign',{method:'POST',body:JSON.stringify(params)});inform('Acesso autorizado com sucesso.');e.target.reset();await loadAccess()}catch(err){inform(err.message,true)}};
 $('accessRole').onchange=()=>{$('accessScope').placeholder=$('accessRole').value==='company'?'plurita':'curitiba'};
