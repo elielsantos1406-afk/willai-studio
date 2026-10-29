@@ -1,0 +1,23 @@
+name: QR Studio all-code printing
+on:
+  pull_request:
+    paths:
+      - 'studio/qr/artes-engine.js'
+      - 'studio/qr/admin-real.js'
+      - 'studio/qr/index.html'
+      - 'tests/qr-art-all-codes.test.cjs'
+      - '.github/workflows/qr-art-all-codes.yml'
+  push:
+    branches:
+      - 'fix/qr-art-all-stock-codes-20261029'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/qr-art-all-codes.test.cjs
