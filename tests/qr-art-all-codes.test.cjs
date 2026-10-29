@@ -36,11 +36,11 @@ test('scripts parse and searchable picker exists',()=>{
  assert.match(html,/id="artCodeGrid"/);assert.match(html,/id="artFindCode"/);
  assert.match(admin,/data-quick-art/);
 });
-test('sem CSV, W002 e W003 recebem QR público real com aprovação administrativa',async()=>{
+test('sem CSV, W002 e W003 recebem QR público real com ativação automática após liberação',async()=>{
  const h=harness();h.api.useRealInventory([{code:'W001',status:'active'},{code:'W002',status:'available'},{code:'W003',status:'held'}]);
  await tick();
  assert.match(h.el('artStatus').textContent,/Arte de W002 pronta/);
- assert.match(h.el('artStatus').textContent,/administrador deve conferir a entrega/);
+ assert.match(h.el('artStatus').textContent,/primeira conta ativa automaticamente/);
  assert.equal(h.el('artSVG').disabled,false);
  assert.equal(h.el('artPDF').disabled,false);
  assert.equal(h.el('artPNG').disabled,false);
@@ -79,7 +79,7 @@ test('the Google model also removes its sample W001 QR and preserves other photo
  assert.match(w2,/W002/);
  assert.ok(w2.includes('fill="#070b0e"'));
 });
-test('sem CSV, QR público pode ser impresso mas continua dependendo de aprovação administrativa',async()=>{
+test('sem CSV, QR público pode ser impresso mas ativa automaticamente após liberação',async()=>{
  const h=harness();h.api.useRealInventory([{code:'W002',status:'available'}]);
  const svg=await h.api.makeSvg('W002','willai');
  assert.match(svg,/W002/);

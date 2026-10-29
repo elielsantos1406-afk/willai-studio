@@ -146,13 +146,13 @@ async function openEditorAfterAuth(){
   if(!own)throw Error('Este QR Code pertence a outra conta. Use o e-mail do proprietário.');
   data={...data,...own.page};owner=true;fill();show('editor');message('Bem-vindo de volta. Você pode editar sua página.');
  }else{
-  if(!activationToken){
-    await rpc('willai_qr_request_claim',{p_code:code},jwt);
-    show('approval');
-    message('Pedido registrado. A WillAI precisa confirmar a entrega antes de autorizar sua conta.');
-    return;
-  }
-  await rpc('willai_qr_claim',{p_code:code,p_secret:activationToken,p_page:data},jwt);
+  const result=activationToken
+    ? await rpc('willai_qr_claim',{p_code:code,p_secret:activationToken,p_page:data},jwt)
+    : await rpc('willai_qr_request_claim',{p_code:code},jwt);
+  if(result?.ok!==true)throw Error('Não foi possível confirmar a ativação. Tente novamente.');
+  const own=await rpc('willai_qr_owned',{p_code:code},jwt);
+  if(!own)throw Error('Não foi possível carregar sua plaquinha. Entre novamente.');
+  data={...data,...own.page};
   active=true;owner=true;history.replaceState(null,'',location.pathname+location.search);fill();show('editor');
   message('Plaquinha ativada na sua conta. Personalize e publique sua página!');
  }
@@ -167,7 +167,7 @@ function fill(){
  document.querySelectorAll('[data-v4-theme]').forEach(el=>{el.value=data.reviewV4?.theme?.[el.dataset.v4Theme]??V4_DEFAULT.theme[el.dataset.v4Theme]??''});
  $('editorLink').textContent='Endereço permanente: willai.com.br/qr/'+code;render();
 }
-async function boot(){if(!/^W[0-9]{3,8}$/.test(code)){message('Código inválido',true);return show('unavailable')} $('title').textContent='Plaquinha '+code;if(!base||!key){message('Configuração do sistema incompleta',true);return show('unavailable')}try{const res=await rpc('willai_qr_public',{p_code:code});record=res;if(!res){message('Esta plaquinha ainda não foi registrada.',true);return show('unavailable')}if(res.status==='redirect'){try{const target=new URL(res.redirect_url);if(!['http:','https:'].includes(target.protocol))throw Error('Redirecionamento inválido');location.replace(target.href);return}catch(e){message('O link vinculado está inválido. Entre em contato com a WillAI.',true);show('unavailable');return}}if(res.status==='active'){data={...data,...res.page};active=true;$('publishedPreview').innerHTML=card(data,true);message('Página publicada • link permanente');show('public')}else if(res.status==='pending'){active=true;message('Página em preparação. Somente o proprietário pode entrar e publicar.');show('pending')}else if(res.status==='available'){message(activationToken?'Plaquinha liberada para ativação':'Plaquinha liberada. Faça seu cadastro para solicitar a ativação segura.');show('start')}else{message('Esta plaquinha ainda não foi liberada para entrega ou está indisponível.',true);show('unavailable')}}catch(e){message('O módulo de plaquinhas ainda está aguardando a configuração segura do banco. Nenhuma ativação foi realizada.',true);show('unavailable')}}
+async function boot(){if(!/^W[0-9]{3,8}$/.test(code)){message('Código inválido',true);return show('unavailable')} $('title').textContent='Plaquinha '+code;if(!base||!key){message('Configuração do sistema incompleta',true);return show('unavailable')}try{const res=await rpc('willai_qr_public',{p_code:code});record=res;if(!res){message('Esta plaquinha ainda não foi registrada.',true);return show('unavailable')}if(res.status==='redirect'){try{const target=new URL(res.redirect_url);if(!['http:','https:'].includes(target.protocol))throw Error('Redirecionamento inválido');location.replace(target.href);return}catch(e){message('O link vinculado está inválido. Entre em contato com a WillAI.',true);show('unavailable');return}}if(res.status==='active'){data={...data,...res.page};active=true;$('publishedPreview').innerHTML=card(data,true);message('Página publicada • link permanente');show('public')}else if(res.status==='pending'){active=true;message('Página em preparação. Somente o proprietário pode entrar e publicar.');show('pending')}else if(res.status==='available'){message(activationToken?'Plaquinha liberada para ativação':'Plaquinha liberada. Crie sua conta para ativar e começar a editar.');show('start')}else{message('Esta plaquinha ainda não foi liberada para entrega ou está indisponível.',true);show('unavailable')}}catch(e){message('O módulo de plaquinhas ainda está aguardando a configuração segura do banco. Nenhuma ativação foi realizada.',true);show('unavailable')}}
 
 $('showRegister').onclick=()=>{mode='register';$('accountTitle').textContent='Criar minha conta';$('password').autocomplete='new-password';clearAccountError();updatePasswordRequirements();show('account')};
 async function requestLogin(){
@@ -268,15 +268,7 @@ async function savePage(){
 }
 $('save').onclick=savePage;
 $('signOut').onclick=()=>{jwt=null;owner=false;try{localStorage.removeItem(sessionKey)}catch{};if(active){if(record?.status==='pending')show('pending');else show('public')}else show('start');message('Você saiu da sua conta.');};
-$('approvalCheck').onclick=async()=>{
- const button=$('approvalCheck');button.disabled=true;
- try{
-  if(!jwt && !(await restoreSession()))return message('Entre na sua conta para conferir a aprovação.',true);
-  const own=await rpc('willai_qr_owned',{p_code:code},jwt);
-  if(!own)return message('Sua solicitação continua aguardando conferência da WillAI.');
-  data={...data,...own.page};active=true;owner=true;fill();show('editor');message('Entrega aprovada! Personalize e publique sua página.');
- }catch(e){message(e.message,true)}finally{button.disabled=false}
-};
+$('approvalCheck').onclick=requestLogin;
 updatePasswordRequirements();
 window.WILLAI_QR_BOOTSTRAPPED=true;
 boot();})();
