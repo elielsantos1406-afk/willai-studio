@@ -6,6 +6,7 @@
   "exclude": [
     "/qr/qr-app.js",
     "/qr/index.html",
-    "/qr/"
+    "/qr/",
+    "/qr/review-v4.html"
   ]
 }
