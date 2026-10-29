@@ -64,6 +64,27 @@ async function rpc(name,args){
 function downloadText(txt,name,type='text/csv;charset=utf-8'){const u=URL.createObjectURL(new Blob(['\ufeff'+txt],{type})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),5000)}
 
 function selectedCodes(){const id=$('realBatch').value;return inventory.filter(x=>id==='none'? !x.batch_id:String(x.batch_id)===id).map(x=>x.code)}
+function renderQuickCodes(){
+ const root=$('artCodeGrid');if(!root)return;
+ const query=String($('artFindCode')?.value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+ const chosen=$('artCode')?.value;
+ const rows=inventory.filter(x=>String(x.code).includes(query));
+ root.innerHTML=rows.length?rows.map(x=>{
+  const isSelected=x.code===chosen;
+  const ready=window.WILLAI_ARTES?.readyForPrint(x.code)?.ready;
+  return '<button type="button" data-quick-art="'+safe(x.code)+'" class="'+(isSelected?'selected':'')+'" aria-pressed="'+isSelected+'" aria-label="Preparar arte de '+safe(x.code)+'"><b>'+safe(x.code)+'</b><small>'+(ready?'QR pronto':'Preparar arte')+'</small></button>';
+ }).join(''):'<span class="hint">Nenhuma plaquinha encontrada para esta busca.</span>';
+}
+$('artFindCode').addEventListener('input',renderQuickCodes);
+$('artCodeGrid').addEventListener('click',e=>{
+ const btn=e.target.closest('[data-quick-art]');if(!btn)return;
+ const selected=btn.dataset.quickArt;
+ if(!inventory.some(x=>x.code===selected))return status('Código não encontrado no estoque real.');
+ $('artCode').value=selected;$('artCode').dispatchEvent(new Event('change'));
+ renderQuickCodes();
+ $('artPreview')?.scrollIntoView({behavior:'smooth',block:'center'});
+});
+$('artCode').addEventListener('change',renderQuickCodes);
 function render(){
  const old=$('realCode').value;
  $('realCode').innerHTML='<option value="">Selecione uma plaquinha</option>'+inventory.map(r=>'<option value="'+safe(r.code)+'">'+safe(r.code)+'</option>').join('');
@@ -80,7 +101,7 @@ function render(){
  const sel=$('artCode'),current=sel.value;
  sel.innerHTML=inventory.length?inventory.map(r=>'<option value="'+safe(r.code)+'">'+safe(r.code)+'</option>').join(''):'<option value="">Nenhum código registrado</option>';
  if(inventory.some(r=>r.code===current))sel.value=current;
- window.WILLAI_ARTES?.useRealInventory(inventory);sel.dispatchEvent(new Event('change'));
+ window.WILLAI_ARTES?.useRealInventory(inventory);sel.dispatchEvent(new Event('change'));renderQuickCodes();
 }
 async function refreshClaims(){
  const tbody=$('realClaimRows');
@@ -156,6 +177,7 @@ $('realImportSecrets').onchange=async e=>{
   }).filter(r=>/^W[0-9]{3,8}$/.test(r.code)&&/^[a-f0-9]{48}$/.test(r.secret));
   if(!rows.length)throw Error('CSV nao contem segredos validos.');
   window.WILLAI_ARTES?.setActivationSecrets(rows);
+  renderQuickCodes();
   status(rows.length+' segredos carregados apenas na memoria desta aba. Agora e possivel reimprimir os QRs desse lote.');
  }catch(err){status('Falha ao importar CSV: '+err.message)}
  e.target.value='';
