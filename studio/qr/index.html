@@ -75,8 +75,8 @@ html,body{max-width:100%;overflow-x:clip}
 <button id="realSaveRedirect" class="btn">Vincular / atualizar link</button></div>
 <div style="overflow:auto;max-height:380px"><table class="stock-table"><thead><tr><th>Código</th><th>Status</th><th>Destino</th><th>Ação</th></tr></thead><tbody id="realRows"><tr><td colspan="4">Consulte o estoque para carregar os registros reais.</td></tr></tbody></table></div>
 <div style="margin-top:22px;border-top:1px solid #e3eaf4;padding-top:18px">
-<h2>Solicitações de ativação sem código secreto</h2>
-<p class="hint">Para plaquinhas antigas que possuem somente a URL impressa. Confira pessoalmente a entrega e o e-mail do solicitante antes de aprovar. Nenhuma solicitação ativa uma plaquinha automaticamente.</p>
+<h2>Solicitações antigas de ativação</h2>
+<p class="hint">Novas ativações são automáticas para a primeira conta após liberar a plaquinha. Pedidos antigos podem ser concluídos pelo cliente ao entrar novamente, ou pela administração abaixo.</p>
 <button class="btn ghost" id="realRefreshClaims" type="button">Atualizar solicitações</button>
 <div style="overflow:auto;max-height:310px;margin-top:12px"><table class="stock-table">
 <thead><tr><th>Plaquinha</th><th>Conta solicitante</th><th>Solicitado</th><th>Confirmação de entrega</th></tr></thead>
@@ -188,4 +188,4 @@ $('stockA4').onclick=()=>{if(!stockCount)return;const {start,end}=selectedRange(
 $('stockReset').onclick=()=>{if(!confirm('Reiniciar o estoque de teste? O editor W001 sera preservado.'))return;stockCount=0;stockSelected=0;localStorage.removeItem(STOCK_KEY);stockRender();toast('Estoque de demonstração reiniciado')};
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 })();
-</script><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script src="/studio/qr/artes-engine.js"></script><script src="/config.js"></script><script src="/studio/qr/admin-real.js?v=20261029-audit-2"></script></body></html>
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script><script src="/studio/qr/artes-engine.js?v=20261029-auto-4"></script><script src="/config.js"></script><script src="/studio/qr/admin-real.js?v=20261029-audit-2"></script></body></html>

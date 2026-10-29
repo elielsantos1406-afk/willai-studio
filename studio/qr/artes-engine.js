@@ -10,8 +10,7 @@ function qrAddress(c){
  if(state==='disabled')throw Error('A plaquinha está desativada e não deve ser impressa.');
  if(['held','available'].includes(state)){
   const secret=activationSecrets.get(c);
-  // Sem segredo, o QR publico é imprimível, mas exige conferência e aprovação
-  // administrativa no primeiro acesso. Nunca liberar claim apenas pelo codigo.
+  // QR público permite ativação pela primeira conta após liberação do estoque.
   if(secret)return address(c)+'#ativar='+secret;
  }
  return address(c);
@@ -53,7 +52,7 @@ function readyForPrint(c){
   const url=qrAddress(c),state=statuses.get(c),protectedClaim=['held','available'].includes(state);
   const assisted=protectedClaim&&!activationSecrets.has(c);
   const mode=assisted?'assisted':protectedClaim?'secret':'public';
-  const message=assisted?'QR público permanente: na primeira ativação, o administrador deve conferir a entrega e aprovar o pedido. Para ativação direta, importe o CSV original de segredos.':state==='held'?'QR com credencial gerado, mas a plaquinha só poderá ser ativada depois da liberação administrativa.':state==='active'?'QR permanente da página vinculada à conta do proprietário.':'QR pronto para impressão.';
+  const message=assisted?'QR público permanente: após a liberação da plaquinha, a primeira conta ativa automaticamente, sem aprovação adicional.':state==='held'?'QR com credencial gerado, mas a plaquinha só poderá ser ativada depois da liberação administrativa.':state==='active'?'QR permanente da página vinculada à conta do proprietário.':'QR pronto para impressão.';
   return {ready:true,mode,url,message};
  }catch(e){return {ready:false,mode:'blocked',url:'',message:e.message}}
 }
