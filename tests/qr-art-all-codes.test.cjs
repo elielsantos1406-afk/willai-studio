@@ -45,7 +45,7 @@ test('W002 and W003 both show previews without CSV, downloads stay locked',async
  assert.match(h.el('artLink').textContent,/W002/);
  assert.equal(h.api.readyForPrint('W003').ready,false);
  h.el('artCode').value='W003';
- h.el('artCode').listeners.change();
+ h.el('artCode').onchange();
  await tick();
  assert.match(h.el('artStatus').textContent,/Prévia de W003 pronta/);
 });
