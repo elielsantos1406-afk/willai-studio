@@ -1,5 +1,68 @@
-(()=>{'use strict';const $=id=>document.getElementById(id),cfg=window.WILLAI_CONFIG||{};let session=null,lastSecrets=[],inventory=[],activeBatch='';const sessionKey='willai_portal_session',safe=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));const status=s=>{$('realStatus').textContent=s};function auth(){try{const s=JSON.parse(sessionStorage.getItem(sessionKey)||'null');return s?.access_token?s:null}catch{return null}}function downloadText(txt,name,type='text/csv;charset=utf-8'){const u=URL.createObjectURL(new Blob(['\ufeff'+txt],{type})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),5000)}
-async function rpc(name,args){session=auth();if(!session)throw Error('Faça login como administrador na central WillAI antes de acessar o estoque real.');if(!cfg.url||!cfg.publishableKey)throw Error('Supabase não configurado');let r=await fetch(cfg.url+'/rest/v1/rpc/'+name,{method:'POST',cache:'no-store',headers:{apikey:cfg.publishableKey,Authorization:'Bearer '+session.access_token,Accept:'application/json','Content-Type':'application/json'},body:JSON.stringify(args||{})});let b=await r.json().catch(()=>null);if(!r.ok)throw Error(b?.message||b?.error||'Erro '+r.status+'; verifique a migração e seu acesso ao banco');return b}
+(()=>{'use strict';const $=id=>document.getElementById(id),cfg=window.WILLAI_CONFIG||{};let session=null,lastSecrets=[],inventory=[],activeBatch='';const sessionKey='willai_portal_session',safe=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));const status=s=>{$('realStatus').textContent=s;const a=$('realAuthAgain');if(a)a.hidden=!s.includes('Sua sessão expirou')};function auth(){try{const s=JSON.parse(sessionStorage.getItem(sessionKey)||'null');return s?.access_token?s:null}catch{return null}}
+const LOGIN_EXPIRED='Sua sessão expirou. Clique em Entrar novamente, faça login no Portal WillAI e volte ao QR Studio.';
+let refreshing=null;
+function tokenExpiry(s){
+ const listed=Number(s?.expires_at||0);let encoded=0;
+ try{const payload=String(s?.access_token||'').split('.')[1];
+ if(payload)encoded=Number(JSON.parse(atob(payload.replace(/-/g,'+').replace(/_/g,'/')))?.exp||0)}catch{}
+ return listed&&encoded?Math.min(listed,encoded):listed||encoded;
+}
+function closeToExpiry(s){const exp=tokenExpiry(s);return exp>0&&exp<=Math.floor(Date.now()/1000)+90}
+async function renewSession(){
+ if(refreshing)return refreshing;
+ refreshing=(async()=>{
+  const before=auth();if(!before?.refresh_token)throw Error(LOGIN_EXPIRED);
+  const res=await fetch(cfg.url+'/auth/v1/token?grant_type=refresh_token',{
+   method:'POST',cache:'no-store',
+   headers:{apikey:cfg.publishableKey,Accept:'application/json','Content-Type':'application/json'},
+   body:JSON.stringify({refresh_token:before.refresh_token})
+  });
+  const b=await res.json().catch(()=>null);
+  if(!res.ok||!b?.access_token||!b?.refresh_token){
+   if(res.status===400||res.status===401){
+    if(auth()?.access_token===before.access_token)sessionStorage.removeItem(sessionKey);
+    throw Error(LOGIN_EXPIRED);
+   }
+   throw Error('Não foi possível renovar a sessão. Verifique a conexão e consulte o estoque novamente.');
+  }
+  const latest={...before,...b,expires_at:Number(b.expires_at)||Math.floor(Date.now()/1000)+Number(b.expires_in||3600)};
+  sessionStorage.setItem(sessionKey,JSON.stringify(latest));session=latest;return latest;
+ })();
+ try{return await refreshing}finally{refreshing=null}
+}
+async function sessionForRequest(){
+ if(!cfg.url||!cfg.publishableKey)throw Error('Supabase não configurado.');
+ const current=auth();if(!current)throw Error(LOGIN_EXPIRED);
+ return closeToExpiry(current)?await renewSession():current;
+}
+function expiredResponse(response,body){
+ return response.status===401&&/jwt expired|token.*expired|expired.*token|pgrst301/i.test(
+  [body?.message,body?.msg,body?.error,body?.code].filter(Boolean).join(' '));
+}
+async function rpc(name,args){
+ const original=await sessionForRequest(),requestBody=JSON.stringify(args||{});
+ const call=s=>fetch(cfg.url+'/rest/v1/rpc/'+name,{
+  method:'POST',cache:'no-store',
+  headers:{apikey:cfg.publishableKey,Authorization:'Bearer '+s.access_token,
+   Accept:'application/json','Content-Type':'application/json'},body:requestBody
+ });
+ let res=await call(original),b=await res.json().catch(()=>null);
+ // Retentativa SOMENTE para JWT expirado, rejeitado antes da execução pelo gateway.
+ // Não repetir RPC após timeout/rede: poderia gerar um lote duplicado.
+ if(expiredResponse(res,b)){
+  const latest=auth();
+  const credentials=latest?.access_token&&latest.access_token!==original.access_token&&!closeToExpiry(latest)?latest:await renewSession();
+  res=await call(credentials);b=await res.json().catch(()=>null);
+ }
+ if(!res.ok){
+  if(expiredResponse(res,b)||res.status===401)throw Error(LOGIN_EXPIRED);
+  throw Error(b?.message||b?.error_description||b?.error||
+   'Erro HTTP '+res.status+'; consulte o estoque antes de repetir esta operação.');
+ }
+ return b;
+}
+function downloadText(txt,name,type='text/csv;charset=utf-8'){const u=URL.createObjectURL(new Blob(['\ufeff'+txt],{type})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),5000)}
+
 function selectedCodes(){const id=$('realBatch').value;return inventory.filter(x=>id==='none'? !x.batch_id:String(x.batch_id)===id).map(x=>x.code)}
 function render(){
  const old=$('realCode').value;
@@ -97,6 +160,5 @@ $('realImportSecrets').onchange=async e=>{
  }catch(err){status('Falha ao importar CSV: '+err.message)}
  e.target.value='';
 };
-if(auth())reload();
-status('Estoque real disponível somente para administradores autorizados. Clique em Consultar estoque real para verificar a conexão.');
+if(auth())reload();else status(LOGIN_EXPIRED);
 })();

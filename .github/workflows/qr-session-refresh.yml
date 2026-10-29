@@ -1,0 +1,22 @@
+name: QR Studio JWT regression
+on:
+  pull_request:
+    paths:
+      - 'studio/qr/admin-real.js'
+      - 'studio/qr/index.html'
+      - 'tests/qr-session-refresh.test.cjs'
+      - '.github/workflows/qr-session-refresh.yml'
+  push:
+    branches:
+      - 'fix/qr-studio-jwt-refresh-20261028'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/qr-session-refresh.test.cjs
