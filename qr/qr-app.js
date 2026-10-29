@@ -236,9 +236,37 @@ $('clearPhoto').onclick=()=>{data.cover='';render();message('Foto removida da pr
 for(const id of ['v4Frame','v4Preview'])$(id).addEventListener('load',()=>postV4(id));
 for(const id of ['goV4Design','goV4DesignBottom'])$(id).onclick=()=>{$('v4Design').scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});};
 
-$('save').onclick=async()=>{if(!jwt||!owner)return message('Login do proprietário necessário',true);try{
- if(!absoluteUrl(data.google))throw Error('Informe o link válido para avaliar no Google antes de publicar.');
- await rpc('willai_qr_save',{p_code:code,p_page:data},jwt);$('publishedPreview').innerHTML=card(data,true);record={...(record||{}),status:'active',page:data};message('Página salva no Supabase e publicada com sucesso!');show('public')}catch(e){message(e.message,true)}};
+let saving=false;
+function saveFeedback(text,error=false){
+ const status=$('saveStatus');status.textContent=text;status.className='message'+(error?'':' success');
+ message(text,error);status.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+async function savePage(){
+ if(saving)return;
+ if(!jwt||!owner)return saveFeedback('Entre com a conta do proprietário para salvar.',true);
+ const button=$('save');saving=true;button.disabled=true;button.textContent='Salvando…';
+ $('viewPublished').classList.add('hidden');
+ let timer;
+ try{
+  const snapshot=JSON.parse(JSON.stringify(data));
+  snapshot.name=String(snapshot.name||'').trim();
+  snapshot.google=String(snapshot.google||'').trim();
+  if(!snapshot.name)throw Error('Informe o nome do estabelecimento antes de publicar.');
+  if(snapshot.google&&!absoluteUrl(snapshot.google))throw Error('O link do Google está inválido. Corrija o endereço ou deixe o campo vazio.');
+  saveFeedback('Salvando e publicando sua página…');
+  if(!(await restoreSession()))throw Error('Sua sessão expirou. Entre novamente para salvar. Suas alterações continuam nesta tela.');
+  const controller=new AbortController();timer=setTimeout(()=>controller.abort(),20000);
+  const result=await api('/rest/v1/rpc/willai_qr_save',{method:'POST',body:JSON.stringify({p_code:code,p_page:snapshot}),signal:controller.signal},jwt);
+  if(result?.ok!==true)throw Error('O servidor não confirmou o salvamento. Tente novamente.');
+  active=true;record={...(record||{}),status:'active',page:snapshot};
+  $('publishedPreview').innerHTML=card(snapshot,true);
+  $('viewPublished').href='/qr/'+encodeURIComponent(code);
+  $('viewPublished').classList.remove('hidden');
+  saveFeedback('Página salva e publicada com sucesso! O QR Code já abre sua página.');
+ }catch(e){saveFeedback(e.name==='AbortError'?'A confirmação demorou mais que o esperado. Confira a página pública antes de tentar novamente.':e.message||'Não foi possível salvar. Tente novamente.',true)}
+ finally{clearTimeout(timer);saving=false;button.disabled=false;button.textContent='Salvar e publicar'}
+}
+$('save').onclick=savePage;
 $('signOut').onclick=()=>{jwt=null;owner=false;try{localStorage.removeItem(sessionKey)}catch{};if(active){if(record?.status==='pending')show('pending');else show('public')}else show('start');message('Você saiu da sua conta.');};
 $('approvalCheck').onclick=async()=>{
  const button=$('approvalCheck');button.disabled=true;
