@@ -123,6 +123,22 @@ window.WILLAI_REVIEW_CONFIG = {
   const logo=safeUrl(config.media?.logo);$('businessLogo').hidden=!logo;$('logoPlaceholder').hidden=!!logo;if(logo)$('businessLogo').src=logo;else $('businessLogo').removeAttribute('src');
   const photo=safeUrl(config.media?.photo);$('coverBackdrop').style.backgroundImage=photo?'url('+JSON.stringify(photo)+')':'none';
   for(const k of ['whatsapp','instagram','site'])$(k+'Button').hidden=config.visible?.[k]===false;
+  const oldExtras=document.querySelectorAll('[data-v4-extra]');
+  oldExtras.forEach(el=>el.remove());
+  const container=document.querySelector('.contact-actions');
+  (Array.isArray(config.extraButtons)?config.extraButtons:[]).slice(0,12).forEach(btn=>{
+    const address=webUrl(btn?.url),name=String(btn?.title||'').trim().slice(0,50);
+    if(!address||!name)return;
+    const button=document.createElement('button');
+    button.type='button';button.className='contact-action';button.dataset.v4Extra='1';
+    const label=document.createElement('span');label.className='contact-action-name';label.textContent=name;
+    const symbol=document.createElement('span');symbol.className='contact-action-icon';symbol.textContent='✦';
+    const arrow=document.createElement('span');arrow.className='contact-action-arrow';arrow.textContent='↗';
+    button.append(symbol,label,arrow);
+    button.addEventListener('click',()=>openLink(address,name));
+    container.append(button);
+  });
+
   updateStars();
  }
  document.querySelectorAll('.star-button').forEach(button=>{
