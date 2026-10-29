@@ -23,7 +23,7 @@ function harness(){
  });return nodes.get(id)};
  let blobId=0;
  const URLFake={createObjectURL(){return 'blob:sample-'+(++blobId)},revokeObjectURL(x){urls.push(x)}};
- const document={getElementById:el,createElement:()=>({getContext:()=>({}),click(){},remove(){}}),body:{append(){}}};
+ const document={getElementById:el,createElement:(tag)=>tag==='canvas'?({width:0,height:0,getContext:()=>({fillRect(){},set fillStyle(v){}}),toDataURL:()=> 'data:image/png;base64,AA==' }):({getContext:()=>({}),click(){},remove(){}}),body:{append(){}}};
  const qrcode=()=>({input:'',addData(value){this.input=value;payloads.push(value)},make(){},getModuleCount(){return 2},isDark(y,x){return y===x}});
  const win={};
  vm.runInNewContext(src,{window:win,document,fetch:async url=>({ok:true,text:async()=>templates[url.includes('google')?'google':'willai']}),URL:URLFake,
@@ -36,18 +36,25 @@ test('scripts parse and searchable picker exists',()=>{
  assert.match(html,/id="artCodeGrid"/);assert.match(html,/id="artFindCode"/);
  assert.match(admin,/data-quick-art/);
 });
-test('W002 and W003 both show previews without CSV, downloads stay locked',async()=>{
+test('sem CSV, W002 e W003 recebem QR público real com aprovação administrativa',async()=>{
  const h=harness();h.api.useRealInventory([{code:'W001',status:'active'},{code:'W002',status:'available'},{code:'W003',status:'held'}]);
  await tick();
- assert.match(h.el('artStatus').textContent,/Prévia de W002 pronta/);
- assert.equal(h.el('artSVG').disabled,true);
- assert.equal(h.el('artPDF').disabled,true);
+ assert.match(h.el('artStatus').textContent,/Arte de W002 pronta/);
+ assert.match(h.el('artStatus').textContent,/administrador deve conferir a entrega/);
+ assert.equal(h.el('artSVG').disabled,false);
+ assert.equal(h.el('artPDF').disabled,false);
+ assert.equal(h.el('artPNG').disabled,false);
+ assert.match(h.el('artQRImage').src,/^data:image\/png/);
  assert.match(h.el('artLink').textContent,/W002/);
- assert.equal(h.api.readyForPrint('W003').ready,false);
+ assert.equal(h.api.readyForPrint('W003').ready,true);
  h.el('artCode').value='W003';
  h.el('artCode').onchange();
  await tick();
- assert.match(h.el('artStatus').textContent,/Prévia de W003 pronta/);
+ assert.match(h.el('artStatus').textContent,/Arte de W003 pronta/);
+ assert.equal(h.api.readyForPrint('W003').mode,'assisted');
+ const w3=await h.api.makeSvg('W003','willai');
+ assert.match(w3,/W003/);
+ assert.ok(h.payloads.includes('https://willai.com.br/qr/W003'));
 });
 test('on import CSV, all registered codes become individually exportable',async()=>{
  const h=harness();h.api.useRealInventory([{code:'W001',status:'active'},{code:'W002',status:'available'},{code:'W003',status:'held'}]);
@@ -72,13 +79,29 @@ test('the Google model also removes its sample W001 QR and preserves other photo
  assert.match(w2,/W002/);
  assert.ok(w2.includes('fill="#070b0e"'));
 });
-test('without CSV no SVG can be produced for an inactive plaque',async()=>{
+test('sem CSV, QR público pode ser impresso mas continua dependendo de aprovação administrativa',async()=>{
  const h=harness();h.api.useRealInventory([{code:'W002',status:'available'}]);
- await assert.rejects(h.api.makeSvg('W002','willai'),/CSV de segredos/);
+ const svg=await h.api.makeSvg('W002','willai');
+ assert.match(svg,/W002/);
+ assert.equal(h.api.readyForPrint('W002').mode,'assisted');
+ assert.ok(h.payloads.includes('https://willai.com.br/qr/W002'));
+ assert.ok(!h.payloads.some(x=>x.includes('#ativar=')));
 });
 test('an active plaque is printable from its permanent public URL',async()=>{
  const h=harness();h.api.useRealInventory([{code:'W001',status:'active'}]);
  const svg=await h.api.makeSvg('W001','willai');
  assert.match(svg,/W001/);
  assert.ok(h.payloads.some(x=>x==='https://willai.com.br/qr/W001'));
+});
+test('o QR individual permanece bloqueado para código inexistente ou desativado',async()=>{
+ const h=harness();h.api.useRealInventory([{code:'W001',status:'disabled'}]);
+ assert.equal(h.api.readyForPrint('W999').ready,false);
+ assert.equal(h.api.readyForPrint('W001').ready,false);
+ await assert.rejects(h.api.makeSvg('W001','willai'),/desativada/);
+});
+test('script e HTML de QR PNG individual estao conectados',()=>{
+ assert.match(html,/id="artQRImage"/);
+ assert.match(html,/id="artPNG"/);
+ assert.match(html,/id="artQRInfo"/);
+ assert.match(src,/function qrThumb\(/);
 });
