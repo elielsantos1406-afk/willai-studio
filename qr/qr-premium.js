@@ -43,6 +43,7 @@
       color:b && /^#[0-9a-f]{6}$/i.test(b.color) ? b.color : '',
       textColor:b && /^#[0-9a-f]{6}$/i.test(b.textColor) ? b.textColor : ''
     }));
+    for(const flag of ['showName','showLogo','showCover'])next[flag]=next[flag]===true||next[flag]==='true';
     next.premiumVersion = 2;
     return next;
   }
@@ -110,7 +111,7 @@
       const styleType=b.style||d.buttonStyle;
       return '<a class="qr-action '+(['outline','soft'].includes(styleType)?styleType:'solid')+'" href="'+esc(buttonLink(b))+'" target="_blank" rel="noopener noreferrer" style="--qr-button:'+color+';--qr-button-text:'+label+'" aria-label="'+esc(b.title)+'">'+icon(b.icon)+'<span>'+esc(b.title)+'</span></a>';
     }).join('');
-    return '<main class="qr-premium-surface '+(publicMode?'qr-live':'qr-demo')+'" style="'+style+'">'+
+    return '<main class="qr-premium-surface '+(publicMode?'qr-live':'qr-demo')+'" style="'+esc(style)+'">'+
       '<div class="qr-premium-main"><section class="qr-premium-card">'+cover+
       '<div class="qr-brand">'+logo+name+'</div>'+
       '<h1>'+esc(d.title||'Deixe sua avaliação')+'</h1>'+
@@ -133,7 +134,7 @@
   function section(title,content) {return '<section class="panel qr-editor-panel"><h2>'+title+'</h2>'+content+'</section>';}
   function editorHTML() {
     const profile=field('Nome do estabelecimento','name')+field('Título principal','title')+field('Subtítulo (opcional)','subtitle')+
-      '<div class="qr-settings-grid">'+select('Mostrar nome','showName',[['true','Sim'],['false','Não']])+select('Mostrar logotipo','showLogo',[['true','Sim'],['false','Não']]])+'</div>';
+      '<div class="qr-settings-grid">'+select('Mostrar nome','showName',[['true','Sim'],['false','Não']])+select('Mostrar logotipo','showLogo',[['true','Sim'],['false','Não']])+'</div>';
     const google=field('Link direto de avaliação no Google','google',{type:'url',placeholder:'https://g.page/r/.../review'})+
       '<p class="hint">As 5 estrelas abrem este mesmo endereço, sem formulário ou seleção de notas.</p><p class="qr-field-help" id="googleStatus"></p>';
     const links='<p class="hint">Personalize o texto de cada botão. Para Agendar, escolha o título “Agendar” e cole o WhatsApp ou endereço da agenda.</p>'+
@@ -160,7 +161,7 @@
       '<button class="btn qr-remove-image" type="button" data-clear-image="logo">Remover foto</button>'+
       '<label class="qr-setting">Capa (opcional)<input id="cover" type="file" accept="image/png,image/jpeg,image/webp"></label>'+
       '<button class="btn qr-remove-image" type="button" data-clear-image="cover">Remover capa</button>'+
-      select('Exibir capa','showCover',[['false','Não'],['true','Sim']]])+
+      select('Exibir capa','showCover',[['false','Não'],['true','Sim']])+
       '<label class="qr-setting">Imagem de fundo (opcional)<input id="backgroundFile" type="file" accept="image/png,image/jpeg,image/webp"></label>'+
       '<button class="btn qr-remove-image" type="button" data-clear-image="backgroundImage">Remover fundo</button>';
     return section('Minha empresa',profile)+section('Avaliações Google',google)+section('Meus botões',links)+section('Cores e aparência',colors)+section('Imagens',images);
