@@ -50,6 +50,13 @@ test('link inválido e protocolos perigosos nunca viram botões públicos',()=>{
   assert.ok(!h.includes('Malicioso</span>'));
   assert.ok(!h.includes('href="javascript:'));
 });
+test('página legada preserva WhatsApp, Instagram e botões personalizados',()=>{
+  const d=premium.normalize({whatsapp:'41999999999',instagram:'https://instagram.com/exemplo',buttons:[{title:'Agendar horário',url:'https://example.com/agenda'}]});
+  assert.equal(d.buttons.length,4);
+  assert.equal(d.buttons[0].url,'41999999999');
+  assert.equal(d.buttons[1].url,'https://instagram.com/exemplo');
+  assert.equal(d.buttons[3].title,'Agendar horário');
+});
 test('remover todos os botões permanece removido na próxima edição',()=>{
   const d=premium.normalize({premiumVersion:2,buttons:[]});
   assert.equal(d.buttons.length,0);
