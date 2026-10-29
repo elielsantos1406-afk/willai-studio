@@ -31,10 +31,13 @@
   function normalize(raw) {
     raw = raw && typeof raw === 'object' && !Array.isArray(raw) ? raw : {};
     const next = Object.assign(clone(initial),raw);
-    if (!Array.isArray(raw.buttons) || (!raw.premiumVersion && raw.buttons.length === 0)) {
-      next.buttons = clone(initial.buttons);
-      next.buttons[0].url = raw.whatsapp || '';
-      next.buttons[1].url = raw.instagram || '';
+    if (!raw.premiumVersion) {
+      const defaults=clone(initial.buttons);
+      defaults[0].url=raw.whatsapp || '';
+      defaults[1].url=raw.instagram || '';
+      next.buttons=defaults.concat(Array.isArray(raw.buttons)?raw.buttons:[]).slice(0,12);
+    } else if (!Array.isArray(raw.buttons)) {
+      next.buttons=clone(initial.buttons);
     }
     next.buttons = next.buttons.slice(0,12).map(b => ({
       title:String(b && b.title || '').slice(0,60),icon:icons.includes(b && b.icon) ? b.icon : 'link',
