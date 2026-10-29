@@ -14,7 +14,7 @@ function harness(options={}){
  const storage=new Map(items);
  const element=id=>{
   if(!nodes.has(id))nodes.set(id,{value:'',textContent:'',innerHTML:'',hidden:true,disabled:false,
-   options:[],dispatchEvent(){},add(){},click(){},querySelectorAll(){return[];}});
+   options:[],dispatchEvent(){},add(){},click(){},addEventListener(){},querySelectorAll(){return[];}});
   return nodes.get(id);
  };
  const tokens={refresh:0,inventory:0,generate:0,generateHeaders:[]};
