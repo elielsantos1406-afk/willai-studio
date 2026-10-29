@@ -37,7 +37,7 @@ async function sessionForRequest(){
 }
 function expiredResponse(response,body){
  return response.status===401&&/jwt expired|token.*expired|expired.*token|pgrst301/i.test(
-  String(body?.message||body?.msg||body?.error||body?.code||''));
+  [body?.message,body?.msg,body?.error,body?.code].filter(Boolean).join(' '));
 }
 async function rpc(name,args){
  const original=await sessionForRequest(),requestBody=JSON.stringify(args||{});
@@ -51,7 +51,7 @@ async function rpc(name,args){
  // Não repetir RPC após timeout/rede: poderia gerar um lote duplicado.
  if(expiredResponse(res,b)){
   const latest=auth();
-  const credentials=latest?.access_token!==original.access_token&&!closeToExpiry(latest)?latest:await renewSession();
+  const credentials=latest?.access_token&&latest.access_token!==original.access_token&&!closeToExpiry(latest)?latest:await renewSession();
   res=await call(credentials);b=await res.json().catch(()=>null);
  }
  if(!res.ok){
@@ -60,7 +60,8 @@ async function rpc(name,args){
    'Erro HTTP '+res.status+'; consulte o estoque antes de repetir esta operação.');
  }
  return b;
-}function downloadText(txt,name,type='text/csv;charset=utf-8'){const u=URL.createObjectURL(new Blob(['\ufeff'+txt],{type})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),5000)}
+}
+function downloadText(txt,name,type='text/csv;charset=utf-8'){const u=URL.createObjectURL(new Blob(['\ufeff'+txt],{type})),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),5000)}
 
 function selectedCodes(){const id=$('realBatch').value;return inventory.filter(x=>id==='none'? !x.batch_id:String(x.batch_id)===id).map(x=>x.code)}
 function render(){
@@ -159,6 +160,5 @@ $('realImportSecrets').onchange=async e=>{
  }catch(err){status('Falha ao importar CSV: '+err.message)}
  e.target.value='';
 };
-if(auth())reload();
-status('Estoque real disponível somente para administradores autorizados. Clique em Consultar estoque real para verificar a conexão.');
+if(auth())reload();else status(LOGIN_EXPIRED);
 })();
