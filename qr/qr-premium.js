@@ -38,7 +38,7 @@
     }
     next.buttons = next.buttons.slice(0,12).map(b => ({
       title:String(b && b.title || '').slice(0,60),icon:icons.includes(b && b.icon) ? b.icon : 'link',
-      url:String(b && b.url || '').slice(0,2048),type:b && b.type === 'whatsapp' ? 'whatsapp' : 'link',
+      url:String(b && b.url || '').slice(0,2048),message:String(b && b.message || '').slice(0,500),type:b && b.type === 'whatsapp' ? 'whatsapp' : 'link',
       style:['solid','outline','soft'].includes(b && b.style) ? b.style : '',
       color:b && /^#[0-9a-f]{6}$/i.test(b.color) ? b.color : '',
       textColor:b && /^#[0-9a-f]{6}$/i.test(b.textColor) ? b.textColor : ''
@@ -65,7 +65,7 @@
     if ((digits.length === 10 || digits.length === 11)) digits='55'+digits;
     return /^55\d{10,11}$/.test(digits) ? 'https://wa.me/'+digits : '';
   }
-  function buttonLink(b) { return b.type === 'whatsapp' ? whatsapp(b.url) : validUrl(b.url); }
+  function buttonLink(b) {if(b.type!=='whatsapp')return validUrl(b.url);const link=whatsapp(b.url);if(!link)return '';return b.message ? link+(link.includes('?')?'&':'?')+'text='+encodeURIComponent(b.message) : link;}
   function background(d) {
     if (d.backgroundImage && /^(data:image\/(png|jpeg|webp);base64,|https:\/\/)/.test(d.backgroundImage)) return 'url("'+String(d.backgroundImage).replace(/["\\\n\r]/g,'')+'") center / cover fixed';
     const a=hex(d.gradientColor1,'#eaf4ff'),b=hex(d.gradientColor2,'#f9f4fa'),c=hex(d.gradientColor3,'#ffffff');
@@ -182,7 +182,8 @@
     return d.buttons.map((b,i)=>'<div class="qr-button-row" draggable="true" data-row="'+i+'"><div class="qr-row-title"><b>Botão '+(i+1)+'</b><div><button type="button" class="qr-small" data-move="'+i+'" data-direction="-1" aria-label="Mover para cima">↑</button><button type="button" class="qr-small" data-move="'+i+'" data-direction="1" aria-label="Mover para baixo">↓</button><button type="button" class="qr-small qr-danger" data-remove="'+i+'" aria-label="Excluir botão">Excluir</button></div></div>'+
       '<div class="qr-settings-grid"><label class="qr-setting">Nome<input data-button="'+i+'" data-prop="title" maxlength="60" value="'+esc(b.title)+'" placeholder="Ex.: Agendar horário"></label>'+
       '<label class="qr-setting">Destino<select data-button="'+i+'" data-prop="type"><option value="link" '+(b.type==='link'?'selected':'')+'>Site / Instagram / URL</option><option value="whatsapp" '+(b.type==='whatsapp'?'selected':'')+'>WhatsApp</option></select></label></div>'+
-      '<label class="qr-setting">Link ou telefone<input data-button="'+i+'" data-prop="url" value="'+esc(b.url)+'" placeholder="https://... ou número com DDD"></label>'+
+      '<label class="qr-setting">Link ou telefone<input data-button="'+i+'" data-prop="url" value="'+esc(b.url)+'" placeholder="https://... ou número com DDD"></label>'+ 
+      '<label class="qr-setting">Mensagem de WhatsApp (opcional)<input data-button="'+i+'" data-prop="message" maxlength="500" value="'+esc(b.message||'')+'" placeholder="Olá! Gostaria de agendar."></label>'+
       '<div class="qr-settings-grid"><label class="qr-setting">Ícone<select data-button="'+i+'" data-prop="icon">'+icons.map(g=>'<option value="'+g+'" '+(b.icon===g?'selected':'')+'>'+g+'</option>').join('')+'</select></label>'+
       '<label class="qr-setting">Estilo<select data-button="'+i+'" data-prop="style"><option value="">Usar padrão</option><option value="solid" '+(b.style==='solid'?'selected':'')+'>Sólido</option><option value="outline" '+(b.style==='outline'?'selected':'')+'>Contornado</option><option value="soft" '+(b.style==='soft'?'selected':'')+'>Suave</option></select></label></div>'+
       '<div class="qr-settings-grid"><label class="qr-setting">Cor (opcional)<input type="color" data-button="'+i+'" data-prop="color" value="'+hex(b.color,hex(d.buttonColor,'#204e82'))+'"></label>'+
