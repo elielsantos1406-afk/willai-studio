@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://willai.com.br/sitemap.xml
