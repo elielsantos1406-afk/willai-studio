@@ -1,4 +1,4 @@
-(()=>{'use strict';const cfg=window.WILLAI_CONFIG||{},code=(location.pathname.split('/').filter(Boolean).pop()||'').toUpperCase();const base=cfg.url,key=cfg.publishableKey;const $=id=>document.getElementById(id),pages=['unavailable','start','account','claim','editor','public','pending','approval','v4Public'];let jwt=null,owner=false,mode='register',active=false,record=null;const activationToken=/^[a-f0-9]{48}$/.test(new URLSearchParams(location.hash.slice(1)).get('ativar')||'')?new URLSearchParams(location.hash.slice(1)).get('ativar'):null;
+(()=>{'use strict';const cfg=window.WILLAI_CONFIG||{},code=(location.pathname.split('/').filter(Boolean).pop()||'').toUpperCase();const base=cfg.url,key=cfg.publishableKey;const $=id=>document.getElementById(id),pages=['unavailable','loadError','start','account','claim','editor','public','pending','approval','v4Public'];let jwt=null,owner=false,mode='register',active=false,record=null;const activationToken=/^[a-f0-9]{48}$/.test(new URLSearchParams(location.hash.slice(1)).get('ativar')||'')?new URLSearchParams(location.hash.slice(1)).get('ativar'):null;
 let data={name:'Meu estabelecimento',category:'',description:'Conheça nossos serviços.',address:'',hours:'',google:'',whatsapp:'',instagram:'',site:'',primary:'#14559e',background:'#eff8ff',ink:'#163c61',font:'system-ui',layout:'rounded',logo:'',cover:'',buttons:[]};
 const esc=x=>String(x??'').replace(/[&<>"']/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[a]));
 const url=x=>{try{let u=new URL(x);return ['https:','http:'].includes(u.protocol)?u.href:'#'}catch{return '#'}};
@@ -53,7 +53,7 @@ function postV4(frameId){
 function refreshV4(){postV4('v4Preview');postV4('v4Frame')}
 function showV4(){
  const frame=$('v4Frame');
- if(frame.getAttribute('src')==='about:blank')frame.src='/assets/review-v4.html';
+ if(frame.getAttribute('src')==='about:blank')frame.src='/assets/review-v4.html?v=20261102-smooth-1';
  else postV4('v4Frame');
 }
 window.addEventListener('message',e=>{
@@ -64,6 +64,10 @@ window.addEventListener('message',e=>{
   return;
  }
  if(e.source!==framePublic.contentWindow)return;
+ if(e.data.type==='WILLAI_QR_RENDERED'){
+  if(document.body.classList.contains('is-v4-public'))window.WILLAI_QR_BOOT_DONE?.();
+  return;
+ }
  if(e.data.type==='WILLAI_QR_LOGIN'){requestLogin();return}
  if(e.data.type==='WILLAI_QR_EXTERNAL'){
   const safe=absoluteUrl(e.data.url);
@@ -95,6 +99,7 @@ function show(p){
  document.body.classList.toggle('is-v4-public',v4);
  for(const id of pages)$(id).classList.toggle('hidden',id!==target);
  if(v4)showV4();
+ else window.WILLAI_QR_BOOT_DONE?.();
 }
 
 function friendlyApiError(payload,status,path){
@@ -167,7 +172,55 @@ function fill(){
  document.querySelectorAll('[data-v4-theme]').forEach(el=>{el.value=data.reviewV4?.theme?.[el.dataset.v4Theme]??V4_DEFAULT.theme[el.dataset.v4Theme]??''});
  $('editorLink').textContent='Endereço permanente: willai.com.br/qr/'+code;render();
 }
-async function boot(){if(!/^W[0-9]{3,8}$/.test(code)){message('Código inválido',true);return show('unavailable')} $('title').textContent='Plaquinha '+code;if(!base||!key){message('Configuração do sistema incompleta',true);return show('unavailable')}try{const res=await rpc('willai_qr_public',{p_code:code});record=res;if(!res){message('Esta plaquinha ainda não foi registrada.',true);return show('unavailable')}if(res.status==='redirect'){try{const target=new URL(res.redirect_url);if(!['http:','https:'].includes(target.protocol))throw Error('Redirecionamento inválido');location.replace(target.href);return}catch(e){message('O link vinculado está inválido. Entre em contato com a WillAI.',true);show('unavailable');return}}if(res.status==='active'){data={...data,...res.page};active=true;$('publishedPreview').innerHTML=card(data,true);message('Página publicada • link permanente');show('public')}else if(res.status==='pending'){active=true;message('Página em preparação. Somente o proprietário pode entrar e publicar.');show('pending')}else if(res.status==='available'){message(activationToken?'Plaquinha liberada para ativação':'Plaquinha liberada. Crie sua conta para ativar e começar a editar.');show('start')}else{message('Esta plaquinha ainda não foi liberada para entrega ou está indisponível.',true);show('unavailable')}}catch(e){message('O módulo de plaquinhas ainda está aguardando a configuração segura do banco. Nenhuma ativação foi realizada.',true);show('unavailable')}}
+
+async function lookupPublic(){
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8500);
+ try{
+  return await api('/rest/v1/rpc/willai_qr_public',{
+   method:'POST',body:JSON.stringify({p_code:code}),signal:controller.signal
+  });
+ }finally{clearTimeout(timer)}
+}
+async function boot(){
+ if(!/^W[0-9]{3,8}$/.test(code)){message('Código inválido',true);return show('unavailable')}
+ $('title').textContent='Plaquinha '+code;
+ if(!base||!key){message('Configuração do sistema incompleta',true);return show('loadError')}
+ try{
+  const res=await lookupPublic();
+  record=res;
+  if(!res){message('Esta plaquinha ainda não foi registrada.',true);return show('unavailable')}
+  if(res.status==='redirect'){
+   try{
+    const target=new URL(res.redirect_url);
+    if(!['http:','https:'].includes(target.protocol))throw Error('Redirecionamento inválido');
+    location.replace(target.href);return;
+   }catch(e){message('O link vinculado está inválido. Entre em contato com a WillAI.',true);return show('unavailable')}
+  }
+  if(res.status==='active'){
+   data={...data,...res.page};active=true;
+   show('public');return;
+  }
+  if(res.status==='pending'){
+   active=true;
+   message('Página em preparação. Somente o proprietário pode entrar e publicar.');
+   return show('pending');
+  }
+  if(res.status==='available'){
+   message(activationToken?'Plaquinha liberada para ativação':'Plaquinha liberada. Crie sua conta para ativar e começar a editar.');
+   return show('start');
+  }
+  message('Esta plaquinha ainda não foi liberada para entrega ou está indisponível.',true);
+  return show('unavailable');
+ }catch(error){
+  console.warn('WILLAI QR: falha ao consultar estado público',error?.name||'Erro de conexão');
+  $('loadErrorText').textContent='A consulta da plaquinha não foi concluída. Verifique sua conexão e tente novamente.';
+  message('Não foi possível carregar sua página. Tente novamente.',true);
+  show('loadError');
+ }
+}
+$('retryLoad').onclick=()=>location.reload();
+$('v4Frame').addEventListener('error',()=>window.WILLAI_QR_BOOT_FAIL?.('Não foi possível carregar a página. Tente novamente.'));
+
 
 $('showRegister').onclick=()=>{mode='register';$('accountTitle').textContent='Criar minha conta';$('password').autocomplete='new-password';clearAccountError();updatePasswordRequirements();show('account')};
 async function requestLogin(){

@@ -10,8 +10,32 @@ body.is-v4-public>header,body.is-v4-public>.wrap{display:none!important}
 .v4-preview{height:650px;width:100%;border:0;background:#07172f;border-radius:25px}
 @media(max-width:520px){.v4-grid{grid-template-columns:1fr}.v4-colors{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .hidden{display:none!important}.buttonline{display:flex;gap:8px;align-items:center;margin:8px 0}.buttonline input{min-width:0}.buttonline button{flex-shrink:0}@media(max-width:850px){.layout{grid-template-columns:1fr}.wrap{margin-top:22px}header{padding:0 20px}}@media(max-width:540px){.two{grid-template-columns:1fr}.panel{padding:18px}}
-</style></head><body><header><strong>WillAI<span style="color:#35d0e1">.</span></strong><small>QR Studio • Plaquinhas</small></header><div class="wrap"><div class="top"><div><h1 id="title">Minha plaquinha</h1><p class="hint" id="subtitle">Seu link é permanente. Personalize sem trocar o QR Code.</p></div><a class="btn" href="/">Voltar para WillAI</a></div><div id="notice" class="message">Verificando a configuração da plaquinha…</div>
-<section class="panel hidden" id="unavailable"><h2>Esta plaquinha não está disponível para ativação</h2><p>Somente plaquinhas registradas, entregues e liberadas pela WillAI podem ser ativadas. Leia o QR Code impresso no produto. Caso já tenha recebido a plaquinha, fale com o suporte WillAI.</p></section>
+/* Entrada limpa no QR: nada do editor antigo aparece enquanto o QR publicado carrega. */
+html,body{min-height:100%;min-height:100dvh}
+#qrLaunch{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:radial-gradient(circle at 50% 38%,#143b78 0%,#0b2246 47%,#07172f 100%);color:#fff;overflow:hidden;isolation:isolate}
+#qrLaunch[hidden]{display:none!important}
+#qrLaunch:before{content:"";position:absolute;width:min(85vw,440px);aspect-ratio:1;top:50%;left:50%;transform:translate(-50%,-56%);background:radial-gradient(circle,#4fd6f528,transparent 69%);pointer-events:none}
+.qr-launch-center{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;width:min(85%,340px);position:relative}
+.qr-launch-symbol{display:grid;place-items:center;width:86px;height:86px;border-radius:25px;background:linear-gradient(145deg,#1a84b2,#19538e);border:1px solid #ffffff30;box-shadow:0 18px 60px #0005,0 0 32px #4ad6fa22;font-weight:900;font-size:43px;letter-spacing:-.06em}
+.qr-launch-symbol span{color:#76dcf7}
+.qr-launch-track{width:122px;height:3px;overflow:hidden;border-radius:20px;background:#ffffff23}
+.qr-launch-track i{display:block;width:55%;height:100%;border-radius:20px;background:linear-gradient(90deg,#75dff5,#f1c574);animation:qr-load-move 1.15s ease-in-out infinite alternate}
+.qr-launch-label{margin:0;color:#c2d7ec;font-size:13px;letter-spacing:.03em;line-height:1.5;text-align:center}
+#qrLaunchRetry{border:1px solid #ffffff3b;background:#ffffff18;color:#fff;border-radius:13px;font-size:13px;font-weight:800;padding:12px 20px;cursor:pointer}
+#qrLaunch.qr-launch-failed .qr-launch-track{display:none}
+#qrLaunch.qr-launch-complete{opacity:0;pointer-events:none;transition:opacity .22s ease}
+@keyframes qr-load-move{from{transform:translateX(-110%)}to{transform:translateX(210%)}}
+@media(prefers-reduced-motion:reduce){.qr-launch-track i{animation:none}#qrLaunch.qr-launch-complete{transition:none}}
+</style></head><body>
+<div id="qrLaunch" role="status" aria-live="polite" aria-label="Abrindo sua página">
+ <div class="qr-launch-center">
+  <div class="qr-launch-symbol" aria-hidden="true">W<span>.</span></div>
+  <div class="qr-launch-track" aria-hidden="true"><i></i></div>
+  <p id="qrLaunchLabel" class="qr-launch-label">Abrindo sua página…</p>
+  <button id="qrLaunchRetry" type="button" hidden>Tentar novamente</button>
+ </div>
+</div><header><strong>WillAI<span style="color:#35d0e1">.</span></strong><small>QR Studio • Plaquinhas</small></header><div class="wrap"><div class="top"><div><h1 id="title">Minha plaquinha</h1><p class="hint" id="subtitle">Seu link é permanente. Personalize sem trocar o QR Code.</p></div><a class="btn" href="/">Voltar para WillAI</a></div><div id="notice" class="message"></div>
+<section class="panel hidden" id="loadError"><h2>Não conseguimos abrir sua página agora</h2><p class="hint" id="loadErrorText">Verifique sua conexão e tente novamente.</p><button class="btn primary" type="button" id="retryLoad">Tentar novamente</button></section><section class="panel hidden" id="unavailable"><h2>Esta plaquinha não está disponível para ativação</h2><p>Somente plaquinhas registradas, entregues e liberadas pela WillAI podem ser ativadas. Leia o QR Code impresso no produto. Caso já tenha recebido a plaquinha, fale com o suporte WillAI.</p></section>
 <section class="panel hidden" id="start"><h2>Ativar minha plaquinha</h2><p class="hint">Leia sua plaquinha e entre com e-mail e senha. Com a plaquinha liberada, a ativação é automática na primeira conta, sem aprovação adicional. O endereço do QR não muda.</p><div class="buttons"><button class="btn primary" id="showRegister">Criar minha conta</button><button class="btn" id="showLogin">Já tenho conta</button></div></section>
 <section class="panel hidden" id="account"><h2 id="accountTitle">Criar conta</h2><form id="accountForm" autocomplete="on"><div class="field"><label>E-mail</label><input id="email" name="email" type="email" autocomplete="email" required></div><div class="field"><label for="password">Senha</label><div class="password-entry"><input id="password" name="password" type="password" autocomplete="new-password" minlength="8" required aria-describedby="passwordRequirements"><button id="togglePassword" type="button" class="password-toggle" aria-label="Mostrar senha" aria-pressed="false">Mostrar</button></div><div class="password-requirements" id="passwordRequirements"><strong>Para criar sua senha, use:</strong><ul><li id="passwordRuleLength">Pelo menos 8 caracteres</li><li id="passwordRuleUpper">Uma letra maiúscula</li><li id="passwordRuleLower">Uma letra minúscula</li><li id="passwordRuleNumber">Um número (0 a 9)</li><li id="passwordRuleSymbol">Um símbolo, como @, # ou !</li></ul><small>Os requisitos serão marcados conforme você digitar. Não reutilize uma senha antiga.</small></div></div><p id="accountError" class="account-error hidden" role="alert"></p><p class="hint" id="accountSwitchRow"><span id="accountSwitchPrompt">Já tem conta?</span> <button id="switchAccountMode" type="button" class="account-switch">Entrar com meu e-mail</button></p><div class="buttons"><button class="btn primary" type="submit" id="submitAccount">Continuar</button><button class="btn" type="button" id="cancelAccount">Cancelar</button></div><p class="hint">Esqueceu a senha? Entre em contato com o <a href="/contato">suporte da WillAI</a>.</p></form></section>
 <section class="panel hidden" id="approval"><h2>Continue a ativação</h2><p class="hint">A ativação da plaquinha liberada é automática. Entre na sua conta para começar a editar.</p><div class="buttons"><button class="btn primary" id="approvalCheck">Ativar e editar</button></div></section><section class="panel hidden" id="pending"><h2>Página em preparação</h2><p class="hint">Esta plaquinha já foi ativada, mas o proprietário ainda não publicou sua página. Se você é o proprietário, entre para continuar a edição.</p><div class="buttons"><button class="btn primary" id="pendingLogin">Login do proprietário</button></div></section><section class="panel hidden" id="claim"><h2>Ativar esta plaquinha</h2><p class="hint">A plaquinha será vinculada à sua conta somente se estiver liberada pela WillAI e ainda não tiver proprietário.</p><button id="activate" class="btn primary">Ativar e começar a editar</button></section>
@@ -52,8 +76,35 @@ body.is-v4-public>header,body.is-v4-public>.wrap{display:none!important}
 <div class="field"><label>Arredondamento</label><input data-v4-theme="radius" type="range" min="14" max="48"></div>
 </div>
 <div class="buttons"><button class="btn" type="button" id="clearLogo">Remover logo</button><button class="btn" type="button" id="clearPhoto">Remover foto</button></div>
-</section><section class="panel hidden" aria-hidden="true"><h2>Aparência</h2><p class="hint">Escolha qualquer cor e o estilo da página.</p><div class="colors"><label class="color">Principal <input type="color" data-key="primary"></label><label class="color">Fundo <input type="color" data-key="background"></label><label class="color">Texto <input type="color" data-key="ink"></label></div><div class="two"><div class="field"><label>Fonte</label><select data-key="font"><option value="system-ui">Moderna</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="Trebuchet MS">Trebuchet</option><option value="Tahoma">Tahoma</option></select></div><div class="field"><label>Estilo</label><select data-key="layout"><option value="rounded">Elegante</option><option value="pill">Arredondado</option><option value="square">Minimalista</option></select></div></div></section><section class="panel"><h2>Botões personalizados</h2><div id="buttonEditor"></div><button class="btn" id="addButton">+ Adicionar botão</button></section><p class="hint">Você pode publicar agora e adicionar o link do Google depois.</p><div id="saveStatus" role="status" aria-live="polite" aria-atomic="true"></div><div class="buttons"><a id="viewPublished" class="btn hidden" target="_blank" rel="noopener noreferrer">Ver página publicada</a><button id="save" class="btn primary">Salvar e publicar</button><button id="signOut" class="btn">Sair da conta</button></div></div><div class="panel"><h2 style="margin-top:0">Prévia ao vivo — Premium V4</h2><p class="hint" id="editorLink"></p><div class="phone"><iframe class="v4-preview" id="v4Preview" title="Prévia da página V4" src="/assets/review-v4.html?preview=1" loading="eager"></iframe><div id="preview" class="hidden"></div></div></div></section><section class="panel hidden" id="public"><div style="max-width:380px;margin:auto" id="publishedPreview"></div><div class="buttons" style="justify-content:center"><button class="btn" id="ownerLogin" style="background:transparent;border:0;color:#7f8ea3;font-size:11px;padding:5px 8px">Login</button></div></section></div><section id="v4Public" class="hidden" aria-label="Página de avaliação"><iframe id="v4Frame" title="Deixe sua avaliação" src="about:blank"></iframe></section><script src="/config.js"></script>
-<script src="/qr/qr-app.js?v=20261029-auto-4" onerror="document.getElementById('notice').textContent='Não foi possível carregar o módulo QR Studio. Atualize a página ou contate a WillAI.'"></script>
+</section><section class="panel hidden" aria-hidden="true"><h2>Aparência</h2><p class="hint">Escolha qualquer cor e o estilo da página.</p><div class="colors"><label class="color">Principal <input type="color" data-key="primary"></label><label class="color">Fundo <input type="color" data-key="background"></label><label class="color">Texto <input type="color" data-key="ink"></label></div><div class="two"><div class="field"><label>Fonte</label><select data-key="font"><option value="system-ui">Moderna</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Verdana">Verdana</option><option value="Trebuchet MS">Trebuchet</option><option value="Tahoma">Tahoma</option></select></div><div class="field"><label>Estilo</label><select data-key="layout"><option value="rounded">Elegante</option><option value="pill">Arredondado</option><option value="square">Minimalista</option></select></div></div></section><section class="panel"><h2>Botões personalizados</h2><div id="buttonEditor"></div><button class="btn" id="addButton">+ Adicionar botão</button></section><p class="hint">Você pode publicar agora e adicionar o link do Google depois.</p><div id="saveStatus" role="status" aria-live="polite" aria-atomic="true"></div><div class="buttons"><a id="viewPublished" class="btn hidden" target="_blank" rel="noopener noreferrer">Ver página publicada</a><button id="save" class="btn primary">Salvar e publicar</button><button id="signOut" class="btn">Sair da conta</button></div></div><div class="panel"><h2 style="margin-top:0">Prévia ao vivo — Premium V4</h2><p class="hint" id="editorLink"></p><div class="phone"><iframe class="v4-preview" id="v4Preview" title="Prévia da página V4" src="/assets/review-v4.html?preview=1" loading="eager"></iframe><div id="preview" class="hidden"></div></div></div></section><section class="panel hidden" id="public"><div style="max-width:380px;margin:auto" id="publishedPreview"></div><div class="buttons" style="justify-content:center"><button class="btn" id="ownerLogin" style="background:transparent;border:0;color:#7f8ea3;font-size:11px;padding:5px 8px">Login</button></div></section></div><section id="v4Public" class="hidden" aria-label="Página de avaliação"><iframe id="v4Frame" title="Deixe sua avaliação" src="about:blank"></iframe></section><script>
+// Segurança visual: o visitante nunca fica indefinidamente na tela de abertura.
+(function(){
+ var overlay=document.getElementById('qrLaunch');
+ var label=document.getElementById('qrLaunchLabel');
+ var retry=document.getElementById('qrLaunchRetry');
+ var clock=setTimeout(function(){
+   if(overlay&&!overlay.hidden&&!overlay.classList.contains('qr-launch-complete')){
+     window.WILLAI_QR_BOOT_FAIL?.('Não foi possível abrir agora. Confira a conexão e tente novamente.');
+   }
+ },12000);
+ window.WILLAI_QR_BOOT_DONE=function(){
+   clearTimeout(clock);
+   if(!overlay||overlay.hidden)return;
+   overlay.classList.add('qr-launch-complete');
+   setTimeout(function(){overlay.hidden=true;},240);
+ };
+ window.WILLAI_QR_BOOT_FAIL=function(reason){
+   clearTimeout(clock);
+   if(!overlay)return;
+   overlay.classList.remove('qr-launch-complete');
+   overlay.classList.add('qr-launch-failed');
+   label.textContent=reason||'Não foi possível abrir sua página. Tente novamente.';
+   retry.hidden=false;
+ };
+ retry.addEventListener('click',function(){location.reload()});
+})();
+</script><script src="/config.js"></script>
+<script src="/qr/qr-app.js?v=20261102-abertura-v4-1" onerror="window.WILLAI_QR_BOOT_FAIL?.('Falha ao carregar a página. Tente novamente.')"></script>
 <script>
 window.addEventListener('load',()=>{
  setTimeout(()=>{

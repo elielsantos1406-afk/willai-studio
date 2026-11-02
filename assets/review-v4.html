@@ -156,7 +156,12 @@ window.WILLAI_REVIEW_CONFIG = {
  $('googleButton').addEventListener('click',()=>openLink(config.links?.google,'avaliação do Google'));
  document.querySelectorAll('[data-service]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.service;openLink(k==='whatsapp'?phoneUrl(config.links?.whatsapp):config.links?.[k],k==='site'?'Nosso Site':k)}));
  $('loginButton').addEventListener('click',()=>{window.dispatchEvent(new CustomEvent('willai:login',{detail:{code:config.code||''}}));if(window.parent!==window){window.parent.postMessage({type:'WILLAI_QR_LOGIN'},location.origin);return}if(typeof window.WILLAI_LOGIN_HANDLER==='function'){window.WILLAI_LOGIN_HANDLER(config);return}openLink(config.links?.login,'login')});
- window.addEventListener('message',e=>{if(e.source!==window.parent||e.origin!==location.origin||e.data?.type!=='WILLAI_REVIEW_PREVIEW')return;if(e.data.config&&typeof e.data.config==='object')(render(e.data.config),document.documentElement.classList.remove('qr-embedded'))});
+ window.addEventListener('message',e=>{if(e.source!==window.parent||e.origin!==location.origin||e.data?.type!=='WILLAI_REVIEW_PREVIEW')return;if(e.data.config&&typeof e.data.config==='object'){
+  render(e.data.config);
+  document.documentElement.classList.remove('qr-embedded');
+  // O QR Studio exibe a página somente depois que o conteúdo real foi renderizado.
+  if(window.parent!==window)requestAnimationFrame(()=>window.parent.postMessage({type:'WILLAI_QR_RENDERED'},location.origin));
+ }});
  window.WILLAI_REVIEW=Object.freeze({render,getConfig:()=>structuredClone(config)});
  render(config);if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_READY'},location.origin);
 })();
