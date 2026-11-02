@@ -1,0 +1,138 @@
+/* WILLAI | Projeto de Inclusão Digital — Curitiba
+   Escopo exclusivo: .curitiba-page. Não modifica o tema de Pinhais. */
+.curitiba-page{--ct-navy:#071e40;--ct-blue:#0b4b94;--ct-cyan:#5ed5ee;--ct-gold:#e9c378;--ct-ink:#10294b;--ct-muted:#5b718e;background:#f5f8fc;color:var(--ct-ink);overflow:clip}
+.curitiba-page .container{max-width:1220px}
+.curitiba-page a:focus-visible{outline:3px solid #5ed5ee;outline-offset:4px}
+.curitiba-page .ct-eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:850;color:#0e5fa2}
+.curitiba-page .ct-eyebrow::before{content:"";width:17px;height:3px;background:var(--ct-cyan);border-radius:4px}
+.curitiba-page h1,.curitiba-page h2,.curitiba-page h3{letter-spacing:-.045em}
+.curitiba-page .ct-hero{position:relative;overflow:hidden;background:radial-gradient(ellipse 620px 470px at 78% 38%,rgba(39,124,190,.34),transparent 70%),linear-gradient(125deg,#071b38 4%,#0b2852 68%,#103e72);color:white}
+.curitiba-page .ct-hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#91d7ed2b 1.1px,transparent 1.1px);background-size:24px 24px;mask-image:linear-gradient(90deg,transparent 46%,#000 100%);pointer-events:none}
+.curitiba-page .ct-breadcrumbs{position:relative;display:flex;align-items:center;gap:10px;font-size:12px;color:#a5c0db;padding-top:37px}
+.curitiba-page .ct-breadcrumbs a{color:#e2f2ff;text-decoration:none}
+.curitiba-page .ct-hero-layout{position:relative;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);align-items:center;gap:clamp(24px,5vw,76px);padding:70px 0 87px}
+.curitiba-page .ct-hero-copy{max-width:645px}
+.curitiba-page .ct-hero .ct-eyebrow{color:#9fe9fb}
+.curitiba-page .ct-hero h1{font-size:clamp(46px,5.25vw,76px);line-height:1.07;margin:20px 0 22px;color:white;max-width:670px}
+.curitiba-page .ct-hero h1 .ct-highlight{color:#77dcef}
+.curitiba-page .ct-lead{font-size:clamp(16px,1.5vw,19px);line-height:1.7;color:#c6dbee;max-width:535px;margin:0 0 28px;white-space:pre-line}
+.curitiba-page .ct-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.curitiba-page .ct-btn{display:inline-flex;justify-content:center;align-items:center;gap:10px;padding:15px 21px;min-height:49px;border-radius:14px;font-size:13px;font-weight:850;text-decoration:none;transition:transform .18s,box-shadow .18s}
+.curitiba-page .ct-btn:hover{transform:translateY(-2px)}
+.curitiba-page .ct-btn-primary{background:#70dbf1;color:#062340;box-shadow:0 12px 25px #020d2466}
+.curitiba-page .ct-btn-light{background:#ffffff14;color:white;border:1px solid #aecce34d}
+.curitiba-page .ct-btn-dark{background:#0b4382;color:white}
+.curitiba-page .ct-hero-foot{margin-top:26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:#bbd0e6;font-size:12px}
+.curitiba-page .ct-hero-foot span{display:inline-flex;align-items:center;gap:7px}
+.curitiba-page .ct-hero-foot span::before{content:"";width:6px;height:6px;border-radius:50%;background:#75dce9}
+.curitiba-page .ct-hero-media{position:relative;align-self:center;min-width:0}
+.curitiba-page .ct-photo-shell{padding:10px;border:1px solid #ffffff38;background:#ffffff15;box-shadow:0 30px 70px #0004;border-radius:30px;position:relative}
+.curitiba-page .ct-photo-shell img{display:block;width:100%;height:clamp(320px,31vw,455px);object-fit:cover;object-position:center;border-radius:22px}
+.curitiba-page .ct-photo-shell .ct-photo-fallback{border-radius:22px;min-height:350px;display:grid;place-items:center;font-size:26px;color:#c5e2f3;background:linear-gradient(145deg,#163f73,#367db4)}
+.curitiba-page .ct-photo-tag{position:absolute;bottom:27px;left:27px;display:flex;align-items:center;gap:10px;background:#fff;color:#0a365e;border:1px solid #e4f1f8;border-radius:13px;padding:12px 15px;box-shadow:0 15px 36px #031c3966;font-size:12px;font-weight:850}
+.curitiba-page .ct-photo-tag .ct-tag-icon{height:28px;width:28px;border-radius:9px;background:#e3f8fc;color:#007ca9;display:grid;place-items:center;font-size:17px}
+.curitiba-page .ct-content-section{padding:83px 0}
+.curitiba-page .ct-section-top{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:31px}
+.curitiba-page .ct-section-top h2{font-size:clamp(34px,3.6vw,49px);line-height:1.12;margin:12px 0 0;color:#09294d;max-width:640px}
+.curitiba-page .ct-section-top p{font-size:15px;color:#59738f;max-width:405px;margin:0;line-height:1.7}
+.curitiba-page .ct-benefits{background:linear-gradient(180deg,#f5f8fc,#eef4fa)}
+.curitiba-page .ct-benefits-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px}
+.curitiba-page .ct-benefit{padding:31px 26px 32px;background:#fff;border:1px solid #dfe9f2;border-radius:23px;box-shadow:0 16px 38px #0b305111;min-height:246px;transition:transform .2s,box-shadow .2s}
+.curitiba-page .ct-benefit:hover{transform:translateY(-4px);box-shadow:0 24px 50px #0b30511d}
+.curitiba-page .ct-benefit-num{display:inline-flex;align-items:center;justify-content:center;height:46px;width:46px;background:#e2f7fc;color:#08689a;font-size:15px;font-weight:900;border-radius:15px;margin-bottom:26px}
+.curitiba-page .ct-benefit h3{font-size:21px;line-height:1.25;margin:0 0 12px;color:#082b53}
+.curitiba-page .ct-benefit p{font-size:14px;line-height:1.7;color:#647b92;margin:0}
+.curitiba-page .ct-sponsor-section{padding:86px 0;background:#fff}
+.curitiba-page .ct-sponsor-card{position:relative;display:grid;grid-template-columns:minmax(0,.93fr) minmax(0,1.07fr);gap:clamp(27px,5vw,70px);align-items:center;overflow:hidden;padding:clamp(22px,4.5vw,53px);border-radius:31px;background:radial-gradient(circle at 10% 0%,#24518842,transparent 45%),linear-gradient(130deg,#061528,#112b4b);box-shadow:0 26px 65px #09223c30;color:#fff}
+.curitiba-page .ct-sponsor-card::after{content:"";position:absolute;right:-80px;bottom:-120px;width:330px;height:330px;border:1px solid #d5ae6940;border-radius:50%;pointer-events:none}
+.curitiba-page .ct-sponsor-art{display:block;position:relative;z-index:1;overflow:hidden;border-radius:23px;background:#050505;border:1px solid #d9b96a6b;box-shadow:0 23px 53px #0006;transition:transform .2s}
+.curitiba-page .ct-sponsor-art:hover{transform:translateY(-3px)}
+.curitiba-page .ct-sponsor-art img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;background:#050505}
+.curitiba-page .ct-sponsor-copy{position:relative;z-index:1}
+.curitiba-page .ct-sponsor-copy .ct-eyebrow{color:var(--ct-gold)}
+.curitiba-page .ct-sponsor-copy .ct-eyebrow::before{background:var(--ct-gold)}
+.curitiba-page .ct-sponsor-copy h2{color:#fff;font-size:clamp(31px,3.3vw,48px);line-height:1.17;margin:20px 0}
+.curitiba-page .ct-sponsor-copy .ct-sponsor-role{color:#e6c783;font-weight:800;font-size:15px;margin:0 0 15px}
+.curitiba-page .ct-sponsor-copy .ct-sponsor-about{color:#c7d6e5;line-height:1.75;font-size:14px;white-space:pre-line;max-height:270px;overflow:auto}
+.curitiba-page .ct-sponsor-quote{margin:20px 0 25px;border-left:3px solid var(--ct-gold);padding:3px 0 3px 15px;color:#f0d69f;font-size:15px;font-weight:750;line-height:1.5}
+.curitiba-page .ct-sponsor-btn{background:#e8c277;color:#15233a;min-height:50px}
+.curitiba-page .ct-instagram-handle{font-size:12px;color:#afc6e1;margin:13px 0 0;overflow-wrap:anywhere}
+.curitiba-page .ct-story{background:#f9fbfe;padding:80px 0}
+.curitiba-page .ct-story-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(35px,7vw,110px);align-items:center}
+.curitiba-page .ct-story h2{font-size:clamp(33px,3.5vw,46px);margin:15px 0 19px;color:#092c55}
+.curitiba-page .ct-story p{color:#58708c;font-size:16px;line-height:1.85;white-space:pre-line;max-width:540px}
+.curitiba-page .ct-story-surface{border-radius:28px;background:linear-gradient(140deg,#e3f2f8,#ecf5fc);border:1px solid #d0e5f4;padding:32px;min-height:240px;display:flex;flex-direction:column;justify-content:center}
+.curitiba-page .ct-story-surface .ct-story-big{font-size:clamp(23px,2.8vw,34px);font-weight:850;letter-spacing:-.04em;line-height:1.3;color:#124976;margin:14px 0}
+.curitiba-page .ct-story-surface .ct-story-sub{font-size:13px;color:#6387a4;line-height:1.6}
+.curitiba-page .ct-journey{background:#0b2a53;color:#fff;padding:80px 0}
+.curitiba-page .ct-journey .ct-eyebrow{color:#95e1f2}
+.curitiba-page .ct-journey h2{color:#fff;font-size:clamp(34px,3.4vw,47px);max-width:670px;margin:15px 0}
+.curitiba-page .ct-journey-summary{font-size:15px;color:#c8d9ec;max-width:770px;line-height:1.75;margin:0 0 33px}
+.curitiba-page .ct-journey-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.curitiba-page .ct-journey-item{background:#ffffff0c;border:1px solid #b3d9fb33;border-radius:20px;padding:23px 20px 27px;min-height:165px}
+.curitiba-page .ct-journey-item .ct-journey-number{display:grid;place-items:center;font-size:18px;font-weight:900;width:43px;height:43px;border:1px solid #8ecfe977;border-radius:13px;color:#94e6f4;margin-bottom:17px}
+.curitiba-page .ct-journey-item p{color:#e5edf8;font-size:14px;line-height:1.65;margin:0}
+.curitiba-page .ct-participants{padding:86px 0 100px;background:#f5f8fc}
+.curitiba-page .ct-participants .ct-section-top{align-items:end}
+.curitiba-page .ct-participants .ct-section-top h2{margin-bottom:0}
+.curitiba-page .ct-company-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.curitiba-page .ct-company-card{display:flex;gap:16px;align-items:center;background:#fff;border:1px solid #dae7f2;border-radius:19px;padding:21px;transition:transform .2s,box-shadow .2s;box-shadow:0 12px 32px #0827470a}
+.curitiba-page .ct-company-card:hover{transform:translateY(-3px);box-shadow:0 18px 40px #08274718}
+.curitiba-page .ct-company-card img{width:66px;height:66px;border-radius:14px;object-fit:contain;background:#eef5fc}
+.curitiba-page .ct-company-card h3{font-size:18px;margin:0 0 6px}
+.curitiba-page .ct-company-card .ct-company-category{font-size:12px;color:#6b849e}
+.curitiba-page .ct-company-card .ct-company-open{font-weight:850;font-size:13px;color:#1163a2;margin-top:8px}
+.curitiba-page .ct-empty{display:flex;align-items:center;gap:23px;padding:29px;background:#fff;border:1px solid #d8e5f1;border-radius:22px}
+.curitiba-page .ct-empty-symbol{display:grid;place-items:center;flex-shrink:0;width:64px;height:64px;background:#e8f5fa;color:#0c5686;border-radius:18px;font-size:31px}
+.curitiba-page .ct-empty strong{display:block;font-size:17px;color:#173558;margin-bottom:7px}
+.curitiba-page .ct-empty p{margin:0;font-size:14px;color:#67819a}
+.curitiba-page .ct-outro{border-top:1px solid #dce6f1;padding:25px 0;background:#fff}
+.curitiba-page .ct-outro .container{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.curitiba-page .ct-outro p{color:#657c94;font-size:13px;margin:0}
+.curitiba-page .ct-outro a{font-size:13px;color:#0b508e;font-weight:800}
+@media(max-width:980px){
+ .curitiba-page .ct-hero-layout{gap:30px;padding:48px 0 67px}
+ .curitiba-page .ct-hero h1{font-size:clamp(43px,5.4vw,62px)}
+ .curitiba-page .ct-photo-shell img{height:350px}
+ .curitiba-page .ct-sponsor-card{gap:25px}
+ .curitiba-page .ct-journey-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .curitiba-page .ct-hero-layout,.curitiba-page .ct-sponsor-card,.curitiba-page .ct-story-grid{grid-template-columns:1fr}
+ .curitiba-page .ct-hero-layout{padding:42px 0 66px}
+ .curitiba-page .ct-hero-copy{order:0}
+ .curitiba-page .ct-hero-media{order:1}
+ .curitiba-page .ct-hero h1{font-size:clamp(40px,9vw,58px)}
+ .curitiba-page .ct-photo-shell img{height:auto;aspect-ratio:1.65;min-height:220px}
+ .curitiba-page .ct-content-section,.curitiba-page .ct-sponsor-section,.curitiba-page .ct-story,.curitiba-page .ct-journey,.curitiba-page .ct-participants{padding:60px 0}
+ .curitiba-page .ct-section-top{display:block}
+ .curitiba-page .ct-section-top p{margin-top:15px;max-width:620px}
+ .curitiba-page .ct-benefits-grid{grid-template-columns:1fr}
+ .curitiba-page .ct-benefit{min-height:0;padding:25px}
+ .curitiba-page .ct-benefit-num{margin-bottom:17px}
+ .curitiba-page .ct-sponsor-art{order:0}
+ .curitiba-page .ct-sponsor-copy{order:1}
+ .curitiba-page .ct-sponsor-copy .ct-sponsor-about{max-height:none}
+ .curitiba-page .ct-story-surface{min-height:170px}
+ .curitiba-page .ct-company-list{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+ .curitiba-page .ct-breadcrumbs{padding-top:25px}
+ .curitiba-page .ct-hero-layout{padding:39px 0 55px}
+ .curitiba-page .ct-hero h1{font-size:41px}
+ .curitiba-page .ct-lead{font-size:15px}
+ .curitiba-page .ct-actions{flex-direction:column;align-items:stretch}
+ .curitiba-page .ct-btn{width:100%}
+ .curitiba-page .ct-photo-shell{padding:7px;border-radius:23px}
+ .curitiba-page .ct-photo-shell img{border-radius:17px;min-height:200px}
+ .curitiba-page .ct-photo-tag{left:19px;bottom:19px}
+ .curitiba-page .ct-section-top h2{font-size:34px}
+ .curitiba-page .ct-sponsor-card{padding:17px;border-radius:24px}
+ .curitiba-page .ct-sponsor-copy h2{font-size:31px}
+ .curitiba-page .ct-journey-grid{grid-template-columns:1fr}
+ .curitiba-page .ct-journey-item{min-height:0}
+ .curitiba-page .ct-empty{align-items:flex-start}
+ .curitiba-page .ct-empty-symbol{width:48px;height:48px;font-size:23px}
+ .curitiba-page .ct-outro .container{align-items:flex-start;flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){.curitiba-page .ct-btn,.curitiba-page .ct-benefit,.curitiba-page .ct-company-card,.curitiba-page .ct-sponsor-art{transition:none!important}}
