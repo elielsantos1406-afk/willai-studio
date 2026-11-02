@@ -93,7 +93,7 @@
 .curitiba-movimento .link-plain:hover{background:#153c69;transform:translateY(-2px)}
 .curitiba-movimento .movimento-logo-link{display:block;max-width:100%;width:100%;padding:0;border:0;border-radius:18px;overflow:hidden;background:#050505;box-shadow:0 14px 38px #071a3320;transition:transform .2s ease,box-shadow .2s ease}
 .curitiba-movimento .movimento-logo-link:hover{transform:translateY(-3px);box-shadow:0 20px 48px #071a3333}
-.curitiba-movimento .movimento-logo-link img{display:block;width:100%;height:auto;max-height:none;aspect-ratio:1;object-fit:contain;background:#050505;border:0;border-radius:16px;box-shadow:none}
+.curitiba-movimento .movimento-logo-link img{display:block;width:100%;height:auto;max-height:none;aspect-ratio:4/3;object-fit:contain;background:#050505;border:0;border-radius:16px;box-shadow:none}
 .curitiba-movimento .movimento-instagram-handle{font-size:13px;letter-spacing:.01em;color:#60748d;margin-top:10px;overflow-wrap:anywhere}
 .curitiba-movimento .sponsor-instagram-cta{display:inline-flex;justify-content:center;min-height:47px}
 @media(max-width:760px){.curitiba-movimento .sponsor-template-photo{order:-1}.curitiba-movimento .sponsor-template-photo img{max-height:320px;max-width:100%}}
@@ -177,7 +177,7 @@ function city(slug){
  const sponsor=sponsorContent(v);
  const isMovimentoCuritiba=slug==='curitiba';
  const sponsorDestination=isMovimentoCuritiba?'https://www.instagram.com/movimento.empreendedor2027/':v.sponsorUrl;
- const sponsorLogoImage=isMovimentoCuritiba?(v.sponsorLogo||'/assets/movimento-empreendedor-curitiba.webp?v=20261102-patrocinador'):(v.sponsorLogo||v.sponsorImage||'');
+ const sponsorLogoImage=isMovimentoCuritiba?'/assets/movimento-empreendedor-arte-premium.webp?v=20261102':(v.sponsorLogo||v.sponsorImage||'');
  const steps=Array.isArray(v.howSteps)?v.howSteps.filter(s=>String(s.title||s.body||'').trim()):[];
  const showHow=Boolean(String(v.howTitle||v.howText||'').trim()||steps.length);
  const sections=Array.isArray(v.extraSections)?v.extraSections.filter(x=>String(x.title||x.body||'').trim()):[];
@@ -200,7 +200,7 @@ function city(slug){
    ${isMovimentoCuritiba?'<p class="movimento-instagram-handle">@movimento.empreendedor2027</p>':''}
   </div>
   <div class="sponsor-template-photo">
-   ${sponsorLogoImage?`${isMovimentoCuritiba?`<a class="movimento-logo-link" href="${link(sponsorDestination)}" rel="external" aria-label="Abrir Instagram do Movimento Empreendedor">`:''}<img src="${esc(sponsorLogoImage)}" alt="${isMovimentoCuritiba?'Logo do Movimento Empreendedor com Anderson Marques':'Imagem do patrocinador em '+esc(v.name)}" ${isMovimentoCuritiba?'loading="eager" fetchpriority="high" width="640" height="640"':'loading="lazy"'}>${isMovimentoCuritiba?'</a>':''}`:`<div class="sponsor-photo-placeholder" role="img" aria-label="Espaço reservado para imagem do patrocinador">${icon('camera',43)}<span>Imagem do patrocinador</span></div>`}
+   ${sponsorLogoImage?`${isMovimentoCuritiba?`<a class="movimento-logo-link" href="${link(sponsorDestination)}" rel="external" aria-label="Abrir Instagram do Movimento Empreendedor">`:''}<img src="${esc(sponsorLogoImage)}" alt="${isMovimentoCuritiba?'Patrocinador oficial de Curitiba: Movimento Empreendedor com Anderson Marques, apoiando o Projeto de Inclusão Digital':'Imagem do patrocinador em '+esc(v.name)}" ${isMovimentoCuritiba?'loading="eager" fetchpriority="high" width="640" height="640"':'loading="lazy"'}>${isMovimentoCuritiba?'</a>':''}`:`<div class="sponsor-photo-placeholder" role="img" aria-label="Espaço reservado para imagem do patrocinador">${icon('camera',43)}<span>Imagem do patrocinador</span></div>`}
    ${!isMovimentoCuritiba&&v.sponsorLogo&&v.sponsorImage?`<img class="sponsor-extra-banner" src="${esc(v.sponsorImage)}" alt="Banner de apresentação do patrocinador" loading="lazy">`:''}
   </div>
  </section>
