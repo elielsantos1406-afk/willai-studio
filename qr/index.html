@@ -85,7 +85,7 @@ html,body{min-height:100%;min-height:100dvh}
  var retry=document.getElementById('qrLaunchRetry');
  var clock=setTimeout(function(){
    if(overlay&&!overlay.hidden&&!overlay.classList.contains('qr-launch-complete')){
-     window.WILLAI_QR_BOOT_FAIL?.('Não foi possível abrir agora. Confira a conexão e tente novamente.');
+     window.WILLAI_QR_BOOT_FAIL?.('A página está demorando para abrir. Tente novamente.');
    }
  },12000);
  window.WILLAI_QR_BOOT_DONE=function(){
