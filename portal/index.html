@@ -81,6 +81,16 @@
 .about-brand{display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:37px;color:#153d70}
 .about-brand strong{font-size:16px}.about-brand span{font-size:10px;letter-spacing:.2em;font-weight:700;color:#6b8196}
 @media(max-width:750px){.about-intro{margin:0 auto 32px}.about-intro p{font-size:15px}.about-values{grid-template-columns:1fr;gap:14px;margin-bottom:32px}.about-contact{flex-direction:column;align-items:stretch}.about-contact .btn{align-self:flex-start}.about-brand{text-align:center}}
+
+/* Curitiba — identidade visual do Movimento Empreendedor (somente esta cidade). */
+.curitiba-movimento{border-color:#d7b46a55;background:linear-gradient(125deg,#fff 35%,#fff8e9 100%)}
+.curitiba-movimento .eyebrow{color:#a27832;letter-spacing:.13em}
+.curitiba-movimento .sponsor-template-copy h2{color:#102648;max-width:600px}
+.curitiba-movimento .sponsor-template-photo img{max-height:390px;object-fit:contain;background:#0b0b0c;border:1px solid #d4b16c66;box-shadow:0 20px 50px #071a3320}
+.curitiba-movimento .sponsor-copy-part strong{color:#a27832}
+.curitiba-movimento .link-plain{display:inline-flex;align-items:center;gap:8px;background:#0c2345;color:#fff;border:1px solid #c7a15b;border-radius:12px;padding:12px 18px;margin-top:13px;font-weight:800;text-decoration:none}
+.curitiba-movimento .link-plain:hover{background:#153c69;transform:translateY(-2px)}
+@media(max-width:760px){.curitiba-movimento .sponsor-template-photo{order:-1}.curitiba-movimento .sponsor-template-photo img{max-height:320px;max-width:100%}}
 </style>
 </head>
 <body>
@@ -97,7 +107,7 @@ const seed={
  theme:{primary:'#08458c',accent:'#31c8e7'},brand:{name:'WillAI',tagline:'TECNOLOGIA & SOLUÇÕES DIGITAIS',logo:A+'willai-logo-original.png',instagram:'',whatsapp:'',contact:''},
  home:{tag:'TECNOLOGIA PARA TRANSFORMAR NEGÓCIOS',title:'Sua ideia merece',emphasis:'sair do papel.',subtitle:'Sites, sistemas inteligentes, automações e identidade digital. Da primeira ideia até um negócio mais conectado.',photo:'',primaryLabel:'Conheça nossos serviços',primaryUrl:'#servicos',secondaryLabel:'Projeto de Inclusão Digital',secondaryUrl:'#/projeto'},
  project:{tag:'UMA INICIATIVA DE IMPACTO',title:'O digital precisa',emphasis:'ser para todos.',subtitle:'O Projeto de Inclusão Digital aproxima micro e pequenos empreendedores de oportunidades, presença na internet e novas ferramentas.',cover:A+'banner-projeto.png',primaryLabel:'Conheça as cidades',primaryUrl:'#cidades'},
- cities:{curitiba:{name:'Curitiba',tag:'PROJETO DE INCLUSÃO DIGITAL',title:'Curitiba merece mais oportunidades digitais.',subtitle:'Conectando empreendedores locais, fortalecendo pequenos negócios e ampliando o acesso ao digital.',photo:A+'banner-projeto.png',sponsor:'Anderson Marques',sponsorUrl:'https://www.instagram.com/andersonmarquescwb/',sponsorImage:A+'banner-anderson.png',partnershipImage:A+'banner-parceria.png'},pinhais:{name:'Pinhais',tag:'PROJETO DE INCLUSÃO DIGITAL',title:'Mais oportunidades para empreender em Pinhais.',subtitle:'Uma página local dedicada às empresas e às novas oportunidades digitais da cidade.',photo:'',sponsor:'',sponsorUrl:'',sponsorImage:'',partnershipImage:''}},
+ cities:{curitiba:{"name":"Curitiba","tag":"PROJETO DE INCLUSÃO DIGITAL","title":"Curitiba merece mais oportunidades digitais.","subtitle":"Conectando pequenos negócios à tecnologia, à visibilidade e a novas oportunidades. Uma realização da WillAI com patrocínio do Movimento Empreendedor.","photo":"/assets/banner-projeto.png","sponsor":"Movimento Empreendedor com Anderson Marques","sponsorRole":"Patrocinador oficial do Projeto de Inclusão Digital em Curitiba.","sponsorAbout":"O Movimento Empreendedor com Anderson Marques apoia iniciativas que valorizam o empreendedorismo e abrem novas possibilidades para pequenos negócios de Curitiba.\n\nComo patrocinador local do Projeto de Inclusão Digital, o Movimento contribui para aproximar comerciantes e profissionais autônomos de ferramentas digitais práticas. Em parceria com a WillAI — By ELIX SOLUTIONS, o projeto busca ajudar empreendedores a apresentar seus negócios de forma mais profissional, facilitar o contato com clientes e conquistar presença na internet.","sponsorQuote":"Conectando negócios. Criando oportunidades. Fortalecendo quem empreende em Curitiba.","sponsorUrl":"https://www.instagram.com/movimento.empreendedor2027/","sponsorLogo":"/assets/movimento-empreendedor-curitiba.webp","sponsorImage":"","partnershipImage":"","howTitle":"O que o projeto oferece para os empreendedores?","howText":"A inclusão digital começa com soluções simples: tornar o negócio mais fácil de encontrar, conhecer e contatar. As ações são definidas conforme a necessidade e a disponibilidade de atendimento do projeto.","howSteps":[{"title":"Página digital do negócio","body":"Apresentação profissional com nome, serviços, endereço, fotos e formas de contato em um link fácil de compartilhar."},{"title":"Conexão direta com clientes","body":"Integração de WhatsApp, Instagram e outros canais úteis para aproximar empresas de seu público."},{"title":"Orientação de presença digital","body":"Apoio inicial para melhorar a divulgação nas redes sociais e organizar o Perfil da Empresa no Google, quando aplicável."}],"extraSections":[{"title":"Uma iniciativa para quem movimenta a economia local","body":"O projeto é voltado a micro e pequenos empreendedores de Curitiba que desejam começar ou fortalecer sua presença na internet. Cada participação passa por um atendimento inicial para identificar as necessidades e as soluções disponíveis."},{"title":"Como funciona a participação","body":"01 — Conheça a iniciativa e entre em contato com a equipe.\n02 — Apresente seu negócio, serviços e canais de contato.\n03 — Receba orientação sobre as ferramentas digitais mais úteis.\n04 — Conforme a disponibilidade e o atendimento aprovado, a equipe prepara as soluções definidas para seu negócio."}]},pinhais:{name:'Pinhais',tag:'PROJETO DE INCLUSÃO DIGITAL',title:'Mais oportunidades para empreender em Pinhais.',subtitle:'Uma página local dedicada às empresas e às novas oportunidades digitais da cidade.',photo:'',sponsor:'',sponsorUrl:'',sponsorImage:'',partnershipImage:''}},
  services:[{id:'sites',icon:'globe',title:'Sites institucionais',desc:'Uma presença profissional e personalizada que apresenta sua empresa com credibilidade.',price:'Sob orçamento'},{id:'landing',icon:'layout',title:'Landing pages',desc:'Páginas de alta conversão para campanhas, lançamentos e captação de contatos.',price:'Sob orçamento'},{id:'systems',icon:'layers',title:'Portais e sistemas',desc:'Painéis e experiências digitais sob medida para automatizar a operação.',price:'Sob orçamento'},{id:'pdv',icon:'layers',title:'PDV e sistemas de gestão',desc:'Gestão digital de vendas e operação comercial.',price:'Sob orçamento'},{id:'agenda',icon:'layout',title:'Agendamentos e portais',desc:'Agendamentos, remarcar serviços e acesso do cliente.',price:'Sob orçamento'},{id:'automation',icon:'sparkles',title:'Automação e IA',desc:'Conecte WhatsApp, atendimento, integrações e fluxos com tecnologia inteligente.',price:'Sob orçamento'},{id:'visual',icon:'palette',title:'Identidade visual',desc:'Logos, peças visuais e linguagem de marca consistente em todos os canais.',price:'Sob orçamento'},{id:'nfc',icon:'qr',title:'QR Code e NFC',desc:'Plaquinhas digitais inteligentes, cartões de acesso e links que podem ser atualizados.',price:'Sob orçamento'}],
  companies:{plurita:{slug:'plurita',city:'curitiba',name:'Plurita',category:'Centro Médico e Odontológico',tagline:'Sua opinião faz a diferença!',photo:A+'plurita-logo.png',google:'',whatsapp:'https://api.whatsapp.com/send/?phone=554132531015&text=Ol%C3%A1%21+Vim+pelo+site+da+Plurita+e+gostaria+de+agendar+uma+consulta.&type=phone_number&app_absent=0',instagram:'https://www.instagram.com/andersonmarquescwb/',site:'https://plurita.com.br/'}},
  pages:{},plaques:[],portfolio:[{id:'demo-1',title:'Agendamentos inteligentes',category:'Demonstração',desc:'Exemplo de experiência de agendamento e acompanhamento digital.',image:'',url:'',visible:true},{id:'demo-2',title:'Portal de gestão',category:'Demonstração',desc:'Modelo de painel para centralizar cadastros e solicitações.',image:'',url:'',visible:true}]};
@@ -133,10 +143,10 @@ function project(){let p=state.project;return `<section class="hero"><div class=
 function sponsorDefaults(city){
  const place=String(city?.name||'sua cidade').trim();
  if(place.toLowerCase()==='curitiba')return {
-  name:'Anderson Marques',
-  role:'Empresário e patrocinador do Projeto de Inclusão Digital em Curitiba.',
-  about:'Em parceria com a WillAI, Anderson Marques trouxe o projeto para Curitiba. A iniciativa oferece aos pequenos empreendedores uma página na internet, orientação inicial para redes sociais e apoio na presença do negócio no Google.',
-  quote:'A iniciativa busca ampliar oportunidades no ambiente digital e fortalecer o empreendedorismo local.'
+  name:'Movimento Empreendedor com Anderson Marques',
+  role:'Patrocinador oficial do Projeto de Inclusão Digital em Curitiba.',
+  about:'Movimento de valorização do empreendedorismo local que apoia o acesso de pequenos negócios a soluções digitais, em parceria com a WillAI.',
+  quote:'Conectando negócios. Criando oportunidades. Fortalecendo quem empreende em Curitiba.'
  };
  return {
   name:'Parceiro do projeto',
@@ -167,11 +177,12 @@ function city(slug){
  <div class="city-grid"><div><span class="eyebrow">${esc(v.tag||'PROJETO DE INCLUSÃO DIGITAL')}</span>
  <h1>${esc(v.title||v.name)}</h1><p>${esc(v.subtitle||'')}</p>
  <div class="buttonline"><a class="btn btn-dark" href="#empresas">Empresas participantes ${icon('arrow',17)}</a>
- <a class="btn btn-outline" href="#/projeto">Voltar ao projeto</a></div></div>
+ <a class="btn btn-outline" href="#/projeto">Voltar ao projeto</a>
+ ${slug==='curitiba'?'<a class="btn btn-outline" href="#patrocinador">Conheça o patrocinador</a>':''}</div></div>
  <div>${v.photo?`<img class="city-img" src="${esc(v.photo)}" alt="${esc(v.name)}">`:`<div class="photo-placeholder" style="height:300px">${icon('camera',55)}<span>${adminMode?'Imagem da cidade: use o editor para adicionar':esc(v.name)}</span></div>`}</div></div>
- <section class="sponsor-block sponsor-profile sponsor-template" id="patrocinador">
+ <section class="sponsor-block sponsor-profile sponsor-template ${slug==='curitiba'?'curitiba-movimento':''}" id="patrocinador">
   <div class="sponsor-template-copy">
-   <span class="eyebrow">QUEM APOIA ESTA INICIATIVA</span>
+   <span class="eyebrow">${slug==='curitiba'?'PATROCINADOR OFICIAL EM CURITIBA':'QUEM APOIA ESTA INICIATIVA'}</span>
    <h2>${esc(sponsor.name)}</h2>
    <div class="sponsor-copy-part"><strong>APRESENTAÇÃO</strong><p>${esc(sponsor.role)}</p></div>
    <div class="sponsor-copy-part"><strong>SOBRE O PATROCINADOR</strong><p>${esc(sponsor.about)}</p></div>
