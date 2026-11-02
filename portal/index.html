@@ -381,10 +381,25 @@ async function request(path,opts={},credentials=auth){
 async function checkAccessRole(){try{if(!auth?.access_token)return false;const rows=await request('/rest/v1/willai_access_roles?select=role&limit=1');return Array.isArray(rows)&&rows.length>0}catch{return false}}
 async function checkAdmin(){try{if(!auth?.access_token)return false;const rows=await request('/rest/v1/willai_portal_admins?select=user_id&limit=1');return Array.isArray(rows)&&rows.length>0}catch{return false}}
 const publicCacheKey='willai_portal_public_cache_v1';
+/* Evita que um cache ou conteúdo legado volte a mostrar banners do antigo patrocinador em Curitiba. */
+function protectCuritibaSponsor(config){
+ const current=config?.cities?.curitiba;
+ if(!current)return config;
+ const old=String(current.sponsor||'').trim()==='Anderson Marques'
+  ||String(current.sponsorUrl||'').includes('/andersonmarquescwb/')
+  ||String(current.sponsorImage||'').includes('banner-anderson.png')
+  ||String(current.partnershipImage||'').includes('banner-parceria.png');
+ if(!old)return config;
+ const newest=seed.cities.curitiba;
+ for(const k of ['sponsor','sponsorRole','sponsorAbout','sponsorQuote','sponsorUrl','sponsorLogo','sponsorImage','partnershipImage','howTitle','howText','howSteps','extraSections']){
+  current[k]=structuredClone(newest[k]);
+ }
+ return config;
+}
 function restorePublicCache(){
  try{const record=JSON.parse(sessionStorage.getItem(publicCacheKey)||'null');
  if(record&&Date.now()-record.savedAt<30000&&record.config&&typeof record.config==='object')
- state={...state,...record.config,portfolio:record.config.portfolio||state.portfolio};}catch(e){}
+ state={...state,...protectCuritibaSponsor(record.config),portfolio:record.config.portfolio||state.portfolio};}catch(e){}
 }
 function cachePublicConfig(config){
  try{const data=JSON.stringify({savedAt:Date.now(),config});
@@ -397,7 +412,7 @@ async function loadPublic(){
  ]);
  if(portal.status==='fulfilled'){
   const config=portal.value?.[0]?.config;
-  if(config&&typeof config==='object'){state={...state,...config,portfolio:config.portfolio||state.portfolio};cachePublicConfig(config)}
+  if(config&&typeof config==='object'){const safeConfig=protectCuritibaSponsor(config);state={...state,...safeConfig,portfolio:safeConfig.portfolio||state.portfolio};cachePublicConfig(safeConfig)}
  }else console.warn('Portal: não foi possível atualizar dados',portal.reason);
  state.companyCities||={};
  if(pages.status==='fulfilled'&&Array.isArray(pages.value)){
