@@ -53,7 +53,7 @@ function postV4(frameId){
 function refreshV4(){postV4('v4Preview');postV4('v4Frame')}
 function showV4(){
  const frame=$('v4Frame');
- if(frame.getAttribute('src')==='about:blank')frame.src='/assets/review-v4.html';
+ if(frame.getAttribute('src')==='about:blank')frame.src='/assets/review-v4.html?v=20261102-smooth-1';
  else postV4('v4Frame');
 }
 window.addEventListener('message',e=>{
