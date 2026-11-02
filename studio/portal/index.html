@@ -203,7 +203,7 @@ function city(slug){
  <h1>${esc(v.title||v.name)}</h1><p>${esc(v.subtitle||'')}</p>
  <div class="buttonline"><a class="btn btn-dark" href="#empresas">Empresas participantes ${icon('arrow',17)}</a>
  <a class="btn btn-outline" href="#/projeto">Voltar ao projeto</a>
- ${slug==='curitiba'?'<a class="btn btn-outline" href="#patrocinador">Conheça o patrocinador</a>':''}</div></div>
+ ${slug==='curitiba'?'<a class="btn btn-outline" href="https://www.instagram.com/movimento.empreendedor2027/" rel="external">Conheça o patrocinador</a>':''}</div></div>
  <div>${v.photo?`<img class="city-img" src="${esc(v.photo)}" alt="${esc(v.name)}">`:`<div class="photo-placeholder" style="height:300px">${icon('camera',55)}<span>${adminMode?'Imagem da cidade: use o editor para adicionar':esc(v.name)}</span></div>`}</div></div>
  <section class="sponsor-block sponsor-profile sponsor-template ${slug==='curitiba'?'curitiba-movimento':''}" id="patrocinador">
   <div class="sponsor-template-copy">
