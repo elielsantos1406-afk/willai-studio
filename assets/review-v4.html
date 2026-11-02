@@ -160,7 +160,7 @@ window.WILLAI_REVIEW_CONFIG = {
   render(e.data.config);
   document.documentElement.classList.remove('qr-embedded');
   // O QR Studio exibe a página somente depois que o conteúdo real foi renderizado.
-  if(window.parent!==window)requestAnimationFrame(()=>window.parent.postMessage({type:'WILLAI_QR_RENDERED'},location.origin));
+  if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_RENDERED'},location.origin);
  }});
  window.WILLAI_REVIEW=Object.freeze({render,getConfig:()=>structuredClone(config)});
  render(config);if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_READY'},location.origin);

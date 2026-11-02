@@ -50,17 +50,40 @@ function postV4(frameId){
  if(!child||!frame?.src||frame.src==='about:blank')return;
  try{child.postMessage({type:'WILLAI_REVIEW_PREVIEW',config:v4Config(data)},location.origin)}catch{}
 }
-function refreshV4(){postV4('v4Preview');postV4('v4Frame')}
+// No Safari/iPhone a confirmação por postMessage/animationFrame pode ser suspensa.
+// Como os dois documentos são da própria WillAI, também aplicamos os dados
+// diretamente quando o iframe termina de carregar. Não há chamadas de escrita.
+function renderPublicV4Direct(){
+ const frame=$('v4Frame');
+ if(!frame||!document.body.classList.contains('is-v4-public'))return false;
+ try{
+  const child=frame.contentWindow;
+  if(typeof child?.WILLAI_REVIEW?.render!=='function')return false;
+  child.WILLAI_REVIEW.render(v4Config(data));
+  child.document.documentElement.classList.remove('qr-embedded');
+  window.WILLAI_QR_BOOT_DONE?.();
+  return true;
+ }catch(err){
+  console.warn('WILLAI QR: aguardando renderização da V4',err?.name||'indisponível');
+  return false;
+ }
+}
+function refreshV4(){
+ postV4('v4Preview');
+ if(!renderPublicV4Direct())postV4('v4Frame');
+}
 function showV4(){
  const frame=$('v4Frame');
- if(frame.getAttribute('src')==='about:blank')frame.src='/assets/review-v4.html?v=20261102-smooth-1';
- else postV4('v4Frame');
+ if(frame.getAttribute('src')==='about:blank')frame.src='/assets/review-v4.html?v=20261102-ios-fallback-2';
+ else if(!renderPublicV4Direct())postV4('v4Frame');
 }
 window.addEventListener('message',e=>{
  const framePublic=$('v4Frame'),framePreview=$('v4Preview');
  if(e.origin!==location.origin||!e.data||typeof e.data!=='object')return;
  if(e.data.type==='WILLAI_QR_READY'&&(e.source===framePublic.contentWindow||e.source===framePreview.contentWindow)){
-  if(e.source===framePublic.contentWindow)postV4('v4Frame');else postV4('v4Preview');
+  if(e.source===framePublic.contentWindow){
+   if(!renderPublicV4Direct())postV4('v4Frame');
+  }else postV4('v4Preview');
   return;
  }
  if(e.source!==framePublic.contentWindow)return;
@@ -219,6 +242,9 @@ async function boot(){
  }
 }
 $('retryLoad').onclick=()=>location.reload();
+$('v4Frame').addEventListener('load',()=>{
+ if(!renderPublicV4Direct())postV4('v4Frame');
+});
 $('v4Frame').addEventListener('error',()=>window.WILLAI_QR_BOOT_FAIL?.('Não foi possível carregar a página. Tente novamente.'));
 
 
