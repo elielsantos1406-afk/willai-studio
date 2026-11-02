@@ -22,6 +22,7 @@
 .curitiba-page .ct-btn-primary{background:#70dbf1;color:#062340;box-shadow:0 12px 25px #020d2466}
 .curitiba-page .ct-btn-light{background:#ffffff14;color:white;border:1px solid #aecce34d}
 .curitiba-page .ct-btn-dark{background:#0b4382;color:white}
+.curitiba-page .ct-btn-sponsor{border:1px solid #e9c3788c;color:#f0d495;background:#e9c37818}
 .curitiba-page .ct-hero-foot{margin-top:26px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:#bbd0e6;font-size:12px}
 .curitiba-page .ct-hero-foot span{display:inline-flex;align-items:center;gap:7px}
 .curitiba-page .ct-hero-foot span::before{content:"";width:6px;height:6px;border-radius:50%;background:#75dce9}
