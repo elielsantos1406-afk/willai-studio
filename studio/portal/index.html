@@ -200,7 +200,7 @@ function cityCuritibaPremium(v,companies,sponsor){
  return `<div class="curitiba-page" id="projeto-curitiba">
   <section class="ct-hero" aria-label="Projeto de Inclusão Digital em Curitiba">
    <div class="container">
-    <nav class="ct-breadcrumbs" aria-label="Você está aqui"><a href="#/projeto">Projeto de Inclusão Digital</a>${icon('chevron',14)}<span>Curitiba</span></nav>
+    <nav class="ct-breadcrumbs" aria-label="Você está aqui"><a href="${adminMode?'#/projeto':'/projeto'}">Projeto de Inclusão Digital</a>${icon('chevron',14)}<span>Curitiba</span></nav>
     <div class="ct-hero-layout">
       <div class="ct-hero-copy">
        <span class="ct-eyebrow">INCLUSÃO DIGITAL · CURITIBA / PR</span>
@@ -280,7 +280,7 @@ function cityCuritibaPremium(v,companies,sponsor){
    </div>
   </section>
 
-  <div class="ct-outro"><div class="container"><p>Projeto de Inclusão Digital · Curitiba / PR — Realização WillAI, com patrocínio do Movimento Empreendedor.</p><a href="#/projeto">Voltar ao projeto ${icon('arrow',15)}</a></div></div>
+  <div class="ct-outro"><div class="container"><p>Projeto de Inclusão Digital · Curitiba / PR — Realização WillAI, com patrocínio do Movimento Empreendedor.</p><a href="${adminMode?'#/projeto':'/projeto'}">Voltar ao projeto ${icon('arrow',15)}</a></div></div>
  </div>`;
 }
 function city(slug){
