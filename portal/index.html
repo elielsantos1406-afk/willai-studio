@@ -98,7 +98,7 @@
 .curitiba-movimento .sponsor-instagram-cta{display:inline-flex;justify-content:center;min-height:47px}
 @media(max-width:760px){.curitiba-movimento .sponsor-template-photo{order:-1}.curitiba-movimento .sponsor-template-photo img{max-height:320px;max-width:100%}}
 </style>
-</head>
+<link rel="stylesheet" href="/assets/curitiba-projeto-premium.css?v=20261102-1"></head>
 <body>
  <header id="site-header"></header><main id="app"></main><footer id="site-footer"></footer>
  <div id="editor-root"></div><div id="toast" role="status" aria-live="polite"></div>
@@ -171,10 +171,107 @@ function sponsorContent(city){
  };
 }
 
+function cityCuritibaPremium(v,companies,sponsor){
+ const insta='https://www.instagram.com/movimento.empreendedor2027/';
+ const art='/assets/movimento-empreendedor-arte-premium.webp?v=20261102';
+ const benefits=Array.isArray(v.howSteps)?v.howSteps.filter(x=>x&&String(x.title||x.body||'').trim()):[];
+ const sections=Array.isArray(v.extraSections)?v.extraSections.filter(x=>String(x.title||x.body||'').trim()):[];
+ const presentation=sections[0]||{};
+ const participation=sections[1]||{};
+ const journey=String(participation.body||'').split(/\n+/).map(x=>x.trim().replace(/^\d{1,2}\s*[—–-]\s*/,'')).filter(Boolean).slice(0,6);
+ const rawTitle=String(v.title||'Curitiba merece mais oportunidades digitais.');
+ const heroTitle=esc(rawTitle).replace('oportunidades digitais','<span class="ct-highlight">oportunidades digitais</span>');
+ return `<div class="curitiba-page" id="projeto-curitiba">
+  <section class="ct-hero" aria-label="Projeto de Inclusão Digital em Curitiba">
+   <div class="container">
+    <nav class="ct-breadcrumbs" aria-label="Você está aqui"><a href="#/projeto">Projeto de Inclusão Digital</a>${icon('chevron',14)}<span>Curitiba</span></nav>
+    <div class="ct-hero-layout">
+      <div class="ct-hero-copy">
+       <span class="ct-eyebrow">INCLUSÃO DIGITAL · CURITIBA / PR</span>
+       <h1>${heroTitle}</h1>
+       <p class="ct-lead">${esc(v.subtitle||'Conectando pequenos negócios à tecnologia e a novas oportunidades.')}</p>
+       <div class="ct-actions">
+        <a class="ct-btn ct-btn-primary" href="#beneficios">Conheça os benefícios ${icon('arrow',18)}</a>
+        <a class="ct-btn ct-btn-light" href="#empresas">Empresas participantes ${icon('arrow',17)}</a>
+       </div>
+       <div class="ct-hero-foot"><span>Realização WillAI</span><span>Patrocínio Movimento Empreendedor</span></div>
+      </div>
+      <div class="ct-hero-media">
+       <div class="ct-photo-shell">
+        ${v.photo?`<img src="${esc(v.photo)}" alt="Empreendedorismo e inclusão digital em Curitiba" decoding="async" fetchpriority="high">`:'<div class="ct-photo-fallback">Curitiba · PR</div>'}
+       </div>
+       <div class="ct-photo-tag"><span class="ct-tag-icon" aria-hidden="true">✦</span>Negócios locais. Novas oportunidades.</div>
+      </div>
+    </div>
+   </div>
+  </section>
+
+  <section class="ct-content-section ct-benefits" id="beneficios" aria-labelledby="ct-beneficios-titulo">
+   <div class="container">
+    <div class="ct-section-top">
+     <div><span class="ct-eyebrow">O QUE O PROJETO OFERECE</span><h2 id="ct-beneficios-titulo">${esc(v.howTitle||'Tecnologia que aproxima negócios e clientes.')}</h2></div>
+     <p>${esc(v.howText||'Soluções simples e práticas para ampliar sua presença no mundo digital.')}</p>
+    </div>
+    ${benefits.length?`<div class="ct-benefits-grid">${benefits.map((step,i)=>`<article class="ct-benefit"><span class="ct-benefit-num" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><h3>${esc(step.title||'Solução digital')}</h3><p>${esc(step.body||'')}</p></article>`).join('')}</div>`:''}
+   </div>
+  </section>
+
+  <section class="ct-sponsor-section" id="patrocinador" aria-labelledby="ct-patrocinador-titulo">
+   <div class="container"><div class="ct-sponsor-card">
+    <a class="ct-sponsor-art" href="${link(insta)}" rel="external" aria-label="Conheça o Movimento Empreendedor no Instagram">
+     <img src="${esc(art)}" alt="Movimento Empreendedor com Anderson Marques, patrocinador em Curitiba" loading="lazy" width="640" height="480">
+    </a>
+    <div class="ct-sponsor-copy">
+     <span class="ct-eyebrow">PARCERIA QUE TRANSFORMA</span>
+     <h2 id="ct-patrocinador-titulo">Quem acredita neste projeto.</h2>
+     <p class="ct-sponsor-role">${esc(sponsor.name)}</p>
+     <p class="ct-sponsor-about">${esc(sponsor.about||sponsor.role)}</p>
+     ${sponsor.quote?`<div class="ct-sponsor-quote">${esc(sponsor.quote)}</div>`:''}
+     <a class="ct-btn ct-sponsor-btn" href="${link(insta)}" rel="external">Conheça o patrocinador ${icon('arrow',18)}</a>
+     <p class="ct-instagram-handle">@movimento.empreendedor2027</p>
+    </div>
+   </div></div>
+  </section>
+
+  ${presentation.title||presentation.body?`<section class="ct-story" aria-labelledby="ct-story-title">
+    <div class="container ct-story-grid">
+      <div><span class="ct-eyebrow">EMPREENDEDORISMO LOCAL</span>
+       ${presentation.title?`<h2 id="ct-story-title">${esc(presentation.title)}</h2>`:''}
+       ${presentation.body?`<p>${esc(presentation.body)}</p>`:''}
+      </div>
+      <div class="ct-story-surface"><span class="ct-eyebrow">NOSSO PROPÓSITO</span>
+       <div class="ct-story-big">Conectar pessoas, valorizar negócios e ampliar possibilidades.</div>
+       <div class="ct-story-sub">Presença digital pensada para a realidade dos pequenos empreendedores.</div>
+      </div>
+    </div>
+   </section>`:''}
+
+  ${participation.title||journey.length?`<section class="ct-journey" aria-labelledby="ct-journey-title"><div class="container">
+   <span class="ct-eyebrow">DA IDEIA À PRESENÇA DIGITAL</span>
+   <h2 id="ct-journey-title">${esc(participation.title||'Como funciona a participação')}</h2>
+   <p class="ct-journey-summary">A participação começa com um atendimento para conhecer o negócio e identificar quais soluções digitais podem ser disponibilizadas.</p>
+   ${journey.length?`<div class="ct-journey-grid">${journey.map((item,i)=>`<div class="ct-journey-item"><div class="ct-journey-number">${String(i+1).padStart(2,'0')}</div><p>${esc(item)}</p></div>`).join('')}</div>`:''}
+  </div></section>`:''}
+
+  <section class="ct-participants" id="empresas" aria-labelledby="ct-empresas-title">
+   <div class="container">
+    <div class="ct-section-top"><div><span class="ct-eyebrow">NEGÓCIOS DA NOSSA CIDADE</span><h2 id="ct-empresas-title">Empresas participantes.</h2></div>
+    <p>Conheça os estabelecimentos que fazem parte do Projeto de Inclusão Digital em Curitiba.</p></div>
+    ${companies.length?`<div class="ct-company-list">${companies.map(([slug,company])=>`<a class="ct-company-card" href="/curitiba/${esc(slug)}">
+     ${company.photo?`<img src="${esc(company.photo)}" alt="" loading="lazy">`:'<span class="ct-empty-symbol" aria-hidden="true">✦</span>'}
+     <div><h3>${esc(company.name||'Estabelecimento')}</h3><div class="ct-company-category">${esc(company.category||'Negócio local')}</div><div class="ct-company-open">Conhecer empresa ${icon('arrow',15)}</div></div></a>`).join('')}</div>`:
+    `<div class="ct-empty"><div class="ct-empty-symbol" aria-hidden="true">✦</div><div><strong>Novos negócios em breve</strong><p>Os estabelecimentos participantes aparecerão aqui conforme forem cadastrados e publicados.</p></div></div>`}
+   </div>
+  </section>
+
+  <div class="ct-outro"><div class="container"><p>Projeto de Inclusão Digital · Curitiba / PR — Realização WillAI, com patrocínio do Movimento Empreendedor.</p><a href="#/projeto">Voltar ao projeto ${icon('arrow',15)}</a></div></div>
+ </div>`;
+}
 function city(slug){
  const v=state.cities[slug];if(!v)return notFound();
  const companies=Object.entries(state.companies).filter(([k,company])=>company.city===slug);
  const sponsor=sponsorContent(v);
+ if(slug==='curitiba')return cityCuritibaPremium(v,companies,sponsor);
  const isMovimentoCuritiba=slug==='curitiba';
  const sponsorDestination=isMovimentoCuritiba?'https://www.instagram.com/movimento.empreendedor2027/':v.sponsorUrl;
  const sponsorLogoImage=isMovimentoCuritiba?'/assets/movimento-empreendedor-arte-premium.webp?v=20261102':(v.sponsorLogo||v.sponsorImage||'');
