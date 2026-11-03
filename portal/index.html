@@ -371,9 +371,9 @@ function photo(image){return image?`<img class="profile-photo" src="${esc(image)
 function home(){
  const p=state.home||{},goto=path=>adminMode?'#/'+path:'/'+path;
  const navFor=(value,fallback)=>{
-  const u=String(value||'').trim();
-  if(adminMode&&/^\/(contato|portfolio|projeto|servicos)$/.test(u))return '#'+u;
-  return link(u||goto(fallback));
+  const u=String(value||'').trim()||goto(fallback);
+  if(/^\/(contato|portfolio|projeto|servicos)$/.test(u))return adminMode?'#'+u:u;
+  return link(u);
  };
  const all=Array.isArray(state.services)?state.services:[];
  const ids=['sites','landing','systems','nfc'];
