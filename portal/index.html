@@ -1001,6 +1001,23 @@ function initHomeMotion(){
  },{threshold:0.07,rootMargin:'0px 0px -14px 0px'});
  nodes.forEach(n=>whMotionObserver.observe(n));
 }
+let pricingMotionObserver=null;
+function initPricingMotion(){
+ if(pricingMotionObserver){pricingMotionObserver.disconnect();pricingMotionObserver=null;}
+ const root=document.querySelector('#app .pricing-page');
+ if(!root||!('IntersectionObserver' in window)||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
+ const nodes=[...root.querySelectorAll('.pricing-intro .container,.pricing-featured-card,.pricing-group,.pricing-conditions .container')];
+ if(!nodes.length)return;
+ nodes.forEach((node,i)=>{
+  node.classList.add('pricing-reveal');
+  if(node.classList.contains('pricing-featured-card'))node.style.setProperty('--pricing-delay',((i-1)%4)*75+'ms');
+ });
+ root.classList.add('pricing-motion-on');
+ pricingMotionObserver=new IntersectionObserver((entries,observer)=>{
+  for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('pricing-inview');observer.unobserve(entry.target);}
+ },{threshold:.035,rootMargin:'0px 0px -12px 0px'});
+ nodes.forEach(node=>pricingMotionObserver.observe(node));
+}
 function servicesPage(){
  const goto=p=>adminMode?"#/"+p:"/"+p;
  const list=Array.isArray(state.services)?state.services:[];
@@ -1015,7 +1032,7 @@ function servicesPage(){
  <section class="pricing-catalog" id="pricing-all"><div class="container"><span class="eyebrow">CATÁLOGO COMPLETO</span><h2>Outros serviços e soluções.</h2><p class="pricing-note">Os quatro destaques aparecem acima. Veja todas as demais opções:</p>${[...groups,...extras].map(group=>{const items=list.filter(s=>(s.group||"Soluções sob medida")===group&&!hidden.has(s.id));if(!items.length)return "";return `<div class="pricing-group"${group==="Planos mensais"?' id="pricing-monthly"':""}><h3>${esc(group)}</h3><div class="pricing-list">${items.map(s=>`<article class="pricing-item"><div class="pricing-item-text"><strong>${esc(s.title)}</strong><small>${esc(s.desc||"")}</small></div><div class="pricing-item-side"><span>${esc(s.price||"Sob orçamento")}</span><a href="${serviceQuoteUrl(s)}" aria-label="Solicitar orçamento de ${esc(s.title)}">${icon("arrow",16)}</a></div></article>`).join("")}</div></div>`}).join("")}</div></section>
  <section class="pricing-conditions"><div class="container"><p>Os valores apresentados são sugeridos para escopos definidos. Funcionalidades, integrações e personalizações extras são orçadas separadamente. Domínio, APIs e taxas de terceiros não estão incluídos.</p><p>Os planos mensais são opcionais e têm condições definidas na proposta. O orçamento confirma os entregáveis, prazos, revisões e suporte de cada contratação.</p><a href="${goto("contato")}">Descreva sua ideia e solicite um orçamento ${icon("arrow",17)}</a></div></section></div>`;
 }
-function renderContent(){const r=route(),bits=r.split('/');let html;if(!r)html=home();else if(r==='projeto')html=project();else if(r==='portfolio')html=portfolioPage();else if(r==='sobre')html=aboutPage();else if(r==='contato')html=contactPage();else if(r==='suporte')html=supportPage();else if(r==='servicos')html=servicesPage();else if(r==='login')html=login();else if(r==='plaquinhas')html=plates();else if(r==='studio')html=login();else if(bits[0]==='pagina')html=customPage(bits[1]);else if(bits[0]==='p')html=singlePlate(bits[1]);else if(bits.length===2&&state.companies[bits[1]])html=company(bits[0],bits[1]);else if(state.cities[r])html=city(r);else html=notFound();document.getElementById('app').innerHTML=html;document.documentElement.style.setProperty('--blue',state.theme.primary);document.documentElement.style.setProperty('--accent',state.theme.accent);updateSeoMeta();initHomeMotion()}
+function renderContent(){const r=route(),bits=r.split('/');let html;if(!r)html=home();else if(r==='projeto')html=project();else if(r==='portfolio')html=portfolioPage();else if(r==='sobre')html=aboutPage();else if(r==='contato')html=contactPage();else if(r==='suporte')html=supportPage();else if(r==='servicos')html=servicesPage();else if(r==='login')html=login();else if(r==='plaquinhas')html=plates();else if(r==='studio')html=login();else if(bits[0]==='pagina')html=customPage(bits[1]);else if(bits[0]==='p')html=singlePlate(bits[1]);else if(bits.length===2&&state.companies[bits[1]])html=company(bits[0],bits[1]);else if(state.cities[r])html=city(r);else html=notFound();document.getElementById('app').innerHTML=html;document.documentElement.style.setProperty('--blue',state.theme.primary);document.documentElement.style.setProperty('--accent',state.theme.accent);updateSeoMeta();initHomeMotion();initPricingMotion()}
 function routePath(){const r=route();if(!r)return'home';if(r==='projeto')return'project';if(state.cities[r])return'cities.'+r;if(r.startsWith('pagina/')&&state.pages[r.slice(7)])return'pages.'+r.slice(7);if(r.split('/').length===2&&state.companies[r.split('/')[1]])return'companies.'+r.split('/')[1];return'home'}
 function get(path){return path.split('.').reduce((a,k)=>a?.[k],state)}
 function set(path,value){const parts=path.split('.');const last=parts.pop();const obj=parts.reduce((a,k)=>a?.[k],state);if(!obj)return;obj[last]=value;save();renderContent();document.getElementById('site-header').innerHTML=header();document.getElementById('site-footer').innerHTML=footer()}
