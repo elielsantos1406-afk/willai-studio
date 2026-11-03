@@ -560,6 +560,40 @@
 }
 @media(prefers-reduced-motion:reduce){.pricing-motion-on .pricing-reveal{opacity:1;transform:none}.pricing-item,.pricing-featured-card{transition:none}.pricing-item:hover,.pricing-featured-card:hover{transform:none}}
 
+
+
+/* Imagens ilustrativas dos modelos; imagens reais enviadas no editor têm prioridade */
+.wh-project-image{position:relative;overflow:hidden}
+.wh-project-image .portfolio-illustration,.portfolio-card-visual .portfolio-illustration{height:100%;width:100%}
+.portfolio-card-visual{aspect-ratio:16/9;width:100%;border-radius:14px;overflow:hidden;margin-bottom:19px;background:#e5edf4}
+.portfolio-card-visual>img{width:100%;height:100%;object-fit:cover}
+.portfolio-illustration{position:relative;isolation:isolate;min-width:0;min-height:170px;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:25px 27px;font-family:Manrope,'DM Sans',Arial,sans-serif}
+.portfolio-illustration-gomez{background:radial-gradient(circle at 79% 46%,#5e4c36 0,transparent 47%),linear-gradient(115deg,#151714,#28251d 80%);color:#f9eedb}
+.portfolio-illustration-landing{background:radial-gradient(circle at 89% 32%,#85e6ec 0,transparent 43%),linear-gradient(123deg,#0b3973,#11679f 65%,#13a5bd);color:white}
+.portfolio-illustration-generic{background:linear-gradient(120deg,#093369,#167da9);color:white}
+.pv-browser{position:absolute;top:13px;left:17px;right:17px;display:flex;gap:5px;align-items:center;opacity:.8}
+.pv-browser i{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5}
+.pv-browser small{margin-left:auto;font-family:inherit;font-size:8px;font-weight:800;letter-spacing:.15em;color:inherit}
+.pv-brand{font-size:clamp(24px,3vw,43px);font-weight:900;line-height:1.06;letter-spacing:-.06em;max-width:80%;position:relative}
+.portfolio-illustration-gomez .pv-brand{letter-spacing:.15em}
+.portfolio-illustration-gomez .pv-brand span{display:block;font-size:9px;letter-spacing:.34em;margin-top:5px;color:#d7c1a3}
+.pv-label{font-size:12px;line-height:1.5;opacity:.82;margin-top:13px}
+.pv-button{display:inline-flex;align-items:center;gap:12px;align-self:flex-start;border-radius:7px;padding:9px 13px;background:#d3b68e;color:#27221e;font-size:9px;font-weight:900;letter-spacing:.06em;margin-top:17px;position:relative}
+.pv-button b{font-size:15px;font-weight:600}
+.pv-caption{position:absolute;bottom:11px;right:15px;font-size:8px;color:inherit;opacity:.65;letter-spacing:.06em}
+.pv-landing-grid{display:grid;grid-template-columns:1fr .7fr;align-items:center;gap:14px}
+.pv-landing-grid .pv-brand{font-size:clamp(19px,2.2vw,32px);max-width:100%;letter-spacing:-.04em;line-height:1.13;margin-top:10px}
+.pv-landing-grid .pv-label{margin-top:9px}
+.pv-landing-grid .pv-button{background:#fff;color:#0a5486;margin-top:13px}
+.pv-kicker{font-size:8px;font-weight:850;letter-spacing:.15em;color:#acf0f5}
+.pv-decoration{display:flex;flex-direction:column;gap:9px;padding:19px 15px;border:1px solid #ffffff70;border-radius:12px;background:#fff2;transform:rotate(5deg);box-shadow:0 11px 24px #092f4e2f}
+.pv-decoration span{height:12px;border-radius:5px;background:#ffffffb8}
+.pv-decoration span:first-child{height:55px;background:linear-gradient(45deg,#bff7f1,#fff)}
+.pv-decoration span:last-child{width:65%;background:#ffffff6b}
+.portfolio-card{min-width:0}.portfolio-card>p{flex:1}.portfolio-card .link-plain{align-self:flex-start;margin-top:auto}
+@media(max-width:630px){.portfolio-illustration{padding:23px 22px}.pv-brand{font-size:clamp(27px,7vw,40px)}.pv-landing-grid .pv-brand{font-size:24px}.pv-decoration{padding:12px 10px}.pv-caption{font-size:7px}}
+@media(prefers-reduced-motion:reduce){.wh-project,.portfolio-card{transition:none}}
+
 </style>
 </head>
 <body>
@@ -585,14 +619,28 @@ function upgradePricingCatalog(config){
  const extras=prior.filter(s=>s?.id&&!ids.has(s.id)).map(s=>({...s,group:s.group||"Soluções sob medida"}));
  return {...config,services:[...services,...extras],catalogVersion:1};
 }
+const portfolioDemos=[{"id":"portfolio-gomez","title":"GOMEZ Barbearia","category":"Site de agendamentos","desc":"Modelo demonstrativo de site para barbearia, com apresentação dos serviços e experiência de agendamento online.","image":"","url":"https://gomez.willai.workers.dev/","visible":true},{"id":"portfolio-landing","title":"Landing Page Simples","category":"Landing page","desc":"Modelo de landing page responsiva para apresentar serviços e captar contatos de potenciais clientes.","image":"","url":"https://landingpage.willai.workers.dev/","visible":true}];
+function upgradePortfolioDemos(config){
+ if(!config||typeof config!=='object'||Number(config.portfolioCatalogVersion)>=1)return config;
+ const list=Array.isArray(config.portfolio)?config.portfolio:[];
+ const normalized=url=>String(url||'').trim().replace(/\/+$/,'').toLowerCase();
+ const matches=portfolioDemos.map(d=>{
+   const existing=list.find(p=>p&&((p.id&&p.id===d.id)||normalized(p.url)===normalized(d.url)));
+   return existing?{...d,...existing}:structuredClone(d);
+ });
+ const known=new Set(portfolioDemos.map(d=>normalized(d.url)));
+ const ids=new Set(portfolioDemos.map(d=>d.id));
+ const rest=list.filter(p=>p&&!ids.has(p.id)&&!known.has(normalized(p.url)));
+ return {...config,portfolio:[...matches,...rest],portfolioCatalogVersion:1};
+}
 const seed={
- catalogVersion:1,theme:{primary:'#08458c',accent:'#31c8e7'},brand:{name:'WillAI',tagline:'TECNOLOGIA & SOLUÇÕES DIGITAIS',logo:A+'willai-logo-original.png',instagram:'',whatsapp:'',contact:''},
+ catalogVersion:1,portfolioCatalogVersion:1,theme:{primary:'#08458c',accent:'#31c8e7'},brand:{name:'WillAI',tagline:'TECNOLOGIA & SOLUÇÕES DIGITAIS',logo:A+'willai-logo-original.png',instagram:'',whatsapp:'',contact:''},
  home:{tag:'WILLAI · TECNOLOGIA PARA EMPRESAS',title:'Sites e soluções digitais',emphasis:'para o seu negócio.',subtitle:'Criamos sites profissionais, páginas de vendas e sistemas para facilitar o dia a dia da sua empresa.',photo:'',primaryLabel:'Solicitar orçamento',primaryUrl:'/contato',secondaryLabel:'Ver projetos',secondaryUrl:'/portfolio'},
  project:{tag:'UMA INICIATIVA DE IMPACTO',title:'O digital precisa',emphasis:'ser para todos.',subtitle:'O Projeto de Inclusão Digital aproxima micro e pequenos empreendedores de oportunidades, presença na internet e novas ferramentas.',cover:A+'banner-projeto.png',primaryLabel:'Conheça as cidades',primaryUrl:'#cidades'},
  cities:{curitiba:{"name":"Curitiba","tag":"PROJETO DE INCLUSÃO DIGITAL","title":"Curitiba merece mais oportunidades digitais.","subtitle":"Conectando pequenos negócios à tecnologia, à visibilidade e a novas oportunidades. Uma realização da WillAI com patrocínio do Movimento Empreendedor.","photo":"/assets/banner-projeto.png","sponsor":"Movimento Empreendedor com Anderson Marques","sponsorRole":"Patrocinador oficial do Projeto de Inclusão Digital em Curitiba.","sponsorAbout":"O Movimento Empreendedor com Anderson Marques apoia iniciativas que valorizam o empreendedorismo e abrem novas possibilidades para pequenos negócios de Curitiba.\n\nComo patrocinador local do Projeto de Inclusão Digital, o Movimento contribui para aproximar comerciantes e profissionais autônomos de ferramentas digitais práticas. Em parceria com a WillAI — By ELIX SOLUTIONS, o projeto busca ajudar empreendedores a apresentar seus negócios de forma mais profissional, facilitar o contato com clientes e conquistar presença na internet.","sponsorQuote":"Conectando negócios. Criando oportunidades. Fortalecendo quem empreende em Curitiba.","sponsorUrl":"https://www.instagram.com/movimento.empreendedor2027/","sponsorLogo":"/assets/movimento-empreendedor-curitiba.webp?v=20261102-patrocinador","sponsorImage":"","partnershipImage":"","howTitle":"O que o projeto oferece para os empreendedores?","howText":"A inclusão digital começa com soluções simples: tornar o negócio mais fácil de encontrar, conhecer e contatar. As ações são definidas conforme a necessidade e a disponibilidade de atendimento do projeto.","howSteps":[{"title":"Página digital do negócio","body":"Apresentação profissional com nome, serviços, endereço, fotos e formas de contato em um link fácil de compartilhar."},{"title":"Conexão direta com clientes","body":"Integração de WhatsApp, Instagram e outros canais úteis para aproximar empresas de seu público."},{"title":"Orientação de presença digital","body":"Apoio inicial para melhorar a divulgação nas redes sociais e organizar o Perfil da Empresa no Google, quando aplicável."}],"extraSections":[{"title":"Uma iniciativa para quem movimenta a economia local","body":"O projeto é voltado a micro e pequenos empreendedores de Curitiba que desejam começar ou fortalecer sua presença na internet. Cada participação passa por um atendimento inicial para identificar as necessidades e as soluções disponíveis."},{"title":"Como funciona a participação","body":"01 — Conheça a iniciativa e entre em contato com a equipe.\n02 — Apresente seu negócio, serviços e canais de contato.\n03 — Receba orientação sobre as ferramentas digitais mais úteis.\n04 — Conforme a disponibilidade e o atendimento aprovado, a equipe prepara as soluções definidas para seu negócio."}]},pinhais:{name:'Pinhais',tag:'PROJETO DE INCLUSÃO DIGITAL',title:'Mais oportunidades para empreender em Pinhais.',subtitle:'Uma página local dedicada às empresas e às novas oportunidades digitais da cidade.',photo:'',sponsor:'',sponsorUrl:'',sponsorImage:'',partnershipImage:''}},
  services:structuredClone(serviceCatalog),
  companies:{plurita:{slug:'plurita',city:'curitiba',name:'Plurita',category:'Centro Médico e Odontológico',tagline:'Sua opinião faz a diferença!',photo:A+'plurita-logo.png',google:'',whatsapp:'https://api.whatsapp.com/send/?phone=554132531015&text=Ol%C3%A1%21+Vim+pelo+site+da+Plurita+e+gostaria+de+agendar+uma+consulta.&type=phone_number&app_absent=0',instagram:'https://www.instagram.com/andersonmarquescwb/',site:'https://plurita.com.br/'}},
- pages:{},plaques:[],portfolio:[{id:'demo-1',title:'Agendamentos inteligentes',category:'Demonstração',desc:'Exemplo de experiência de agendamento e acompanhamento digital.',image:'',url:'',visible:true},{id:'demo-2',title:'Portal de gestão',category:'Demonstração',desc:'Modelo de painel para centralizar cadastros e solicitações.',image:'',url:'',visible:true}]};
+ pages:{},plaques:[],portfolio:[...structuredClone(portfolioDemos),{id:'demo-1',title:'Agendamentos inteligentes',category:'Demonstração',desc:'Exemplo de experiência de agendamento e acompanhamento digital.',image:'',url:'',visible:true},{id:'demo-2',title:'Portal de gestão',category:'Demonstração',desc:'Modelo de painel para centralizar cadastros e solicitações.',image:'',url:'',visible:true}]};
 let state=structuredClone(seed);state.companyCities={};
 
 const ui={editor:false,tab:'page',menu:false,dirty:false};
@@ -602,7 +650,7 @@ function randomId(){const b=new Uint8Array(16);if(globalThis.crypto?.getRandomVa
 function esc(s=''){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function link(u){u=String(u||'').trim();return /^(https?:\/\/|mailto:|tel:|#)/i.test(u)?esc(u):'#'}
 function save(){if(!adminMode||!isAdmin)return false;try{const data=JSON.stringify({time:Date.now(),config:state});sessionStorage.setItem(KEY,data);localStorage.setItem(KEY,data);ui.dirty=true;const status=document.getElementById('editorSaveStatus');if(status)status.textContent='● Alterações ainda não publicadas — clique em Salvar e publicar.'}catch(e){toast('Não foi possível guardar o rascunho neste dispositivo: '+e.message)}return true}
-function restoreAdminDraft(){if(!adminMode||!isAdmin)return false;try{const raw=sessionStorage.getItem(KEY)||localStorage.getItem(KEY),saved=JSON.parse(raw||'null');if(saved?.config?.home&&saved?.config?.cities&&saved?.time&&Date.now()-saved.time<30*86400000){state={...state,...upgradePricingCatalog(saved.config)};ui.dirty=true;return true}}catch(e){console.warn('Erro ao restaurar rascunho do editor',e)}return false}
+function restoreAdminDraft(){if(!adminMode||!isAdmin)return false;try{const raw=sessionStorage.getItem(KEY)||localStorage.getItem(KEY),saved=JSON.parse(raw||'null');if(saved?.config?.home&&saved?.config?.cities&&saved?.time&&Date.now()-saved.time<30*86400000){state={...state,...upgradePortfolioDemos(upgradePricingCatalog(saved.config))};ui.dirty=true;return true}}catch(e){console.warn('Erro ao restaurar rascunho do editor',e)}return false}
 function clearAdminDraft(){try{sessionStorage.removeItem(KEY);localStorage.removeItem(KEY);ui.dirty=false}catch(e){console.warn(e)}}
 function toast(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('show');clearTimeout(window.__toastTimeout);window.__toastTimeout=setTimeout(()=>e.classList.remove('show'),3300)}
 function route(){const x=adminMode?location.hash.replace(/^#\/?/,''):location.pathname.replace(/^\//,'');return decodeURIComponent(x.replace(/^\/|\/$/g,'').split('?')[0])||''}
@@ -628,7 +676,7 @@ function home(){
  const all=Array.isArray(state.services)?state.services:[];
  const ids=['landing','menu-simple','agenda','sites'];
  const highlights=ids.map(id=>all.find(x=>x.id===id)).filter(Boolean);
- const portfolio=(Array.isArray(state.portfolio)?state.portfolio:[]).filter(x=>x.visible!==false&&/^https:\/\//i.test(String(x.url||''))&&String(x.image||'').trim()).slice(0,2);
+ const portfolio=(Array.isArray(state.portfolio)?state.portfolio:[]).filter(x=>x.visible!==false&&/^https:\/\//i.test(String(x.url||''))).slice(0,2);
  const shot=p.photo||portfolio[0]?.image||'',shotTitle=p.photo?'Projeto digital WillAI':(portfolio[0]?.title||'Projeto WillAI');
  const shotHref=portfolio[0]?.url&&/^https:\/\//i.test(portfolio[0].url)?link(portfolio[0].url):goto('portfolio');
  return `<div class="home-rework">
@@ -655,7 +703,7 @@ function home(){
   <div class="wh-heading"><div><span class="wh-eyebrow">PORTFÓLIO</span><h2>Veja o que já desenvolvemos.</h2></div>
   <p>Demonstrações publicadas para você conhecer as soluções na prática.</p></div>
   ${portfolio.length?`<div class="wh-project-grid">${portfolio.map(item=>`<a class="wh-project" href="${link(item.url)}" target="_blank" rel="noopener noreferrer" aria-label="Abrir demonstração: ${esc(item.title)}">
-   <div class="wh-project-image"><img src="${esc(item.image)}" alt="Prévia de ${esc(item.title)}" loading="lazy" decoding="async"></div>
+   <div class="wh-project-image">${portfolioMedia(item)}</div>
    <div class="wh-project-info"><div><span class="wh-project-type">${esc(item.category||'Demonstração')}</span><h3>${esc(item.title)}</h3></div><span class="wh-project-open" aria-hidden="true">${icon('arrow',20)}</span></div>
    </a>`).join('')}</div>`:`<p class="wh-empty-work">Os projetos publicados aparecerão aqui. <a href="${goto('portfolio')}">Ver portfólio</a></p>`}
   <a class="wh-text-link wh-work-more" href="${goto('portfolio')}">Explorar portfólio completo ${icon('arrow',17)}</a>
@@ -853,7 +901,15 @@ function plates(){return `<section class="page-simple"><div class="container"><h
 function singlePlate(code){let obj=state.plaques.find(x=>x.code===code);return `<section class="page-simple"><div class="container" style="max-width:590px;text-align:center"><div class="eyebrow">PLAQUINHA INTELIGENTE • PRÉVIA</div><h1 style="font-size:42px">${obj?.status==='active'?'Plaquinha configurada':obj?.status==='suspended'?'Plaquinha suspensa':'Aguardando ativação'}</h1><p class="muted">Código: <span class="public-code">${esc(code)}</span></p>${obj?.status==='active'&&obj.url?`<a href="${link(obj.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-dark">Abrir destino configurado ${icon('arrow',17)}</a>`:`<p class="muted">Esta unidade ainda não possui destino ativo nesta demonstração.</p>`}<p style="margin-top:35px"><a href="#/plaquinhas" class="link-plain">Voltar ao estoque</a></p></div></section>`}
 function customPage(slug){let p=state.pages[slug];if(!p)return notFound();return `<section class="city-top"><div class="container city-grid"><div><span class="eyebrow">${esc(p.tag||'WILLAI')}</span><h1>${esc(p.title)}</h1><p>${esc(p.subtitle)}</p><div class="buttonline"><a href="${link(p.buttonUrl||'#/login')}" class="btn btn-dark">${esc(p.button||'Saiba mais')} ${icon('arrow',17)}</a></div></div><div>${p.photo?`<img class="city-img" src="${esc(p.photo)}" alt="${esc(p.title)}" loading="lazy" decoding="async">`:`<div class="photo-placeholder">${icon('camera',50)}<span>Insira uma imagem pelo editor</span></div>`}</div></div></section><section class="section"><div class="container" style="max-width:850px"><div class="eyebrow">SOBRE ESTA PÁGINA</div><h2>${esc(p.sectionTitle||'Conheça mais')}</h2><p>${esc(p.body||'Personalize os textos, as imagens e os botões no modo de edição.')}</p></div></section>`}
 function notFound(){return `<section class="page-simple"><div class="container" style="text-align:center"><h1>Página não encontrada.</h1><p class="muted">Confira o endereço ou volte para a página inicial.</p><a href="#/" class="btn btn-dark">Ir para início</a></div></section>`}
-function portfolioPage(){const items=(state.portfolio||[]).filter(x=>x.visible!==false);return `<section class="section soft"><div class="container"><div class="section-head"><div><div class="eyebrow">PORTFÓLIO</div><h1>Projetos e soluções digitais.</h1></div><p>Conheça demonstrações e trabalhos de tecnologia desenvolvidos pela WillAI.</p></div><div class="grid three">${items.length?items.map(p=>`<article class="service-card portfolio-card">${p.image?`<img src="${esc(p.image)}" alt="${esc(p.title)}" width="640" height="360" loading="lazy" decoding="async" style="width:100%;height:180px;object-fit:cover;border-radius:14px;margin-bottom:14px">`:''}<span class="eyebrow">${esc(p.category||'Projeto')}</span><h3 style="margin-top:14px">${esc(p.title)}</h3><p>${esc(p.desc||'')}</p>${/^https:\/\//i.test(p.url||'')?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" class="link-plain">Ver projeto ${icon('arrow',16)}</a>`:''}</article>`).join(''):'<p>Novos projetos serão apresentados em breve.</p>'}</div></div></section>`}
+function portfolioMedia(p){
+ const pic=String(p?.image||'').trim();
+ if(pic)return `<img src="${esc(pic)}" alt="Imagem ilustrativa do projeto ${esc(p.title)}" loading="lazy" decoding="async">`;
+ const variant=p?.id==='portfolio-gomez'?'gomez':p?.id==='portfolio-landing'?'landing':'generic';
+ if(variant==='gomez')return '<div class="portfolio-illustration portfolio-illustration-gomez" role="img" aria-label="Ilustração gráfica do modelo GOMEZ Barbearia"><div class="pv-browser"><i></i><i></i><i></i><small>PROJETO DE AGENDAMENTO</small></div><div class="pv-brand">GOMEZ<span>BARBEARIA</span></div><div class="pv-label">Seu estilo, seu horário.</div><div class="pv-button">AGENDAR HORÁRIO <b>↗</b></div><div class="pv-caption">Prévia ilustrativa do projeto</div></div>';
+ if(variant==='landing')return '<div class="portfolio-illustration portfolio-illustration-landing" role="img" aria-label="Ilustração gráfica de uma landing page"><div class="pv-browser"><i></i><i></i><i></i><small>LANDING PAGE</small></div><div class="pv-landing-grid"><div><span class="pv-kicker">SEU NEGÓCIO NO DIGITAL</span><div class="pv-brand">Seu próximo cliente começa aqui.</div><div class="pv-label">Uma página, novas oportunidades.</div><div class="pv-button">SAIBA MAIS <b>↗</b></div></div><div class="pv-decoration"><span></span><span></span><span></span></div></div><div class="pv-caption">Prévia ilustrativa do projeto</div></div>';
+ return `<div class="portfolio-illustration portfolio-illustration-generic" role="img" aria-label="Ilustração gráfica do projeto"><div class="pv-brand">${esc(p?.title||'Projeto digital')}</div><div class="pv-label">Soluções digitais WillAI</div></div>`;
+}
+function portfolioPage(){const items=(state.portfolio||[]).filter(x=>x.visible!==false);return `<section class="section soft"><div class="container"><div class="section-head"><div><div class="eyebrow">PORTFÓLIO</div><h1>Projetos e soluções digitais.</h1></div><p>Conheça demonstrações e trabalhos de tecnologia desenvolvidos pela WillAI.</p></div><div class="grid three">${items.length?items.map(p=>`<article class="service-card portfolio-card"><div class="portfolio-card-visual">${portfolioMedia(p)}</div><span class="eyebrow">${esc(p.category||'Projeto')}</span><h3 style="margin-top:14px">${esc(p.title)}</h3><p>${esc(p.desc||'')}</p>${/^https:\/\//i.test(p.url||'')?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" class="link-plain">Ver projeto ${icon('arrow',16)}</a>`:''}</article>`).join(''):'<p>Novos projetos serão apresentados em breve.</p>'}</div></div></section>`}
 function aboutPage(){return `<section class="section about-willai"><div class="container">
  <div class="about-intro">
   <span class="eyebrow">QUEM SOMOS</span>
@@ -1221,7 +1277,7 @@ function protectCuritibaSponsor(config){
 function restorePublicCache(){
  try{const record=JSON.parse(sessionStorage.getItem(publicCacheKey)||'null');
  if(record&&Date.now()-record.savedAt<30000&&record.config&&typeof record.config==='object')
- state={...state,...upgradePricingCatalog(protectCuritibaSponsor(record.config)),portfolio:record.config.portfolio||state.portfolio};}catch(e){}
+ state={...state,...upgradePortfolioDemos(upgradePricingCatalog(protectCuritibaSponsor(record.config)))};}catch(e){}
 }
 function cachePublicConfig(config){
  try{const data=JSON.stringify({savedAt:Date.now(),config});
@@ -1234,7 +1290,7 @@ async function loadPublic(){
  ]);
  if(portal.status==='fulfilled'){
   const config=portal.value?.[0]?.config;
-  if(config&&typeof config==='object'){const safeConfig=upgradePricingCatalog(protectCuritibaSponsor(config));state={...state,...safeConfig,portfolio:safeConfig.portfolio||state.portfolio};cachePublicConfig(safeConfig)}
+  if(config&&typeof config==='object'){const safeConfig=upgradePortfolioDemos(upgradePricingCatalog(protectCuritibaSponsor(config)));state={...state,...safeConfig,portfolio:safeConfig.portfolio||state.portfolio};cachePublicConfig(safeConfig)}
  }else console.warn('Portal: não foi possível atualizar dados',portal.reason);
  state.companyCities||={};
  if(pages.status==='fulfilled'&&Array.isArray(pages.value)){
