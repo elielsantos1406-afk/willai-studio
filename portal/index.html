@@ -799,7 +799,11 @@ function aboutPage(){return `<section class="section about-willai"><div class="c
  <div class="about-brand"><strong>WillAI — Tecnologia &amp; Soluções Digitais</strong><span>By ELIX SOLUTIONS</span></div>
 </div></section>`}
 function contactPage(){
- const items=(state.services||[]).map(s=>`<option value="${esc(s.title)}">${esc(s.title)}</option>`).join('');
+ const query=adminMode?(location.hash.split('?')[1]||''):location.search;
+ const requestedId=new URLSearchParams(query).get('servico')||'';
+ const chosen=(state.services||[]).find(s=>s.id===requestedId)||null;
+ const items=(state.services||[]).map(s=>`<option value="${esc(s.title)}"${chosen?.id===s.id?' selected':''}>${esc(s.title)}</option>`).join('');
+ const picked=chosen?`<div class="quote-picked" role="status"><span>Serviço selecionado</span><strong>${esc(chosen.title)}</strong><small>${esc(chosen.price||'Sob orçamento')}</small></div>`:'';
  return `<section class="section quote-section"><div class="container"><div class="contact-switch" role="navigation" aria-label="Escolha o tipo de atendimento"><a href="${adminMode?'#/contato':'/contato'}" aria-current="page">Solicitar orçamento <span>Para contratar ou iniciar um projeto</span></a><a href="${adminMode?'#/suporte':'/suporte'}">Suporte técnico <span>Para serviços que você já utiliza</span></a></div><div class="quote-layout">
  <div class="quote-copy"><span class="eyebrow">FAÇA UM ORÇAMENTO</span>
  <h1>Sua ideia merece sair do papel.</h1>
@@ -807,7 +811,7 @@ function contactPage(){
  <div class="quote-benefit">✓ Solicitação sem compromisso</div>
  <div class="quote-benefit">✓ Atendimento personalizado</div>
  <div class="quote-benefit">✓ Contato direto pelo WhatsApp</div></div>
- <div class="quote-card"><h2>Descreva seu projeto</h2><p class="muted">Preencha os dados abaixo para receber nosso retorno.</p>
+ <div class="quote-card"><h2>Descreva seu projeto</h2><p class="muted">Preencha os dados abaixo para receber nosso retorno.</p>${picked}
  <form id="willai-quote-form" class="quote-form">
  <div class="quote-grid"><div class="field"><label for="quoteName">Seu nome *</label><input id="quoteName" name="name" autocomplete="name" maxlength="120" minlength="2" required placeholder="Como podemos chamar você?"></div>
  <div class="field"><label for="quoteWhats">WhatsApp com DDD *</label><input id="quoteWhats" name="whatsapp" autocomplete="tel" inputmode="tel" maxlength="20" minlength="10" required placeholder="(41) 99999-9999"></div></div>
@@ -1041,7 +1045,8 @@ const portalPublicRoutes=new Set(['','projeto','servicos','portfolio','sobre','c
 function isPortalNavigation(href){
  try{
   const u=new URL(href,location.href);
-  if(u.origin!==location.origin||u.search||u.hash)return false;
+  if(u.origin!==location.origin||u.hash)return false;
+   if(u.search && !(u.pathname.replace(/\/$/,'')==='/contato'&&[...u.searchParams.keys()].every(k=>k==='servico')))return false;
   const bits=u.pathname.split('/').filter(Boolean),first=bits[0]||'';
   if(bits.length===0)return true;
   if(bits.length===1)return portalPublicRoutes.has(first)||Boolean(state.cities[first]);
@@ -1050,8 +1055,8 @@ function isPortalNavigation(href){
 }
 function navigatePortal(href,pop=false){
  const u=new URL(href,location.href);
- if(!pop&&u.pathname===location.pathname){if(ui.menu){ui.menu=false;document.getElementById('site-header').innerHTML=header()}return;}
- if(!pop)history.pushState({portal:true},'',u.pathname);
+ if(!pop&&u.pathname===location.pathname&&u.search===location.search){if(ui.menu){ui.menu=false;document.getElementById('site-header').innerHTML=header()}return;}
+ if(!pop)history.pushState({portal:true},'',u.pathname+u.search);
  ui.menu=false;
  render();
  window.scrollTo({top:0,behavior:'instant'});
