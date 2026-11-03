@@ -2,7 +2,7 @@
 const cfg=window.WILLAI_CONFIG||{};
 const parts=location.pathname.split('/').filter(Boolean).map(p=>{try{return decodeURIComponent(p)}catch{return ''}});
 const first=parts[0]||'';
-const publicRoutes=new Set(['','index.html','projeto','servicos','portfolio','sobre','contato','login','plaquinhas','p','pagina']);
+const publicRoutes=new Set(['','index.html','projeto','servicos','portfolio','sobre','contato','suporte','login','plaquinhas','p','pagina']);
 const knownCities=new Set(['curitiba','pinhais']);
 function loadCompany(){
  const sc=document.createElement('script');
