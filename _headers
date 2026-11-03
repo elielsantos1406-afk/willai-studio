@@ -1,0 +1,14 @@
+# WillAI — instruções para os robôs de busca nas rotas internas.
+# Os controles de acesso são implementados no backend; estes cabeçalhos
+# apenas evitam a indexação de telas de administração e protótipos.
+/studio
+  X-Robots-Tag: noindex, nofollow
+
+/studio/*
+  X-Robots-Tag: noindex, nofollow
+
+/preview/*
+  X-Robots-Tag: noindex, nofollow
+
+/portal/index.html
+  X-Robots-Tag: noindex, follow
