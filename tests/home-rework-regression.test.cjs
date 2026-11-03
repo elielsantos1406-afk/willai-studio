@@ -6,7 +6,7 @@ const homeSource=s=>s.slice(s.indexOf('function home(){'),s.indexOf('function pr
 const seedCode=pub.slice(pub.indexOf('const seed={'),pub.indexOf('let state=structuredClone(seed)'));
 const seed=new Function('A',seedCode+';return seed;')('/assets/');
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const link=x=>/^(https?:\\/\\/|mailto:|tel:|#)/i.test(String(x||''))?esc(x):'#';
+const link=x=>/^(https?:\/\/|mailto:|tel:|#)/i.test(String(x||''))?esc(x):'#';
 const state={...seed,portfolio:[
  {title:'Autoescola - Demo',category:'Demonstração',image:'https://example.org/a.webp',url:'https://example.org/a',visible:true},
  {title:'Pet Shop - Demo',category:'Demonstração',image:'https://example.org/b.webp',url:'https://example.org/b',visible:true},
@@ -36,12 +36,12 @@ test('admin preview stays in portal routes',()=>{
 });
 test('CSS resides in first inline style imported by SPA router',()=>{
  for(const source of [pub,admin]){
-  const css=source.match(/<style>([\\s\\S]*?)<\\/style>/)?.[1]||'';
-  assert.match(css,/\\.home-rework \\.wh-hero-grid/);
-  assert.match(css,/@media\\(max-width:480px\\)/);
+  const css=source.match(/<style>([\s\S]*?)<\/style>/)?.[1]||'';
+  assert.match(css,/\.home-rework \.wh-hero-grid/);
+  assert.match(css,/@media\(max-width:480px\)/);
  }
  const router=read('assets/router.js');
- assert.match(router,/doc\\.querySelector\\('style'\\)/);
+ assert.match(router,/doc\.querySelector\('style'\)/);
 });
 test('other pages and admin editor remain in place',()=>{
  for(const source of [pub,admin]){
