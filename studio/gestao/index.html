@@ -44,7 +44,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <button class="nav" data-view="participants">Participantes / Empresas</button>
 <a class="nav" href="/studio/qr/">▦ QR Studio · lotes e impressão</a>
 <a class="nav" href="/studio/portal/?edit=cities">Cidades</a>
-<button class="nav hidden" data-view="quotes">Orçamentos</button><button class="nav hidden" data-view="access">Acessos</button>
+<button class="nav hidden" data-view="quotes">Orçamentos</button><button class="nav hidden" data-view="support">Suporte técnico</button><button class="nav hidden" data-view="access">Acessos</button>
 <div class="side-label">SITE INSTITUCIONAL</div><a id="navPortal" class="nav hidden" href="/studio/portal/">Editar portal</a><a id="navCity" class="nav hidden" href="/studio/portal/?edit=cities">Cidades / Projetos</a><a id="navPortfolio" class="nav hidden" href="/studio/portal/?edit=portfolio">Portfólio</a>
 <a id="navCompanies" class="nav hidden" href="/studio/">Editar empresas</a>
 </div><div class="foot">Acesso controlado por permissões no Supabase. As páginas públicas não exibem este painel.</div></aside>
@@ -57,7 +57,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <div class="card"><span>Em análise</span><b id="kInterested">—</b><span>Interessados</span></div>
 </div>
 <div class="panel"><h2>Atalhos para sua operação</h2><p>Você gerencia apenas as cidades e as informações autorizadas ao seu perfil.</p>
-<div class="actions"><button class="btn" data-view="participants" id="shortcutParticipants">Gerenciar participantes</button><a class="btn subtle" href="/studio/portal/" id="shortcutPortal">Editar site institucional</a><a class="btn subtle hidden" id="shortcutCities" href="/studio/portal/?edit=cities">Criar nova cidade</a><a class="btn subtle hidden" id="shortcutPortfolio" href="/studio/portal/?edit=portfolio">Cadastrar projeto no portfólio</a><a class="btn subtle" href="/studio/" id="shortcutCompanies">Editar páginas de empresas</a><button class="btn subtle hidden" data-view="quotes" id="shortcutQuotes">Ver orçamentos</button><button class="btn subtle hidden" data-view="access" id="shortcutAccess">Gerenciar acessos</button></div>
+<div class="actions"><button class="btn" data-view="participants" id="shortcutParticipants">Gerenciar participantes</button><a class="btn subtle" href="/studio/portal/" id="shortcutPortal">Editar site institucional</a><a class="btn subtle hidden" id="shortcutCities" href="/studio/portal/?edit=cities">Criar nova cidade</a><a class="btn subtle hidden" id="shortcutPortfolio" href="/studio/portal/?edit=portfolio">Cadastrar projeto no portfólio</a><a class="btn subtle" href="/studio/" id="shortcutCompanies">Editar páginas de empresas</a><button class="btn subtle hidden" data-view="quotes" id="shortcutQuotes">Ver orçamentos</button><button class="btn subtle hidden" data-view="support" id="shortcutSupport">Ver suporte técnico</button><button class="btn subtle hidden" data-view="access" id="shortcutAccess">Gerenciar acessos</button></div>
 </div><div class="panel"><h2>Resumo da cidade</h2><div class="fields"><div><label for="summaryCity">Cidade</label><input id="summaryCity" placeholder="curitiba"></div><div style="align-self:end"><button class="btn" id="summaryBtn">Consultar indicadores</button></div></div><p id="summaryResult" class="muted">Selecione uma cidade para consultar.</p></div>
 </section>
 <section id="participantsView" class="hidden">
@@ -87,6 +87,13 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 <p class="muted">A criação definitiva do estoque e dos segredos de ativação depende da migração segura no Supabase. Não imprima nem comercialize códigos antes de confirmar que cada um foi registrado no banco.</p>
 <div class="scroll"><table><thead><tr><th>Código</th><th>Endereço permanente</th><th>Teste</th><th>Estado</th></tr></thead><tbody id="qrTable"><tr><td colspan="4" class="empty">Clique em preparar lista para visualizar os códigos planejados.</td></tr></tbody></table></div></div></section>
 <section id="quotesView" class="hidden"><div class="panel"><h2>Orçamentos recebidos</h2><p class="muted">Somente superadministradores podem visualizar nomes, WhatsApp e descrição das solicitações.</p><div class="actions"><button id="loadQuotesBtn" class="btn subtle">Atualizar solicitações</button></div><p id="quotesInfo" class="muted">Nenhuma consulta realizada.</p><div id="quotesList" class="quote-list"></div></div></section>
+<section id="supportView" class="hidden"><div class="panel">
+ <h2>Suporte técnico recebido</h2>
+ <p class="muted">Fila exclusiva para problemas e dúvidas sobre serviços existentes. Visível somente aos superadministradores.</p>
+ <div class="actions"><button id="loadSupportBtn" class="btn subtle">Atualizar chamados</button></div>
+ <p id="supportInfo" class="muted">Nenhuma consulta realizada.</p>
+ <div id="supportList" class="quote-list"></div>
+</div></section>
 <section id="accessView" class="hidden"><div class="panel"><h2>Autorizar acesso existente</h2>
 <p class="muted">Crie primeiro a conta em Supabase → Authentication → Users. Aqui você atribui permissões por cidade ou empresa. Não existe cadastro público.</p>
 <form id="accessForm" class="fields">
@@ -101,7 +108,7 @@ table{width:100%;border-collapse:collapse;min-width:650px}th,td{font-size:12px;p
 const cfg=window.WILLAI_CONFIG||{}, $=id=>document.getElementById(id);
 const sessionKey='willai_portal_session';
 let session=null,admin=false,role=null,rows=[],view='home',editingParticipantId=null;
-const names={home:['Painel de gestão','Visão geral dos recursos e atividades.'],participants:['Participantes','Cadastros e acompanhamento do Projeto de Inclusão Digital.'],qr:['QR Codes e plaquinhas','Gerencie os endereços permanentes e acompanhe o preparo do estoque.'],quotes:['Orçamentos','Pedidos recebidos pelo site institucional.'],access:['Acessos','Perfis administrativos e permissões por cidade.']};
+const names={home:['Painel de gestão','Visão geral dos recursos e atividades.'],participants:['Participantes','Cadastros e acompanhamento do Projeto de Inclusão Digital.'],qr:['QR Codes e plaquinhas','Gerencie os endereços permanentes e acompanhe o preparo do estoque.'],quotes:['Orçamentos','Novos projetos e solicitações comerciais.'],support:['Suporte técnico','Chamados de serviços existentes, separados dos orçamentos.'],access:['Acessos','Perfis administrativos e permissões por cidade.']};
 const valid=/^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function inform(msg,bad=false){const o=$('message');o.className='msg'+(bad?' bad':'');o.textContent=msg;if(!msg)o.classList.add('hidden')}
@@ -116,11 +123,11 @@ async function api(path,opt={}){
  if(!r.ok){const data=await r.json().catch(()=>({}));throw Error(data.message||data.error_description||data.error||'HTTP '+r.status)}
  if(r.status===204)return null;const txt=await r.text();return txt?JSON.parse(txt):null;
 }
-function authorizeView(next){if(['access','quotes'].includes(next)&&!admin)return; if(next==='participants'&&!admin&&role?.role!=='city_manager')return;view=next;
+function authorizeView(next){if(['access','quotes','support'].includes(next)&&!admin)return; if(next==='participants'&&!admin&&role?.role!=='city_manager')return;view=next;
  Object.keys(names).forEach(k=>$(k+'View').classList.toggle('hidden',k!==view));
  document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));
  $('title').textContent=names[next][0];$('subtitle').textContent=names[next][1];window.scrollTo(0,0);
- if(next==='participants')loadParticipants();if(next==='access')loadAccess();if(next==='quotes')loadQuotes();}
+ if(next==='participants')loadParticipants();if(next==='access')loadAccess();if(next==='quotes')loadQuotes();if(next==='support')loadSupport();}
 function showStats(data){$('kTotal').textContent=data.total??'—';$('kProgress').textContent=data.in_progress??'—';$('kComplete').textContent=data.completed??'—';$('kInterested').textContent=data.interested??'—'}
 async function summary(city){try{
  if(!valid.test(city))throw Error('Informe a cidade sem espaços e sem acentos (ex.: curitiba)');
@@ -170,13 +177,31 @@ async function loadQuotes(){
   quoteRows=await api('/rest/v1/willai_quote_requests?select=id,name,whatsapp,email,service,description,status,created_at&order=created_at.desc&limit=100');
   $('quotesInfo').textContent=quoteRows.length+' solicitações recentes (até 100).';
   $('quotesList').innerHTML=quoteRows.length?quoteRows.map(q=>{
-    const phone=String(q.whatsapp||'').replace(/\D/g,'');
+    const digits=String(q.whatsapp||'').replace(/\D/g,'');
+    const phone=digits.length===10||digits.length===11?'55'+digits:digits;
     const whatsapp=phone.length>=10?'<a class="btn subtle" href="https://wa.me/'+encodeURIComponent(phone)+'" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>':'';
     return '<article class="quote-item"><div class="top"><div><strong>'+esc(q.name)+'</strong><div class="muted">'+esc(q.service)+' · '+esc(new Date(q.created_at).toLocaleDateString('pt-BR'))+'</div></div><span class="status">'+esc(quoteStatuses[q.status]||q.status)+'</span></div>'+
     '<p>'+esc(q.description)+'</p><div class="muted">'+esc(q.whatsapp)+(q.email?' · '+esc(q.email):'')+'</div>'+
     '<div class="actions">'+whatsapp+'<select class="quote-select" data-quote-status="'+esc(q.id)+'">'+Object.entries(quoteStatuses).map(([k,v])=>'<option value="'+k+'" '+(q.status===k?'selected':'')+'>'+v+'</option>').join('')+'</select></div></article>';
   }).join(''):'<div class="empty">Ainda não há orçamentos registrados.</div>';
  }catch(e){$('quotesInfo').textContent='Não foi possível carregar os orçamentos. Confira se executou o SQL específico de orçamentos.';inform(e.message,true)}
+}
+const supportIssues={technical:'Erro ou funcionamento',access:'Acesso ou login',qr:'QR Code ou plaquinha',configuration:'Configuração ou alteração',billing:'Financeiro',other:'Outros'};
+let supportRows=[];
+async function loadSupport(){
+ if(!admin)return;
+ try{
+  supportRows=await api('/rest/v1/willai_support_requests?select=id,name,whatsapp,email,service,issue_type,description,status,created_at&order=created_at.desc&limit=100');
+  $('supportInfo').textContent=supportRows.length+' chamados recentes (até 100).';
+  $('supportList').innerHTML=supportRows.length?supportRows.map(q=>{
+    const digits=String(q.whatsapp||'').replace(/\D/g,'');
+    const phone=digits.length===10||digits.length===11?'55'+digits:digits;
+    const whatsapp=phone.length>=12?'<a class="btn subtle" href="https://wa.me/'+encodeURIComponent(phone)+'" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>':'';
+    return '<article class="quote-item"><div class="top"><div><strong>'+esc(q.name)+'</strong><div class="muted">'+esc(q.service)+' · '+esc(supportIssues[q.issue_type]||'Suporte')+' · '+esc(new Date(q.created_at).toLocaleDateString('pt-BR'))+'</div></div><span class="status">'+esc(quoteStatuses[q.status]||q.status)+'</span></div>'+
+    '<p>'+esc(q.description)+'</p><div class="muted">'+esc(q.whatsapp)+(q.email?' · '+esc(q.email):'')+'</div>'+
+    '<div class="actions">'+whatsapp+'<select class="quote-select" aria-label="Situação do chamado" data-support-status="'+esc(q.id)+'">'+Object.entries(quoteStatuses).map(([k,v])=>'<option value="'+k+'" '+(q.status===k?'selected':'')+'>'+v+'</option>').join('')+'</select></div></article>';
+  }).join(''):'<div class="empty">Nenhum chamado registrado até agora.</div>';
+ }catch(e){$('supportInfo').textContent='Não foi possível consultar os chamados.';inform(e.message,true)}
 }
 async function loadAccess(){if(!admin)return;try{const arr=await api('/rest/v1/rpc/willai_access_directory',{method:'POST',body:'{}'});$('accessTable').innerHTML=arr.length?arr.map(r=>'<tr><td>'+esc(r.email)+'</td><td>'+esc(r.role)+'</td><td>'+esc(r.city_slug)+'</td><td>'+esc(r.company_slug)+'</td></tr>').join(''):'<tr><td colspan="4">Nenhum perfil atribuído</td></tr>'}catch(e){inform('Não foi possível obter acessos: '+e.message,true)}}
 async function init(){try{
@@ -188,8 +213,8 @@ async function init(){try{
  role=r?.[0]||null}
  if(!admin&&!role){inform('Este usuário ainda não recebeu acesso ao painel. Solicite autorização administrativa.',true);$('profile').textContent='Sem permissão';return}
  $('profile').textContent=admin?'Superadministrador':role.role==='city_manager'?'Gestor • '+role.city_slug:role.role==='sponsor'?'Patrocinador • '+role.city_slug:'Empresa • '+role.company_slug;
- document.querySelectorAll('[data-view="access"],[data-view="quotes"]').forEach(x=>x.classList.toggle('hidden',!admin));$('navPortal').classList.toggle('hidden',!admin);$('navCity').classList.toggle('hidden',!admin);$('navPortfolio').classList.toggle('hidden',!admin);$('navCompanies').classList.toggle('hidden',!admin);
- $('shortcutQuotes').classList.toggle('hidden',!admin);$('shortcutPortal').classList.toggle('hidden',!admin);$('shortcutCities').classList.toggle('hidden',!admin);$('shortcutPortfolio').classList.toggle('hidden',!admin);$('shortcutCompanies').classList.toggle('hidden',!admin&&role?.role!=='company');if(role?.role==='company'){$('shortcutCompanies').href='/'+encodeURIComponent(role.company_slug);$('shortcutCompanies').textContent='Ver página da minha empresa';}$('shortcutParticipants').classList.toggle('hidden',!admin&&role?.role!=='city_manager');
+ document.querySelectorAll('[data-view="access"],[data-view="quotes"],[data-view="support"]').forEach(x=>x.classList.toggle('hidden',!admin));$('navPortal').classList.toggle('hidden',!admin);$('navCity').classList.toggle('hidden',!admin);$('navPortfolio').classList.toggle('hidden',!admin);$('navCompanies').classList.toggle('hidden',!admin);
+ $('shortcutQuotes').classList.toggle('hidden',!admin);$('shortcutSupport').classList.toggle('hidden',!admin);$('shortcutPortal').classList.toggle('hidden',!admin);$('shortcutCities').classList.toggle('hidden',!admin);$('shortcutPortfolio').classList.toggle('hidden',!admin);$('shortcutCompanies').classList.toggle('hidden',!admin&&role?.role!=='company');if(role?.role==='company'){$('shortcutCompanies').href='/'+encodeURIComponent(role.company_slug);$('shortcutCompanies').textContent='Ver página da minha empresa';}$('shortcutParticipants').classList.toggle('hidden',!admin&&role?.role!=='city_manager');
  if(role?.role==='sponsor'||role?.role==='company'){document.querySelectorAll('[data-view="participants"]').forEach(b=>b.classList.add('hidden'))}
  if(role?.city_slug){$('summaryCity').value=role.city_slug;$('summaryCity').readOnly=true;$('participantCity').value=role.city_slug;$('participantCity').readOnly=true;await summary(role.city_slug)}
  if(admin){$('summaryCity').value='curitiba';await summary('curitiba');}
@@ -203,6 +228,20 @@ $('qrPreviewBatch').onclick=()=>{
  inform('Lista de 50 links preparada para conferência. Eles ainda não constituem estoque ativado.');
 };
 $('loadQuotesBtn').onclick=loadQuotes;
+$('loadSupportBtn').onclick=loadSupport;
+document.addEventListener('change',async e=>{
+ const sel=e.target.closest('[data-support-status]');
+ if(!sel||!admin)return;
+ sel.disabled=true;
+ try{
+  await api('/rest/v1/willai_support_requests?id=eq.'+encodeURIComponent(sel.dataset.supportStatus),{
+   method:'PATCH',headers:{Prefer:'return=minimal'},
+   body:JSON.stringify({status:sel.value,updated_at:new Date().toISOString()})
+  });
+  inform('Situação do suporte atualizada.');
+ }catch(err){inform('Falha ao atualizar suporte: '+err.message,true);await loadSupport()}
+ finally{sel.disabled=false}
+});
 document.addEventListener('change',async e=>{const sel=e.target.closest('[data-quote-status]');if(!sel||!admin)return;sel.disabled=true;try{await api('/rest/v1/willai_quote_requests?id=eq.'+encodeURIComponent(sel.dataset.quoteStatus),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({status:sel.value,updated_at:new Date().toISOString()})});inform('Situação do orçamento atualizada.')}catch(err){inform('Falha ao atualizar: '+err.message,true);await loadQuotes()}finally{sel.disabled=false}});
 $('summaryBtn').onclick=()=>summary($('summaryCity').value.trim().toLowerCase());
 $('exportCSV').onclick=()=>{const fields=['participant_name','business_name','city_slug','whatsapp','status','notes','created_at'];let output=[fields.join(',')].concat(rows.map(r=>fields.map(f=>'"'+String(r[f]||'').replace(/"/g,'""').replace(/^[=+\-@]/,'\u0027$&')+'"').join(','))).join('\r\n');const u=URL.createObjectURL(new Blob(['\ufeff'+output],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='willai-participantes.csv';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};

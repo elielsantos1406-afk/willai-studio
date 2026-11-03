@@ -2,7 +2,7 @@
 const cfg=window.WILLAI_CONFIG||{};
 const parts=location.pathname.split('/').filter(Boolean).map(p=>{try{return decodeURIComponent(p)}catch{return ''}});
 const first=parts[0]||'';
-const publicRoutes=new Set(['','index.html','projeto','servicos','portfolio','sobre','contato','login','plaquinhas','p','pagina']);
+const publicRoutes=new Set(['','index.html','projeto','servicos','portfolio','sobre','contato','suporte','login','plaquinhas','p','pagina']);
 const knownCities=new Set(['curitiba','pinhais']);
 function loadCompany(){
  const sc=document.createElement('script');
@@ -23,14 +23,20 @@ async function loadQrRoute(){
  if(!response.ok)throw Error('Nao foi possivel carregar a tela de ativacao QR');
  const doc=new DOMParser().parseFromString(await response.text(),'text/html');
  const style=doc.querySelector('style');
- const qrScript=doc.querySelector('script[src="/qr/qr-app.js"]');
- if(!style||!qrScript)throw Error('Arquivos QR Studio incompletos');
+ const qrScript=doc.querySelector('script[src^="/qr/qr-app.js"]');
+ const bootstrap=[...doc.scripts].find(script=>!script.src&&script.textContent.includes('WILLAI_QR_BOOT_DONE'));
+ if(!style||!qrScript||!bootstrap)throw Error('Arquivos QR Studio incompletos');
  document.head.append(style.cloneNode(true));
  document.title=doc.title;
  // Scripts inseridos por innerHTML sao inertes; carregamos apenas o modulo QR necessario.
  document.body.innerHTML=doc.body.innerHTML;
+ // Scripts adicionados via innerHTML não executam. Inicializar a tela de abertura
+ // antes do módulo principal, inclusive no fallback do roteador SPA.
+ const bootstrapScript=document.createElement('script');
+ bootstrapScript.textContent=bootstrap.textContent;
+ document.body.append(bootstrapScript);
  const loader=document.createElement('script');
- loader.src='/qr/qr-app.js';
+ loader.src=qrScript.getAttribute('src');
  loader.onerror=()=>showError('Nao foi possivel iniciar o QR Studio. Atualize a pagina.');
  document.body.append(loader);
 }

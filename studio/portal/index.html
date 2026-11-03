@@ -237,6 +237,18 @@
  .curitiba-page .ct-outro .container{align-items:flex-start;flex-direction:column}
 }
 @media(prefers-reduced-motion:reduce){.curitiba-page .ct-btn,.curitiba-page .ct-benefit,.curitiba-page .ct-company-card,.curitiba-page .ct-sponsor-art{transition:none!important}}
+
+/* Contato comercial x suporte: opções com objetivos claros em ambas as telas. */
+.contact-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:770px;margin:0 auto 34px}
+.contact-switch a{display:flex;flex-direction:column;justify-content:center;gap:3px;text-decoration:none;background:#fff;color:#173e68;border:1px solid #dce9f6;padding:17px 21px;border-radius:15px;font-weight:850;font-size:15px;transition:border-color .15s,box-shadow .15s}
+.contact-switch a:hover{border-color:#4f9fd2;box-shadow:0 9px 26px #092c5411}
+.contact-switch a[aria-current=page]{background:#082c58;color:#fff;border-color:#082c58;box-shadow:0 12px 24px #0b38632b}
+.contact-switch span{font-weight:500;font-size:12px;color:#6d8197}
+.contact-switch a[aria-current=page] span{color:#c1d6e7}
+.support-note{margin:25px 0 0;color:#5c748e;font-size:14px}
+.support-note a{color:#0a5c9f;font-weight:850}
+.support-section .quote-copy h1{font-size:clamp(36px,4.5vw,62px)}
+@media(max-width:650px){.contact-switch{grid-template-columns:1fr;gap:8px}.contact-switch a{padding:13px 15px}}
 </style>
 </head>
 <body>
@@ -287,8 +299,8 @@ function clearAdminDraft(){try{sessionStorage.removeItem(KEY);localStorage.remov
 function toast(msg){const e=document.getElementById('toast');e.textContent=msg;e.classList.add('show');clearTimeout(window.__toastTimeout);window.__toastTimeout=setTimeout(()=>e.classList.remove('show'),3300)}
 function route(){const x=adminMode?location.hash.replace(/^#\/?/,''):location.pathname.replace(/^\//,'');return decodeURIComponent(x.replace(/^\/|\/$/g,'').split('?')[0])||''}
 function isCurrent(p){let r=route();return p===''?r==='':r===p}
-function header(){let n=[['','Início'],['servicos','Serviços'],['portfolio','Portfólio'],['sobre','Sobre nós'],['projeto','Projeto']];if(adminMode&&isAdmin)n.push(['curitiba','Curitiba'],['pinhais','Pinhais'],['plaquinhas','QR + NFC']);return `<div class="site-header"><div class="container nav"><a class="brand" href="${adminMode?'#/':'/'}"><img src="${esc(state.brand.logo||A+'willai-logo-original.png')}" alt=""><span class="brand-type"><strong>${esc(state.brand.name)}</strong><small>${esc(state.brand.tagline)}</small></span></a><nav class="nav-links ${ui.menu?'open':''}">${n.map(([p,t])=>`<a class="${isCurrent(p)?'current':''}" href="${adminMode?'#/':'/'}${p}">${t}</a>`).join('')}${adminMode&&isAdmin?Object.entries(state.pages).map(([slug,p])=>`<a href="${adminMode?'#/pagina/':'/pagina/'}${esc(slug)}">${esc(p.menu||p.title)}</a>`).join(''):''}</nav><div class="nav-actions">${adminMode&&isAdmin?`<a href="/studio/gestao/" class="manage-btn">Gestão</a><button class="manage-btn" data-action="edit">${icon('pen',16)} Editar portal</button>`:''}<a href="${adminMode?'#/login':'/login'}" class="btn btn-dark btn-small">Entrar ${icon('chevron',14)}</a><button class="mobile-toggle" data-action="menu" aria-expanded="${ui.menu?'true':'false'}" aria-label="${ui.menu?'Fechar menu':'Abrir menu'}">${icon('layers',21)}</button></div></div></div>`}
-function footer(){return `<div class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-brand">${esc(state.brand.name)}<span style="color:var(--accent)">.</span></div><p>Tecnologia, estratégia e soluções digitais para ideias que merecem crescer.</p><small>BY ELIX SOLUTIONS</small></div><div><div class="footer-title">Explore</div><a href="#/">Início</a><a href="#/servicos">Serviços</a><a href="#/portfolio">Portfólio</a><a href="#/sobre">Sobre nós</a><a href="#/projeto">Inclusão Digital</a></div><div><div class="footer-title">Contato</div><a href="#/contato">Solicitar orçamento</a><a href="#/login">Entrar</a>${adminMode&&isAdmin?`<a href="/studio/gestao/">Gestão interna</a><a href="/studio/">Editor de empresas</a><a href="/studio/qr/">Plaquinhas</a>`:''}</div></div><div class="footer-bottom"><span>© ${new Date().getFullYear()} WillAI — Tecnologia & Soluções Digitais</span><span>BY ELIX SOLUTIONS</span></div></div></div>`}
+function header(){let n=[['','Início'],['servicos','Serviços'],['portfolio','Portfólio'],['sobre','Sobre nós'],['projeto','Projeto'],['contato','Orçamento'],['suporte','Suporte']];if(adminMode&&isAdmin)n.push(['curitiba','Curitiba'],['pinhais','Pinhais'],['plaquinhas','QR + NFC']);return `<div class="site-header"><div class="container nav"><a class="brand" href="${adminMode?'#/':'/'}"><img src="${esc(state.brand.logo||A+'willai-logo-original.png')}" alt=""><span class="brand-type"><strong>${esc(state.brand.name)}</strong><small>${esc(state.brand.tagline)}</small></span></a><nav class="nav-links ${ui.menu?'open':''}">${n.map(([p,t])=>`<a class="${isCurrent(p)?'current':''}" href="${adminMode?'#/':'/'}${p}">${t}</a>`).join('')}${adminMode&&isAdmin?Object.entries(state.pages).map(([slug,p])=>`<a href="${adminMode?'#/pagina/':'/pagina/'}${esc(slug)}">${esc(p.menu||p.title)}</a>`).join(''):''}</nav><div class="nav-actions">${adminMode&&isAdmin?`<a href="/studio/gestao/" class="manage-btn">Gestão</a><button class="manage-btn" data-action="edit">${icon('pen',16)} Editar portal</button>`:''}<a href="${adminMode?'#/login':'/login'}" class="btn btn-dark btn-small">Entrar ${icon('chevron',14)}</a><button class="mobile-toggle" data-action="menu" aria-expanded="${ui.menu?'true':'false'}" aria-label="${ui.menu?'Fechar menu':'Abrir menu'}">${icon('layers',21)}</button></div></div></div>`}
+function footer(){return `<div class="site-footer"><div class="container"><div class="footer-grid"><div><div class="footer-brand">${esc(state.brand.name)}<span style="color:var(--accent)">.</span></div><p>Tecnologia, estratégia e soluções digitais para ideias que merecem crescer.</p><small>BY ELIX SOLUTIONS</small></div><div><div class="footer-title">Explore</div><a href="#/">Início</a><a href="#/servicos">Serviços</a><a href="#/portfolio">Portfólio</a><a href="#/sobre">Sobre nós</a><a href="#/projeto">Inclusão Digital</a></div><div><div class="footer-title">Contato</div><a href="#/contato">Solicitar orçamento</a><a href="#/suporte">Suporte técnico</a><a href="#/login">Entrar</a>${adminMode&&isAdmin?`<a href="/studio/gestao/">Gestão interna</a><a href="/studio/">Editor de empresas</a><a href="/studio/qr/">Plaquinhas</a>`:''}</div></div><div class="footer-bottom"><span>© ${new Date().getFullYear()} WillAI — Tecnologia & Soluções Digitais</span><span>BY ELIX SOLUTIONS</span></div></div></div>`}
 
 function intro(tag,title,emphasis,subtitle){return `<span class="eyebrow light">${esc(tag)}</span><h1>${esc(title)} <em>${esc(emphasis)}</em></h1><p>${esc(subtitle)}</p>`}
 function serviceCards(list=state.services){return list.map(s=>`<article class="service-card"><div class="service-icon">${icon(s.icon||'layers',26)}</div><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p><div class="service-foot"><span>${esc(s.price)}</span><a href="#/contato" title="Solicitar orçamento">${icon('arrow',20)}</a></div></article>`).join('')}
@@ -507,7 +519,7 @@ function aboutPage(){return `<section class="section about-willai"><div class="c
 </div></section>`}
 function contactPage(){
  const items=(state.services||[]).map(s=>`<option value="${esc(s.title)}">${esc(s.title)}</option>`).join('');
- return `<section class="section quote-section"><div class="container quote-layout">
+ return `<section class="section quote-section"><div class="container"><div class="contact-switch" role="navigation" aria-label="Escolha o tipo de atendimento"><a href="${adminMode?'#/contato':'/contato'}" aria-current="page">Solicitar orçamento <span>Para contratar ou iniciar um projeto</span></a><a href="${adminMode?'#/suporte':'/suporte'}">Suporte técnico <span>Para serviços que você já utiliza</span></a></div><div class="quote-layout">
  <div class="quote-copy"><span class="eyebrow">FAÇA UM ORÇAMENTO</span>
  <h1>Sua ideia merece sair do papel.</h1>
  <p class="muted">Conte o que você precisa. Nossa equipe analisará sua ideia e entrará em contato pelo WhatsApp informado.</p>
@@ -525,26 +537,83 @@ function contactPage(){
  <label class="quote-privacy"><input type="checkbox" name="privacy" required> Autorizo que a WillAI utilize meus dados para entrar em contato sobre esta solicitação.</label>
  <button class="btn btn-main quote-submit" type="submit">Enviar solicitação →</button>
  <p id="quoteStatus" class="quote-status" role="status" aria-live="polite"></p>
- </form></div></div></section>`
+ </form></div></div></div></section>`
+}
+function supportPage(){
+ return `<section class="section quote-section support-section">
+  <div class="container">
+   <div class="contact-switch" role="navigation" aria-label="Escolha o tipo de atendimento">
+    <a href="${adminMode?'#/contato':'/contato'}">Solicitar orçamento <span>Para contratar ou iniciar um projeto</span></a>
+    <a href="${adminMode?'#/suporte':'/suporte'}" aria-current="page">Suporte técnico <span>Para serviços que você já utiliza</span></a>
+   </div>
+   <div class="quote-layout">
+    <div class="quote-copy"><span class="eyebrow">CENTRAL DE SUPORTE WILLAI</span>
+      <h1>Seu projeto precisa de ajuda?</h1>
+      <p class="muted">Se você já utiliza um site, sistema ou serviço da WillAI, descreva o problema e nossa equipe poderá analisar o atendimento.</p>
+      <div class="quote-benefit">✓ Problemas técnicos e dificuldades de acesso</div>
+      <div class="quote-benefit">✓ Ajustes e dúvidas de serviços existentes</div>
+      <div class="quote-benefit">✓ Solicitação registrada separadamente dos orçamentos</div>
+      <p class="support-note">Quer contratar um novo projeto? <a href="${adminMode?'#/contato':'/contato'}">Peça um orçamento</a>.</p>
+    </div>
+    <div class="quote-card">
+      <h2>Abrir solicitação de suporte</h2>
+      <p class="muted">Informe o serviço e o que está acontecendo. Retornaremos pelo contato informado.</p>
+      <form id="willai-support-form" class="quote-form">
+       <div class="quote-grid">
+        <div class="field"><label for="supportName">Seu nome *</label><input id="supportName" name="name" autocomplete="name" minlength="2" maxlength="120" required placeholder="Nome do responsável"></div>
+        <div class="field"><label for="supportWhats">WhatsApp com DDD *</label><input id="supportWhats" name="whatsapp" autocomplete="tel" inputmode="tel" minlength="10" maxlength="20" required placeholder="(41) 99999-9999"></div>
+       </div>
+       <div class="field"><label for="supportEmail">E-mail (opcional)</label><input id="supportEmail" name="email" type="email" maxlength="200" autocomplete="email" placeholder="seu@email.com"></div>
+       <div class="field"><label for="supportService">Qual serviço precisa de suporte? *</label>
+         <input id="supportService" name="service" required minlength="2" maxlength="120" placeholder="Ex.: Meu site, QR Studio, sistema de agendamento"></div>
+       <div class="field"><label for="supportIssue">Qual o tipo de problema? *</label><select id="supportIssue" name="issue_type" required>
+          <option value="">Selecione o assunto</option>
+          <option value="technical">Erro ou funcionamento</option>
+          <option value="access">Acesso ou login</option>
+          <option value="qr">QR Code ou plaquinha</option>
+          <option value="configuration">Configuração ou alteração</option>
+          <option value="billing">Financeiro / cobrança de serviço existente</option>
+          <option value="other">Outra dúvida ou dificuldade</option>
+        </select></div>
+       <div class="field"><label for="supportDesc">Descreva o que aconteceu *</label><textarea id="supportDesc" name="description" rows="5" minlength="15" maxlength="4000" required placeholder="Informe o problema, em qual página ocorreu e quando começou. Não envie senhas ou dados sigilosos."></textarea></div>
+       <div class="field quote-trap" aria-hidden="true"><label for="supportWebsite">Site</label><input id="supportWebsite" name="website" tabindex="-1" autocomplete="off"></div>
+       <label class="quote-privacy"><input name="privacy" type="checkbox" required> Autorizo que a WillAI utilize estes dados somente para entrar em contato sobre este atendimento.</label>
+       <button class="btn btn-main quote-submit" type="submit">Enviar pedido de suporte →</button>
+       <p id="supportStatus" class="quote-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+   </div>
+  </div>
+ </section>`;
 }
 document.addEventListener('submit',async e=>{
- if(e.target.id!=='willai-quote-form')return;
+ const isQuote=e.target.id==='willai-quote-form',isSupport=e.target.id==='willai-support-form';
+ if(!isQuote&&!isSupport)return;
  e.preventDefault();
- const form=e.target,status=form.querySelector('#quoteStatus'),btn=form.querySelector('[type="submit"]');
+ const form=e.target,status=form.querySelector(isQuote?'#quoteStatus':'#supportStatus'),btn=form.querySelector('[type="submit"]');
  const d=Object.fromEntries(new FormData(form));
  if(d.website){status.textContent='Não foi possível validar a solicitação. Tente novamente.';return}
  if(!d.privacy||String(d.description||'').trim().length<15){status.textContent='Preencha a descrição e autorize o contato.';return}
- const values={name:String(d.name||'').trim(),whatsapp:String(d.whatsapp||'').trim(),email:String(d.email||'').trim(),service:String(d.service||'').trim(),description:String(d.description||'').trim()};
+ const values={
+  name:String(d.name||'').trim(),whatsapp:String(d.whatsapp||'').trim(),
+  email:String(d.email||'').trim(),service:String(d.service||'').trim(),
+  description:String(d.description||'').trim()
+ };
+ if(isSupport)values.issue_type=String(d.issue_type||'').trim();
  const phone=values.whatsapp.replace(/\D/g,'').replace(/^55(?=\d{10,11}$)/,'');
  if(!/^[1-9]{2}\d{8,9}$/.test(phone)||/^(\d)\1+$/.test(phone)){status.textContent='Informe um WhatsApp válido com DDD.';return}
- btn.disabled=true;status.textContent='Enviando sua solicitação com segurança…';
+ if(values.name.length<2||values.service.length<2||values.description.length<15||(isSupport&&!['technical','access','qr','configuration','billing','other'].includes(values.issue_type))){status.textContent='Confira os campos obrigatórios.';return}
+ btn.disabled=true;status.textContent=isSupport?'Registrando seu pedido de suporte…':'Enviando seu pedido de orçamento…';
  try{
-  await request('/rest/v1/willai_quote_requests',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(values)},null);
-  form.innerHTML='<div class="quote-confirmation"><div class="quote-check">✓</div><h2>Solicitação recebida!</h2><p>Obrigado pelo contato. Nossa equipe analisará sua ideia e entrará em contato pelo WhatsApp informado.</p><a href="/" class="btn btn-main">Voltar ao início</a></div>';
- }catch(err){status.textContent='Não foi possível enviar agora. Tente novamente mais tarde.';console.error('Orçamento:',err)}
- finally{btn.disabled=false}
+  const table=isSupport?'willai_support_requests':'willai_quote_requests';
+  await request('/rest/v1/'+table,{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify(values)},null);
+  form.innerHTML='<div class="quote-confirmation"><div class="quote-check">✓</div><h2>'+(isSupport?'Pedido de suporte registrado!':'Solicitação de orçamento recebida!')+'</h2><p>'+(isSupport?'Recebemos seu relato. A equipe analisará o atendimento e poderá retornar pelo WhatsApp informado.':'Nossa equipe analisará seu projeto e poderá entrar em contato pelo WhatsApp informado.')+'</p><a href="/" class="btn btn-main">Voltar ao início</a></div>';
+ }catch(err){
+  status.textContent='Não foi possível enviar agora. Confira os campos e tente novamente.';
+  console.error(isSupport?'Suporte:':'Orçamento:',err);
+ }finally{btn.disabled=false}
 });
-function renderContent(){const r=route(),bits=r.split('/');let html;if(!r)html=home();else if(r==='projeto')html=project();else if(r==='portfolio')html=portfolioPage();else if(r==='sobre')html=aboutPage();else if(r==='contato')html=contactPage();else if(r==='servicos')html=`<section class="section"><div class="container"><span class="eyebrow">SERVIÇOS</span><h1>Soluções para sua empresa.</h1><div class="grid three">${serviceCards()}</div></div></section>`;else if(r==='login')html=login();else if(r==='plaquinhas')html=plates();else if(r==='studio')html=login();else if(bits[0]==='pagina')html=customPage(bits[1]);else if(bits[0]==='p')html=singlePlate(bits[1]);else if(bits.length===2&&state.companies[bits[1]])html=company(bits[0],bits[1]);else if(state.cities[r])html=city(r);else html=notFound();document.getElementById('app').innerHTML=html;document.documentElement.style.setProperty('--blue',state.theme.primary);document.documentElement.style.setProperty('--accent',state.theme.accent)}
+function renderContent(){const r=route(),bits=r.split('/');let html;if(!r)html=home();else if(r==='projeto')html=project();else if(r==='portfolio')html=portfolioPage();else if(r==='sobre')html=aboutPage();else if(r==='contato')html=contactPage();else if(r==='suporte')html=supportPage();else if(r==='servicos')html=`<section class="section"><div class="container"><span class="eyebrow">SERVIÇOS</span><h1>Soluções para sua empresa.</h1><div class="grid three">${serviceCards()}</div></div></section>`;else if(r==='login')html=login();else if(r==='plaquinhas')html=plates();else if(r==='studio')html=login();else if(bits[0]==='pagina')html=customPage(bits[1]);else if(bits[0]==='p')html=singlePlate(bits[1]);else if(bits.length===2&&state.companies[bits[1]])html=company(bits[0],bits[1]);else if(state.cities[r])html=city(r);else html=notFound();document.getElementById('app').innerHTML=html;document.documentElement.style.setProperty('--blue',state.theme.primary);document.documentElement.style.setProperty('--accent',state.theme.accent)}
 function routePath(){const r=route();if(!r)return'home';if(r==='projeto')return'project';if(state.cities[r])return'cities.'+r;if(r.startsWith('pagina/')&&state.pages[r.slice(7)])return'pages.'+r.slice(7);if(r.split('/').length===2&&state.companies[r.split('/')[1]])return'companies.'+r.split('/')[1];return'home'}
 function get(path){return path.split('.').reduce((a,k)=>a?.[k],state)}
 function set(path,value){const parts=path.split('.');const last=parts.pop();const obj=parts.reduce((a,k)=>a?.[k],state);if(!obj)return;obj[last]=value;save();renderContent();document.getElementById('site-header').innerHTML=header();document.getElementById('site-footer').innerHTML=footer()}
@@ -570,7 +639,7 @@ function pagesFields(){return `<h4>Suas páginas personalizadas</h4><div class="
 function backupFields(){return `<h4>Salvar e transportar seu trabalho</h4><div class="mini-note"><strong>Como salvar:</strong> os campos mudam na prévia. Para disponibilizar suas alterações no site, clique em <strong>Salvar e publicar</strong>. Os dados são gravados no Supabase após confirmação. Você também pode exportar um backup JSON.</div><div class="minor-actions" style="margin-top:20px"><button data-action="export">${icon('download',16)} Baixar backup JSON</button><button data-action="import">Importar backup JSON</button></div><input type="file" accept="application/json,.json" id="backup-input" hidden><div class="minor-actions"><button data-action="reset">Restaurar protótipo original</button></div><p class="small-helper">A publicação exige seu login administrativo e uma conexão válida com o Supabase. Se ocorrer erro, leia a mensagem exibida no editor.</p>`}
 function editor(){if(!ui.editor||!adminMode||!isAdmin)return '';const tabs=[['page','Página'],['brand','Identidade'],['services','Serviços'],['portfolio','Portfólio'],['cities','Cidades'],['companies','Empresas'],['pages','Novas páginas'],['backup','Backup']];const bodies={page:pageFields,brand:brandFields,services:servicesFields,portfolio:portfolioFields,cities:citiesFields,companies:companiesFields,pages:pagesFields,backup:backupFields};return `<div class="editor-shade" data-action="close-editor"></div><aside class="editor" aria-label="Editor de conteúdo" role="dialog"><div class="editor-top"><div class="editor-topline"><div><small style="color:#9cdbea">WILLAI STUDIO • EDIÇÃO</small><h3>Editor visual</h3></div><button data-action="close-editor" class="icon-btn" title="Fechar editor">${icon('close',19)}</button></div><p style="font-size:12px;color:#c5deef;margin:8px 0 0">Personalize a página sem editar códigos.</p></div><div class="editor-tabs">${tabs.map(([k,v])=>`<button data-tab="${k}" class="${ui.tab===k?'sel':''}">${v}</button>`).join('')}</div><div class="editor-body">${(bodies[ui.tab]||pageFields)()}</div><div class="editor-footer"><div class="editor-quick"><button type="button" data-action="open-home-edit">Início / Capa</button><button type="button" data-action="open-project-edit">Projeto</button><button type="button" data-action="open-portfolio-edit">Portfólio</button><button type="button" data-action="open-cities-edit">Cidades</button></div><div id="editorSaveStatus" role="status" aria-live="polite" class="editor-save-status">${ui.dirty?'● Há alterações não publicadas. Clique em Salvar e publicar.':'Tudo pronto para editar. Clique em Salvar e publicar ao concluir.'}</div><button type="button" data-action="publish-portal" class="strong editor-save">Salvar e publicar ✓</button><a class="editor-visit-site" href="/" target="_blank" rel="noopener noreferrer">Visualizar site público</a><button type="button" data-action="export">Backup JSON</button><button type="button" data-action="close-editor">Fechar</button></div></aside>`}
 function render(){document.getElementById('site-header').innerHTML=header();renderContent();document.getElementById('site-footer').innerHTML=footer();document.getElementById('editor-root').innerHTML=editor();if(!adminMode){document.querySelectorAll('a[href^="#/"]').forEach(a=>a.setAttribute('href','/'+a.getAttribute('href').slice(2)))}}
-const portalPublicRoutes=new Set(['','projeto','servicos','portfolio','sobre','contato','login','plaquinhas']);
+const portalPublicRoutes=new Set(['','projeto','servicos','portfolio','sobre','contato','suporte','login','plaquinhas']);
 function isPortalNavigation(href){
  try{
   const u=new URL(href,location.href);
