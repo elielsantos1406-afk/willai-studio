@@ -31,7 +31,7 @@ test('Existing site modules, links, and SEO hooks are retained',()=>{
 });
 test('Motion is progressive and observes only home elements',()=>{
  const node=()=>{const classes=new Set(),styles={};
-  return {classList:{add:x=>classes.add(x),contains:x=>classes.has(x)},style:{setProperty:(k,v)=>{styles[k]=v}},has:x=>classes.has(x)}};
+  return {classList:{add:x=>classes.add(x),contains:x=>classes.has(x)},style:{setProperty:(k,v)=>{styles[k]=v}},has:x=>classes.has(x)};
  };
  const elems=[node(),node(),node(),node()],root=node();
  root.querySelectorAll=()=>elems;
@@ -56,7 +56,7 @@ test('Motion is progressive and observes only home elements',()=>{
  assert.equal(created.disconnected,true);
 });
 test('Reduced motion and lack of observers leave every section visible',()=>{
- const node=()=>{const classes=new Set();return {classList:{add:x=>classes.add(x),contains:x=>classes.has(x)},has:x=>classes.has(x)}};
+ const node=()=>{const classes=new Set();return {classList:{add:x=>classes.add(x),contains:x=>classes.has(x)},has:x=>classes.has(x)};
  };
  const root=node(),item=node();root.querySelectorAll=()=>[item];
  const code=getMotion(pub);
