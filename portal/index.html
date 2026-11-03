@@ -562,6 +562,20 @@
 
 
 
+
+/* Modelo cardápio digital: capa ilustrativa, sem captura falsa do site externo */
+.portfolio-illustration-menu{background:radial-gradient(circle at 84% 12%,#b36a2680,transparent 48%),linear-gradient(125deg,#321b12,#6e3d24 74%,#99602f);color:#fff3dc}
+.portfolio-illustration-menu:after{content:'';position:absolute;border:25px solid #ffd38f1a;border-radius:50%;width:220px;height:220px;right:-80px;bottom:-130px;pointer-events:none}
+.pv-menu-logo{font-size:clamp(25px,3vw,37px);line-height:1.05;font-weight:900;letter-spacing:-.06em;margin:9px 0 8px;color:#ffda82}
+.pv-menu-logo span{color:#fff3db}
+.pv-menu-heading{font-size:12px;font-weight:750;letter-spacing:.01em;color:#fff2e1;margin-bottom:16px}
+.pv-menu-food{display:flex;gap:8px;flex-wrap:wrap;max-width:94%}
+.pv-menu-food span{font-size:8px;letter-spacing:.03em;font-weight:850;border:1px solid #f2ca8980;border-radius:30px;padding:7px 10px;color:#fbe9c8;background:#ffffff0c}
+.pv-menu-caption{position:absolute;bottom:9px;right:13px;font-size:8px;color:#eed3ad}
+.home-rework .wh-project-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:980px){.home-rework .wh-project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.home-rework .wh-project-grid{grid-template-columns:1fr}}
+
 /* Imagens ilustrativas dos modelos; imagens reais enviadas no editor têm prioridade */
 .wh-project-image{position:relative;overflow:hidden}
 .wh-project-image .portfolio-illustration,.portfolio-card-visual .portfolio-illustration{height:100%;width:100%}
@@ -619,9 +633,9 @@ function upgradePricingCatalog(config){
  const extras=prior.filter(s=>s?.id&&!ids.has(s.id)).map(s=>({...s,group:s.group||"Soluções sob medida"}));
  return {...config,services:[...services,...extras],catalogVersion:1};
 }
-const portfolioDemos=[{"id":"portfolio-gomez","title":"GOMEZ Barbearia","category":"Site de agendamentos","desc":"Modelo demonstrativo de site para barbearia, com apresentação dos serviços e experiência de agendamento online.","image":"","url":"https://gomez.willai.workers.dev/","visible":true},{"id":"portfolio-landing","title":"Landing Page Simples","category":"Landing page","desc":"Modelo de landing page responsiva para apresentar serviços e captar contatos de potenciais clientes.","image":"","url":"https://landingpage.willai.workers.dev/","visible":true}];
+const portfolioDemos=[{"id":"portfolio-gomez","title":"GOMEZ Barbearia","category":"Site de agendamentos","desc":"Modelo demonstrativo de site para barbearia, com apresentação dos serviços e experiência de agendamento online.","image":"","url":"https://gomez.willai.workers.dev/","visible":true},{"id":"portfolio-landing","title":"Landing Page Simples","category":"Landing page","desc":"Modelo de landing page responsiva para apresentar serviços e captar contatos de potenciais clientes.","image":"","url":"https://landingpage.willai.workers.dev/","visible":true},{"id":"portfolio-cardapio-simples","title":"Cardápio Digital Simples","category":"Cardápio digital","desc":"Modelo demonstrativo de cardápio digital responsivo, com produtos organizados e acesso compartilhável por link ou QR Code.","image":"","url":"https://orange-term-1df1.willai.workers.dev/","visible":true}];
 function upgradePortfolioDemos(config){
- if(!config||typeof config!=='object'||Number(config.portfolioCatalogVersion)>=1)return config;
+ if(!config||typeof config!=='object'||Number(config.portfolioCatalogVersion)>=2)return config;
  const list=Array.isArray(config.portfolio)?config.portfolio:[];
  const normalized=url=>String(url||'').trim().replace(/\/+$/,'').toLowerCase();
  const matches=portfolioDemos.map(d=>{
@@ -631,10 +645,10 @@ function upgradePortfolioDemos(config){
  const known=new Set(portfolioDemos.map(d=>normalized(d.url)));
  const ids=new Set(portfolioDemos.map(d=>d.id));
  const rest=list.filter(p=>p&&!ids.has(p.id)&&!known.has(normalized(p.url)));
- return {...config,portfolio:[...matches,...rest],portfolioCatalogVersion:1};
+ return {...config,portfolio:[...matches,...rest],portfolioCatalogVersion:2};
 }
 const seed={
- catalogVersion:1,portfolioCatalogVersion:1,theme:{primary:'#08458c',accent:'#31c8e7'},brand:{name:'WillAI',tagline:'TECNOLOGIA & SOLUÇÕES DIGITAIS',logo:A+'willai-logo-original.png',instagram:'',whatsapp:'',contact:''},
+ catalogVersion:1,portfolioCatalogVersion:2,theme:{primary:'#08458c',accent:'#31c8e7'},brand:{name:'WillAI',tagline:'TECNOLOGIA & SOLUÇÕES DIGITAIS',logo:A+'willai-logo-original.png',instagram:'',whatsapp:'',contact:''},
  home:{tag:'WILLAI · TECNOLOGIA PARA EMPRESAS',title:'Sites e soluções digitais',emphasis:'para o seu negócio.',subtitle:'Criamos sites profissionais, páginas de vendas e sistemas para facilitar o dia a dia da sua empresa.',photo:'',primaryLabel:'Solicitar orçamento',primaryUrl:'/contato',secondaryLabel:'Ver projetos',secondaryUrl:'/portfolio'},
  project:{tag:'UMA INICIATIVA DE IMPACTO',title:'O digital precisa',emphasis:'ser para todos.',subtitle:'O Projeto de Inclusão Digital aproxima micro e pequenos empreendedores de oportunidades, presença na internet e novas ferramentas.',cover:A+'banner-projeto.png',primaryLabel:'Conheça as cidades',primaryUrl:'#cidades'},
  cities:{curitiba:{"name":"Curitiba","tag":"PROJETO DE INCLUSÃO DIGITAL","title":"Curitiba merece mais oportunidades digitais.","subtitle":"Conectando pequenos negócios à tecnologia, à visibilidade e a novas oportunidades. Uma realização da WillAI com patrocínio do Movimento Empreendedor.","photo":"/assets/banner-projeto.png","sponsor":"Movimento Empreendedor com Anderson Marques","sponsorRole":"Patrocinador oficial do Projeto de Inclusão Digital em Curitiba.","sponsorAbout":"O Movimento Empreendedor com Anderson Marques apoia iniciativas que valorizam o empreendedorismo e abrem novas possibilidades para pequenos negócios de Curitiba.\n\nComo patrocinador local do Projeto de Inclusão Digital, o Movimento contribui para aproximar comerciantes e profissionais autônomos de ferramentas digitais práticas. Em parceria com a WillAI — By ELIX SOLUTIONS, o projeto busca ajudar empreendedores a apresentar seus negócios de forma mais profissional, facilitar o contato com clientes e conquistar presença na internet.","sponsorQuote":"Conectando negócios. Criando oportunidades. Fortalecendo quem empreende em Curitiba.","sponsorUrl":"https://www.instagram.com/movimento.empreendedor2027/","sponsorLogo":"/assets/movimento-empreendedor-curitiba.webp?v=20261102-patrocinador","sponsorImage":"","partnershipImage":"","howTitle":"O que o projeto oferece para os empreendedores?","howText":"A inclusão digital começa com soluções simples: tornar o negócio mais fácil de encontrar, conhecer e contatar. As ações são definidas conforme a necessidade e a disponibilidade de atendimento do projeto.","howSteps":[{"title":"Página digital do negócio","body":"Apresentação profissional com nome, serviços, endereço, fotos e formas de contato em um link fácil de compartilhar."},{"title":"Conexão direta com clientes","body":"Integração de WhatsApp, Instagram e outros canais úteis para aproximar empresas de seu público."},{"title":"Orientação de presença digital","body":"Apoio inicial para melhorar a divulgação nas redes sociais e organizar o Perfil da Empresa no Google, quando aplicável."}],"extraSections":[{"title":"Uma iniciativa para quem movimenta a economia local","body":"O projeto é voltado a micro e pequenos empreendedores de Curitiba que desejam começar ou fortalecer sua presença na internet. Cada participação passa por um atendimento inicial para identificar as necessidades e as soluções disponíveis."},{"title":"Como funciona a participação","body":"01 — Conheça a iniciativa e entre em contato com a equipe.\n02 — Apresente seu negócio, serviços e canais de contato.\n03 — Receba orientação sobre as ferramentas digitais mais úteis.\n04 — Conforme a disponibilidade e o atendimento aprovado, a equipe prepara as soluções definidas para seu negócio."}]},pinhais:{name:'Pinhais',tag:'PROJETO DE INCLUSÃO DIGITAL',title:'Mais oportunidades para empreender em Pinhais.',subtitle:'Uma página local dedicada às empresas e às novas oportunidades digitais da cidade.',photo:'',sponsor:'',sponsorUrl:'',sponsorImage:'',partnershipImage:''}},
@@ -676,7 +690,7 @@ function home(){
  const all=Array.isArray(state.services)?state.services:[];
  const ids=['landing','menu-simple','agenda','sites'];
  const highlights=ids.map(id=>all.find(x=>x.id===id)).filter(Boolean);
- const portfolio=(Array.isArray(state.portfolio)?state.portfolio:[]).filter(x=>x.visible!==false&&/^https:\/\//i.test(String(x.url||''))).slice(0,2);
+ const portfolio=(Array.isArray(state.portfolio)?state.portfolio:[]).filter(x=>x.visible!==false&&/^https:\/\//i.test(String(x.url||''))).slice(0,3);
  const shot=p.photo||portfolio[0]?.image||'',shotTitle=p.photo?'Projeto digital WillAI':(portfolio[0]?.title||'Projeto WillAI');
  const shotHref=portfolio[0]?.url&&/^https:\/\//i.test(portfolio[0].url)?link(portfolio[0].url):goto('portfolio');
  return `<div class="home-rework">
@@ -904,7 +918,8 @@ function notFound(){return `<section class="page-simple"><div class="container" 
 function portfolioMedia(p){
  const pic=String(p?.image||'').trim();
  if(pic)return `<img src="${esc(pic)}" alt="Imagem ilustrativa do projeto ${esc(p.title)}" loading="lazy" decoding="async">`;
- const variant=p?.id==='portfolio-gomez'?'gomez':p?.id==='portfolio-landing'?'landing':'generic';
+ const variant=p?.id==='portfolio-gomez'?'gomez':p?.id==='portfolio-landing'?'landing':p?.id==='portfolio-cardapio-simples'?'menu':'generic';
+ if(variant==='menu')return '<div class="portfolio-illustration portfolio-illustration-menu" role="img" aria-label="Ilustração gráfica do cardápio digital simples"><div class="pv-browser"><i></i><i></i><i></i><small>CARDÁPIO DIGITAL</small></div><div class="pv-menu-logo">SABOR<span>&amp; BRASA</span></div><div class="pv-menu-heading">Seu pedido começa aqui.</div><div class="pv-menu-food"><span>BURGER ARTESANAL</span><span>BATATA CROCANTE</span><span>BEBIDAS</span></div><div class="pv-menu-caption">Prévia ilustrativa • Ver modelo ↗</div></div>';
  if(variant==='gomez')return '<div class="portfolio-illustration portfolio-illustration-gomez" role="img" aria-label="Ilustração gráfica do modelo GOMEZ Barbearia"><div class="pv-browser"><i></i><i></i><i></i><small>PROJETO DE AGENDAMENTO</small></div><div class="pv-brand">GOMEZ<span>BARBEARIA</span></div><div class="pv-label">Seu estilo, seu horário.</div><div class="pv-button">AGENDAR HORÁRIO <b>↗</b></div><div class="pv-caption">Prévia ilustrativa do projeto</div></div>';
  if(variant==='landing')return '<div class="portfolio-illustration portfolio-illustration-landing" role="img" aria-label="Ilustração gráfica de uma landing page"><div class="pv-browser"><i></i><i></i><i></i><small>LANDING PAGE</small></div><div class="pv-landing-grid"><div><span class="pv-kicker">SEU NEGÓCIO NO DIGITAL</span><div class="pv-brand">Seu próximo cliente começa aqui.</div><div class="pv-label">Uma página, novas oportunidades.</div><div class="pv-button">SAIBA MAIS <b>↗</b></div></div><div class="pv-decoration"><span></span><span></span><span></span></div></div><div class="pv-caption">Prévia ilustrativa do projeto</div></div>';
  return `<div class="portfolio-illustration portfolio-illustration-generic" role="img" aria-label="Ilustração gráfica do projeto"><div class="pv-brand">${esc(p?.title||'Projeto digital')}</div><div class="pv-label">Soluções digitais WillAI</div></div>`;
