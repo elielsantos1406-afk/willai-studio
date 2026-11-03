@@ -177,7 +177,8 @@ async function loadQuotes(){
   quoteRows=await api('/rest/v1/willai_quote_requests?select=id,name,whatsapp,email,service,description,status,created_at&order=created_at.desc&limit=100');
   $('quotesInfo').textContent=quoteRows.length+' solicitações recentes (até 100).';
   $('quotesList').innerHTML=quoteRows.length?quoteRows.map(q=>{
-    const phone=String(q.whatsapp||'').replace(/\D/g,'');
+    const digits=String(q.whatsapp||'').replace(/\D/g,'');
+    const phone=digits.length===10||digits.length===11?'55'+digits:digits;
     const whatsapp=phone.length>=10?'<a class="btn subtle" href="https://wa.me/'+encodeURIComponent(phone)+'" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>':'';
     return '<article class="quote-item"><div class="top"><div><strong>'+esc(q.name)+'</strong><div class="muted">'+esc(q.service)+' · '+esc(new Date(q.created_at).toLocaleDateString('pt-BR'))+'</div></div><span class="status">'+esc(quoteStatuses[q.status]||q.status)+'</span></div>'+
     '<p>'+esc(q.description)+'</p><div class="muted">'+esc(q.whatsapp)+(q.email?' · '+esc(q.email):'')+'</div>'+
@@ -193,7 +194,7 @@ async function loadSupport(){
   supportRows=await api('/rest/v1/willai_support_requests?select=id,name,whatsapp,email,service,issue_type,description,status,created_at&order=created_at.desc&limit=100');
   $('supportInfo').textContent=supportRows.length+' chamados recentes (até 100).';
   $('supportList').innerHTML=supportRows.length?supportRows.map(q=>{
-    const digits=String(q.whatsapp||'').replace(/\\D/g,'');
+    const digits=String(q.whatsapp||'').replace(/\D/g,'');
     const phone=digits.length===10||digits.length===11?'55'+digits:digits;
     const whatsapp=phone.length>=12?'<a class="btn subtle" href="https://wa.me/'+encodeURIComponent(phone)+'" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>':'';
     return '<article class="quote-item"><div class="top"><div><strong>'+esc(q.name)+'</strong><div class="muted">'+esc(q.service)+' · '+esc(supportIssues[q.issue_type]||'Suporte')+' · '+esc(new Date(q.created_at).toLocaleDateString('pt-BR'))+'</div></div><span class="status">'+esc(quoteStatuses[q.status]||q.status)+'</span></div>'+
