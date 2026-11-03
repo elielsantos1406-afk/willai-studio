@@ -1,0 +1,23 @@
+# WillAI — By ELIX SOLUTIONS
+
+> Tecnologia e soluções digitais para empresas e empreendedores no Brasil.
+
+Site oficial: https://willai.com.br/
+
+## Serviços
+- [Sites, landing pages, portais e automações](https://willai.com.br/servicos)
+- [Portfólio e demonstrações de projetos](https://willai.com.br/portfolio)
+- [Solicitar orçamento comercial](https://willai.com.br/contato)
+- [Suporte técnico para clientes](https://willai.com.br/suporte)
+
+## Ferramentas gratuitas
+- [Central de ferramentas](https://willai.com.br/ferramentas)
+- [Gerador gratuito de links para WhatsApp](https://willai.com.br/ferramentas/gerador-link-whatsapp/)
+
+## Inclusão digital
+- [Projeto de Inclusão Digital](https://willai.com.br/projeto)
+- [Projeto local — Curitiba](https://willai.com.br/curitiba)
+- [Projeto local — Pinhais](https://willai.com.br/pinhais)
+
+Este arquivo é um resumo editorial opcional para ferramentas que optarem por usá-lo.
+Não substitui sitemap.xml, robots.txt ou metadados HTML e não garante indexação.
