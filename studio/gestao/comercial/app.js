@@ -136,7 +136,8 @@ function financeOverview() {
  const income = paid.filter(t=>t.type==='income').reduce((sum,t)=>sum+Number(t.amount||0),0);
  const expense = paid.filter(t=>t.type==='expense').reduce((sum,t)=>sum+Number(t.amount||0),0);
  const activeCount = projects.filter(p=>!['quote','cancelled','completed'].includes(p.stage)).length;
- return {contracted,receivable:projectReceivable+standaloneReceivable,income,expense,balance:income-expense,activeCount};
+ const payable=transactions.filter(t=>t.type==='expense'&&t.status==='pending').reduce((sum,t)=>sum+Number(t.amount||0),0);
+ return {contracted,receivable:projectReceivable+standaloneReceivable,income,expense,balance:income-expense,activeCount,payable};
 }
 function projectName(id) {
  return currentProject(id)?.title || 'Projeto não encontrado';
@@ -175,7 +176,7 @@ function renderOverview() {
  $('metricIncome').textContent = money(d.income);
  $('metricExpense').textContent = money(d.expense);
  $('metricBalance').textContent = money(d.balance);
- $('metricActive').textContent = String(d.activeCount);
+ $('metricPayable').textContent = money(d.payable);
  recentProjectList();
  pendingPaymentsList();
 }
@@ -254,8 +255,10 @@ async function refreshData() {
   $('lastSync').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   if (projects.length>=1000||transactions.length>=1000) notify('O limite inicial de 1000 registros por lista foi atingido. Use a exportação e implemente paginação para consultar os anteriores.',true);
   else notify('',false);
+  return true;
  } catch(e) {
   notify('Não foi possível carregar os dados: '+e.message,true);
+  return false;
  } finally {
   loading=false;
   $('refreshButton').disabled=false;
@@ -310,8 +313,8 @@ function openTransaction(entry,project) {
   fields.paid_date.value=entry.paid_date||'';
  } else {
   fields.type.value='income';
-  fields.status.value='paid';
-  fields.paid_date.value=localDay();
+  fields.status.value=project?'paid':'pending';
+  fields.paid_date.value=project?localDay():'';
   fields.project_id.value=project?.id||'';
   fields.category.value=project?'Sinal':'Outros';
   fields.title.value=project?'Pagamento — '+project.title:'';
@@ -351,8 +354,9 @@ async function saveProject(event) {
    headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});
   if (!Array.isArray(result)||result.length!==1) throw Error('O banco não confirmou a gravação.');
   closeDialog('projectDialog');
-  notify(editingProject?'Projeto atualizado com sucesso.':'Projeto cadastrado com sucesso.');
-  await refreshData();
+  const message=editingProject?'Projeto atualizado com sucesso.':'Projeto cadastrado com sucesso.';
+  const fresh=await refreshData();
+  if(fresh)notify(message);
   switchView('projects');
  } catch(e) {
   formError('project',/duplicate key/i.test(e.message)?'Este orçamento já foi convertido em projeto.':e.message);
@@ -386,8 +390,9 @@ async function saveTransaction(event) {
    headers:{Prefer:'return=representation'},body:JSON.stringify(payload)});
   if (!Array.isArray(result)||result.length!==1) throw Error('O banco não confirmou a gravação.');
   closeDialog('transactionDialog');
-  notify(editingTransaction?'Lançamento atualizado.':'Lançamento registrado no controle financeiro.');
-  await refreshData();
+  const message=editingTransaction?'Lançamento atualizado.':'Lançamento registrado no controle financeiro.';
+  const fresh=await refreshData();
+  if(fresh)notify(message);
   switchView('finance');
  } catch(e) {
   formError('transaction',e.message);
@@ -404,8 +409,8 @@ async function confirmTransaction(id) {
    body:JSON.stringify({status:'paid',paid_date:localDay(),updated_at:new Date().toISOString()})
   });
   if (!Array.isArray(result)||result.length!==1) throw Error('O banco não confirmou a alteração.');
-  notify('Pagamento confirmado. O caixa foi atualizado.');
-  await refreshData();
+  const fresh=await refreshData();
+  if(fresh)notify('Pagamento confirmado. O caixa foi atualizado.');
  } catch(e) {notify('Falha ao confirmar: '+e.message,true);}
 }
 async function deleteTransaction(id) {
@@ -417,8 +422,8 @@ async function deleteTransaction(id) {
    method:'DELETE',headers:{Prefer:'return=representation'}
   });
   if (!Array.isArray(result)||result.length!==1) throw Error('O banco não confirmou a exclusão.');
-  notify('Lançamento excluído. Os totais foram recalculados.');
-  await refreshData();
+  const fresh=await refreshData();
+  if(fresh)notify('Lançamento excluído. Os totais foram recalculados.');
  } catch(e) {notify('Falha ao excluir: '+e.message,true);}
 }
 function exportCSV(filename,rows,columns) {
@@ -517,6 +522,7 @@ $('projectStageFilter').addEventListener('change',renderProjects);
 $('transactionSearch').addEventListener('input',renderTransactions);
 $('transactionFilter').addEventListener('change',renderTransactions);
 $('periodInput').addEventListener('change',renderOverview);
+$('periodAll').addEventListener('click',()=>{$('periodInput').value='';renderOverview();});
 $('exportProjects').addEventListener('click',exportProjects);
 $('exportTransactions').addEventListener('click',exportTransactions);
 init();
