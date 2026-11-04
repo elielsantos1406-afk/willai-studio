@@ -36,7 +36,7 @@
   <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
   <section class="view" id="view-overview">
    <div class="section-title"><div><h2>Seu negócio em números</h2><p>Valores recebidos não se confundem com contratos ou cobranças futuras.</p></div>
-    <label class="month-label">Período do caixa <input type="month" id="periodInput"></label>
+    <div class="period-controls"><label class="month-label">Período do caixa <input type="month" id="periodInput"></label><button type="button" class="button button-secondary button-small" id="periodAll">Todo o período</button></div>
    </div>
    <div class="metrics">
     <div class="metric"><span>Projetos contratados <small>valor total, sem orçamentos</small></span><strong id="metricContracted">—</strong><i class="metric-marker"></i></div>
@@ -44,7 +44,7 @@
     <div class="metric"><span>Recebido no período <small>somente pagamentos confirmados</small></span><strong id="metricIncome">—</strong><i class="metric-marker green"></i></div>
     <div class="metric"><span>Despesas pagas no período <small>saídas confirmadas</small></span><strong id="metricExpense">—</strong><i class="metric-marker red"></i></div>
     <div class="metric metric-highlight"><span>Resultado de caixa no período <small>entradas menos saídas pagas</small></span><strong id="metricBalance">—</strong><i class="metric-marker light"></i></div>
-    <div class="metric"><span>Projetos ativos <small>exclui orçamentos e cancelados</small></span><strong id="metricActive">—</strong><i class="metric-marker"></i></div>
+    <div class="metric"><span>Contas a pagar <small>despesas ainda pendentes</small></span><strong id="metricPayable">—</strong><i class="metric-marker amber"></i></div>
    </div>
    <div class="overview-grids">
     <section class="panel"><div class="panel-heading"><div><h2>Projetos recentes</h2><p>Acompanhamento interno das etapas.</p></div><button type="button" class="text-action" data-view="projects">Ver todos →</button></div><div id="recentProjects" class="mini-list"></div></section>
