@@ -1,0 +1,57 @@
+
+/* WillAI — Liquid Glass: serviços e preços. Sem alterações funcionais. */
+.home-rework .wh-services,.pricing-page .pricing-featured,.pricing-page .pricing-catalog{
+ position:relative;isolation:isolate;
+ background:radial-gradient(ellipse at 13% 17%,#67d6f329,transparent 56%),radial-gradient(ellipse at 85% 77%,#2c88d92b,transparent 58%),linear-gradient(132deg,#f6fbff,#eaf5fc 53%,#f5faff)
+}
+.home-rework .wh-services .container,.pricing-page .pricing-featured .container,.pricing-page .pricing-catalog .container{position:relative;z-index:1}
+.home-rework .wh-services-grid .wh-service,.pricing-page .pricing-featured-card,.pricing-page .pricing-item,#app .glass-price-card{
+ position:relative;isolation:isolate;overflow:hidden;color:#123556;border:1px solid transparent;border-radius:22px;
+ background:linear-gradient(137deg,#ffffffd9,#f4fcffab 46%,#d1eaf9a0) padding-box,linear-gradient(135deg,#fff,#e5faffc4 35%,#76c8e4b3 78%,#fff) border-box;
+ -webkit-backdrop-filter:blur(20px) saturate(150%);backdrop-filter:blur(20px) saturate(150%);
+ box-shadow:0 15px 35px #0839661a,0 3px 8px #167bae13,inset 0 1px 0 #fff,inset 0 -1px 0 #72b3d244;
+ transition:transform .27s ease,box-shadow .27s ease,border-color .27s ease;transform:translateZ(0)
+}
+.home-rework .wh-services-grid .wh-service::before,.pricing-page .pricing-featured-card::before,.pricing-page .pricing-item::before,#app .glass-price-card::before{
+ content:"";position:absolute;inset:0;z-index:0;height:auto;left:0;right:0;border:0;border-radius:inherit;pointer-events:none;opacity:.7;
+ background:linear-gradient(120deg,#ffffffa3,transparent 42%),radial-gradient(ellipse 85% 50% at 40% -12%,#fff,transparent 85%);
+ transition:opacity .27s ease
+}
+.home-rework .wh-services-grid .wh-service::after,.pricing-page .pricing-featured-card::after,.pricing-page .pricing-item::after,#app .glass-price-card::after{
+ content:"";position:absolute;z-index:0;pointer-events:none;top:-100px;right:-85px;width:150px;height:150px;border-radius:50%;filter:blur(12px);
+ background:radial-gradient(circle,#ffffffee,#84d4f044 44%,transparent 76%);transition:transform .36s ease
+}
+.home-rework .wh-services-grid .wh-service>*,
+.pricing-page .pricing-featured-card>*,
+.pricing-page .pricing-item>*,
+#app .glass-price-card>*{position:relative;z-index:1}
+.home-rework .wh-services-grid .wh-service h3,.pricing-page .pricing-featured-card h3,.pricing-page .pricing-item-text strong,#app .glass-price-card h3{color:#0a3152}
+.home-rework .wh-services-grid .wh-service p,.pricing-page .pricing-featured-card p,.pricing-page .pricing-item-text small,#app .glass-price-card p{color:#4d6c83}
+.home-rework .wh-service-bottom strong,.pricing-page .pricing-feature-bottom strong,.pricing-page .pricing-item-side span,#app .glass-price-card .service-foot>span{color:#07547f;font-weight:900}
+.pricing-page .pricing-featured-card::before{top:0;height:auto;border-radius:inherit}
+.pricing-page .pricing-feature-icon,#app .glass-price-card .service-icon{background:linear-gradient(135deg,#ffffffd9,#97dff077);border:1px solid #ffffffcf;box-shadow:inset 0 1px 0 #fff,0 5px 14px #236b9d14}
+.pricing-page .pricing-feature-bottom a,.pricing-page .pricing-item-side a,#app .glass-price-card .service-foot a{
+ background:linear-gradient(120deg,#ffffffcf,#9fe2ef78);border:1px solid #ffffffd6;color:#075b84;box-shadow:inset 0 1px 0 #fff,0 3px 10px #1679ad11
+}
+.pricing-page .pricing-item-side{max-width:min(52%,210px)}
+.pricing-page .pricing-item-side span{overflow-wrap:anywhere}
+#app .glass-price-card .service-foot{border-top-color:#82bdd750}
+#app > .section:has(.glass-price-card){background:radial-gradient(ellipse at 18% 22%,#4bd0f023,transparent 59%),linear-gradient(130deg,#f5faff,#eaf5fb)}
+@media(hover:hover) and (pointer:fine){
+ .home-rework .wh-services-grid .wh-service:hover,.pricing-page .pricing-featured-card:hover,.pricing-page .pricing-item:hover,#app .glass-price-card:hover{
+  transform:translate3d(0,-5px,0);border-color:#ffffffea;box-shadow:0 22px 46px #0a416b2b,0 5px 16px #159ed021,inset 0 1px 0 #fff
+ }
+ .home-rework .wh-services-grid .wh-service:hover::after,.pricing-page .pricing-featured-card:hover::after,.pricing-page .pricing-item:hover::after,#app .glass-price-card:hover::after{transform:translate(-45px,45px) scale(1.2)}
+}
+@media(max-width:600px){
+ .home-rework .wh-services-grid .wh-service,.pricing-page .pricing-featured-card,.pricing-page .pricing-item,#app .glass-price-card{border-radius:18px}
+ .pricing-page .pricing-item-side{max-width:none}
+ .home-rework .wh-services-grid .wh-service::after,.pricing-page .pricing-featured-card::after,.pricing-page .pricing-item::after,#app .glass-price-card::after{width:115px;height:115px;top:-78px;right:-65px}
+}
+@media(prefers-reduced-motion:reduce){
+ .home-rework .wh-services-grid .wh-service,.pricing-page .pricing-featured-card,.pricing-page .pricing-item,#app .glass-price-card{transition:none!important}
+ .home-rework .wh-services-grid .wh-service::after,.pricing-page .pricing-featured-card::after,.pricing-page .pricing-item::after,#app .glass-price-card::after{transition:none!important}
+}
+@supports not ((-webkit-backdrop-filter:blur(2px)) or (backdrop-filter:blur(2px))){
+ .home-rework .wh-services-grid .wh-service,.pricing-page .pricing-featured-card,.pricing-page .pricing-item,#app .glass-price-card{background:linear-gradient(140deg,#f9fcff,#e7f4fd);border-color:#c1ddec}
+}
