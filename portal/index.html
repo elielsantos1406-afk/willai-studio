@@ -1191,6 +1191,108 @@ html{scroll-padding-top:90px}
  backdrop-filter:none!important;
 }
 
+
+/* HERO WILLAI — ondas discretas enviadas pelo cliente + esfera líquida. */
+.home-rework .wh-hero{
+ position:relative;isolation:isolate;
+ background:radial-gradient(circle at 78% 25%,#104063 0%,transparent 48%),linear-gradient(140deg,#06182e,#0a2a49 66%,#071a30);
+}
+.home-rework .wh-hero-motion{
+ position:absolute;z-index:0;inset:0;overflow:hidden;
+ pointer-events:none;isolation:isolate;
+}
+.home-rework .wh-hero-wave{
+ position:absolute;inset:-6%;
+ background-position:center;
+ background-size:cover;
+ background-repeat:no-repeat;
+ opacity:0;
+ filter:blur(2.2px) brightness(.78) saturate(1.1);
+ transform:scale(1.055) translate3d(0,0,0);
+ will-change:opacity,transform;
+ animation:wh-wave-dissolve 72s linear infinite,wh-wave-ambient 44s ease-in-out infinite alternate;
+}
+.home-rework .wh-hero-wave--one{
+ background-image:url('/assets/hero-wave-1.webp');
+ animation-delay:0s,0s;
+}
+.home-rework .wh-hero-wave--two{
+ background-image:url('/assets/hero-wave-2.webp');
+ animation-delay:-24s,-7s;
+}
+.home-rework .wh-hero-wave--three{
+ background-image:url('/assets/hero-wave-3.webp');
+ animation-delay:-48s,-14s;
+}
+.home-rework .wh-hero-motion::after{
+ content:"";position:absolute;z-index:1;inset:0;pointer-events:none;
+ background:
+ linear-gradient(90deg,#061a32cc 0%,#061b33b8 36%,#071e3775 65%,#07192a8c 100%),
+ linear-gradient(0deg,#071b34a0,transparent 35%,transparent 70%,#071b3480);
+}
+@keyframes wh-wave-dissolve{
+ 0%{opacity:.12}
+ 8%,24%{opacity:.17}
+ 31%{opacity:0}
+ 95%{opacity:0}
+ 100%{opacity:.12}
+}
+@keyframes wh-wave-ambient{
+ 0%{transform:scale(1.06) translate3d(-1.1%,.7%,0)}
+ 50%{transform:scale(1.095) translate3d(1.1%,-.5%,0)}
+ 100%{transform:scale(1.07) translate3d(-.8%,.8%,0)}
+}
+.home-rework .wh-hero-orb{
+ position:absolute;z-index:2;
+ right:clamp(24px,10vw,190px);top:20%;
+ width:clamp(145px,20vw,290px);height:clamp(145px,20vw,290px);
+ border-radius:50%;opacity:.48;pointer-events:none;
+ background:
+ radial-gradient(circle at 28% 23%,#ffffff70 0%,#baf7ff40 13%,transparent 34%),
+ radial-gradient(circle at 65% 78%,#6b83fa60 4%,#55d4ff34 36%,transparent 72%),
+ radial-gradient(circle at 48% 42%,#c1faff17,#2782bb24 59%,#145b9770 100%);
+ border:1px solid #b2efff70;
+ -webkit-backdrop-filter:blur(8px) saturate(140%);
+ backdrop-filter:blur(8px) saturate(140%);
+ box-shadow:
+ inset 13px 13px 32px #ffffff22,
+ inset -18px -15px 35px #0074c13d,
+ inset 0 1px 0 #ffffff7d,
+ 0 0 55px #3bcaff22,
+ 0 28px 75px #02152f33;
+ animation:wh-orb-drift 15s ease-in-out infinite;
+}
+.home-rework .wh-hero-orb::after{
+ content:"";position:absolute;inset:8%;border-radius:50%;
+ background:radial-gradient(ellipse at 34% 21%,#ffffff36,transparent 47%);
+ filter:blur(3px);
+}
+@keyframes wh-orb-drift{
+ 0%,100%{transform:translate3d(0,0,0)}
+ 45%{transform:translate3d(8px,-16px,0)}
+ 75%{transform:translate3d(-6px,6px,0)}
+}
+.home-rework .wh-hero-grid{position:relative;z-index:3}
+@media(max-width:760px){
+ .home-rework .wh-hero-wave{filter:blur(2px) brightness(.7);animation-duration:72s,55s}
+ .home-rework .wh-hero-motion::after{
+  background:linear-gradient(90deg,#06182fe0,#06182fcc 68%,#061b36aa),linear-gradient(0deg,#071b3491,transparent 65%);
+ }
+ .home-rework .wh-hero-orb{
+  right:-36px;top:30%;width:145px;height:145px;opacity:.26;
+  -webkit-backdrop-filter:none;backdrop-filter:none;
+  box-shadow:inset 0 1px 0 #ffffff69,inset 10px 13px 25px #ffffff23,0 0 38px #16b2e629;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ .home-rework .wh-hero-wave{
+  animation:none!important;will-change:auto;transform:none;
+  opacity:0;
+ }
+ .home-rework .wh-hero-wave--two{opacity:.12}
+ .home-rework .wh-hero-orb{animation:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -1310,7 +1412,14 @@ function home(){
  const shot=p.photo||portfolio[0]?.image||'',shotTitle=p.photo?'Projeto digital WillAI':(portfolio[0]?.title||'Projeto WillAI');
  const shotHref=portfolio[0]?.url&&/^https:\/\//i.test(portfolio[0].url)?link(portfolio[0].url):goto('portfolio');
  return `<div class="home-rework">
- <section class="wh-hero"><div class="container wh-hero-grid">
+ <section class="wh-hero">
+ <div class="wh-hero-motion" aria-hidden="true">
+  <div class="wh-hero-wave wh-hero-wave--one"></div>
+  <div class="wh-hero-wave wh-hero-wave--two"></div>
+  <div class="wh-hero-wave wh-hero-wave--three"></div>
+  <div class="wh-hero-orb"></div>
+ </div>
+ <div class="container wh-hero-grid">
   <div class="wh-hero-copy"><span class="wh-kicker">WILLAI · TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</span>
    <h1 class="wh-hero-title" data-wh-magnetic>${heroWords('Seu negócio merece mais do que um site.')} <em class="wh-liquid-bubble">${heroWords('Merece evoluir.')}</em></h1>
    <p class="wh-hero-lead">Sites, sistemas e automações sob medida.</p>
