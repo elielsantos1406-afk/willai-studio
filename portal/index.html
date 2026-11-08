@@ -1141,6 +1141,39 @@ html{scroll-padding-top:90px}
  #site-header .site-header,#site-header .wh-compact-header,#site-header .wh-dock-link{transition:none!important}
 }
 
+
+/* Correção de legibilidade 2026-11: jamais aplicar blur ao texto ou ao contêiner. */
+.home-rework.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal,
+.about-willai.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal,
+.home-rework .wh-heading,
+.home-rework .wh-heading h2,
+.home-rework .wh-team-header,
+.home-rework .wh-team-header h2,
+.about-willai .about-intro,
+.about-willai .about-contact {
+ filter:none!important;
+}
+.home-rework.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal,
+.about-willai.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal{
+ opacity:1!important;transform:none!important;
+}
+.home-rework .wh-project.wh-image-reveal .wh-project-image img{
+ filter:blur(var(--wh-scroll-image-blur,0px));
+ transition:filter .15s linear,transform .8s cubic-bezier(.2,.7,.2,1);
+}
+.home-rework .wh-team-card.wh-image-reveal .wh-team-image img,
+.about-willai .wh-team-card.wh-image-reveal .wh-team-image img{
+ filter:saturate(.92) blur(var(--wh-scroll-image-blur,0px));
+ transition:filter .15s linear,transform .55s ease;
+}
+@media(prefers-reduced-motion:reduce){
+ .home-rework .wh-project.wh-image-reveal .wh-project-image img,
+ .home-rework .wh-team-card.wh-image-reveal .wh-team-image img,
+ .about-willai .wh-team-card.wh-image-reveal .wh-team-image img{
+  filter:none!important;transition:none!important;
+ }
+}
+
 </style>
 </head>
 <body>
@@ -1752,18 +1785,19 @@ function initScrollBlur(){
  if(whBlurCleanup){whBlurCleanup();whBlurCleanup=null}
  const root=document.querySelector('#app .home-rework, #app .about-willai');
  if(!root||!('IntersectionObserver' in window)||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
- const nodes=[...root.querySelectorAll('.wh-service,.wh-project,.wh-process-step,.wh-team-card,.wh-heading,.wh-team-header,.about-value')];
- nodes.forEach(n=>n.classList.add('wh-soft-reveal'));
+ // Importante: NUNCA aplicar filter:blur() a títulos, parágrafos, links ou cartões inteiros.
+ // O desembaçamento afeta somente as fotografias e prévias visuais, não os textos.
+ const nodes=[...root.querySelectorAll('.wh-project,.wh-team-card')];
+ nodes.forEach(n=>n.classList.add('wh-image-reveal'));
  let frame=0;
  const update=()=>{
   frame=0;const vh=window.innerHeight||700;
   for(const n of nodes){
    if(!n.isConnected)continue;
-   const r=n.getBoundingClientRect();if(r.top>vh+40||r.bottom<0)continue;
-   const p=Math.max(0,Math.min(1,(vh*.96-r.top)/(vh*.43)));
-   n.style.setProperty('--wh-scroll-blur',(7*(1-p)).toFixed(2)+'px');
-   n.style.setProperty('--wh-scroll-opacity',(0.58+0.42*p).toFixed(3));
-   n.style.setProperty('--wh-scroll-shift',(16*(1-p)).toFixed(1)+'px');
+   const r=n.getBoundingClientRect();
+   if(r.top>vh+40||r.bottom<0)continue;
+   const p=Math.max(0,Math.min(1,(vh*.92-r.top)/(vh*.35)));
+   n.style.setProperty('--wh-scroll-image-blur',(5*(1-p)).toFixed(2)+'px');
   }
  };
  const schedule=()=>{if(!frame)frame=requestAnimationFrame(update)};
