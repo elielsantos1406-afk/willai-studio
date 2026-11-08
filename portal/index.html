@@ -875,6 +875,83 @@ html{scroll-padding-top:90px}
 #app .portfolio-card:active{transform:scale(.99)}
 @media(max-width:760px){.quote-section .contact-switch{gap:9px}.quote-section .contact-switch a{padding:12px;font-size:12px}}
 @media(prefers-reduced-motion:reduce){.home-rework .wh-service:active,.home-rework .wh-project:active,#app .portfolio-card:active{transform:none}}
+
+/* WillAI Premium Glass 2026 — efeitos isolados, sem alterar regras de negócios. */
+.home-rework .wh-service,.home-rework .wh-project,.home-rework .wh-process-step,
+.about-willai .about-value,.pricing-page .pricing-featured-card,.pricing-page .pricing-item,
+#app .portfolio-card,.quote-section .quote-card{
+ position:relative;isolation:isolate;border:1px solid transparent;
+ background:linear-gradient(135deg,#fffffff3,#edfaffd8 55%,#dceffbce) padding-box,
+ linear-gradient(130deg,#fff,#c4eafa 40%,#89c7e8 83%,#fff) border-box;
+ -webkit-backdrop-filter:blur(18px) saturate(145%);backdrop-filter:blur(18px) saturate(145%);
+ box-shadow:0 15px 42px #0d385b16,0 2px 7px #0b4c7110,inset 0 1px 0 #fff,inset 0 -1px 0 #6daaca30;
+ transition:box-shadow .3s ease,border-color .3s ease,transform .3s ease;
+}
+.home-rework .wh-team-card{
+ border:1px solid #d3f3ff5c;background:linear-gradient(140deg,#ffffff27,#ffffff0d 49%,#8bcdf318);
+ -webkit-backdrop-filter:blur(19px) saturate(145%);backdrop-filter:blur(19px) saturate(145%);
+ box-shadow:0 20px 48px #00000025,inset 0 1px 0 #ffffff4b,inset 0 -1px 0 #88d4f622;
+}
+.home-rework .wh-deal{position:relative;isolation:isolate;overflow:hidden;max-width:960px;margin:0 auto;padding:clamp(24px,4vw,40px);
+ border-radius:27px;border:1px solid #dfb6fc72;color:#fff;
+ background:radial-gradient(circle at 100% 0%,#653a9958,transparent 43%),linear-gradient(132deg,#130e23,#1e1233 70%,#0d1d36);
+ box-shadow:0 25px 65px #091b3530,inset 0 1px 0 #ffffff34;
+ -webkit-backdrop-filter:blur(20px) saturate(140%);backdrop-filter:blur(20px) saturate(140%);
+}
+.home-rework .wh-deal::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(124deg,#ffffff17,transparent 42%),radial-gradient(circle at 95% 0%,#c87eff21,transparent 49%)}
+.home-rework .wh-deal>*{position:relative}
+.home-rework .wh-deal-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:21px}
+.home-rework .wh-deal-eyebrow{color:#dfb6ff;font-size:10px;letter-spacing:.11em;font-weight:850}
+.home-rework .wh-deal-badge{border:1px solid #ffffff40;border-radius:99px;background:#ffffff14;padding:8px 11px;color:#f8e8ff;white-space:nowrap;font-size:9px;font-weight:750}
+.home-rework .wh-deal-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(225px,.8fr);gap:clamp(23px,4vw,52px);align-items:center}
+.home-rework .wh-deal-main h2{color:#fff;font-size:clamp(33px,4.5vw,54px);letter-spacing:-.055em;line-height:1.1;margin:0}
+.home-rework .wh-deal-main h2 em{font-style:normal;color:#c881ff}
+.home-rework .wh-deal-main p{color:#e1d5ef;font-size:13px;line-height:1.6;margin:10px 0 22px}
+.home-rework .wh-deal-value{display:flex;align-items:baseline;flex-wrap:wrap;gap:13px;margin:0 0 20px}
+.home-rework .wh-deal-value s{color:#c4b8d1;font-size:14px}
+.home-rework .wh-deal-value strong{font-size:clamp(35px,4vw,48px);color:#d189ff;letter-spacing:-.055em;line-height:1}
+.home-rework .wh-deal-button{display:inline-flex;align-items:center;justify-content:center;gap:11px;min-height:48px;padding:12px 19px;border-radius:13px;background:#e2b7ff;color:#24122d;text-decoration:none;font-size:13px;font-weight:850;transition:transform .22s,background .22s,box-shadow .22s}
+.home-rework .wh-deal-button:hover{background:#f1d9ff;transform:translateY(-2px);box-shadow:0 10px 26px #b96dff34}
+.home-rework .wh-deal-button:active{transform:scale(.97)}
+.home-rework .wh-deal-button svg{width:18px;height:18px}
+.home-rework .wh-deal-time{border:1px solid #ffffff2b;border-radius:20px;background:linear-gradient(130deg,#ffffff1b,#ffffff08);padding:20px;
+ -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.home-rework .wh-deal-time-label{display:block;color:#e2bff4;letter-spacing:.1em;font-weight:800;font-size:10px;margin-bottom:17px}
+.home-rework .wh-deal-clock{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.home-rework .wh-deal-clock span{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}
+.home-rework .wh-deal-clock strong{color:#fff;font-size:clamp(21px,2.75vw,37px);line-height:1;letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.home-rework .wh-deal-clock small{color:#c9b2d9;font-size:9px;font-weight:700;letter-spacing:.06em}
+.home-rework .wh-deal-expires{display:block;font-size:11px;color:#cdb9dd;margin-top:18px}
+.home-rework [data-onepage-offer][hidden],.home-rework [data-onepage-after][hidden],.home-rework .wh-offer-fallback[hidden]{display:none!important}
+.home-rework .wh-offer-fallback{max-width:560px;margin:auto}
+.home-rework.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal,.about-willai.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal{
+ filter:blur(var(--wh-scroll-blur,0px));opacity:var(--wh-scroll-opacity,1);
+ transform:translate3d(0,var(--wh-scroll-shift,0px),0);
+ transition:filter .14s linear,opacity .14s linear,transform .14s linear;
+}
+.home-rework .wh-service.wh-glass-touched,.home-rework .wh-project.wh-glass-touched,.home-rework .wh-process-step.wh-glass-touched,
+.home-rework .wh-team-card.wh-glass-touched,.pricing-page .wh-glass-touched,.about-willai .wh-glass-touched{
+ box-shadow:0 17px 47px #18a5e53a,0 0 0 2px #6ed8f17a,inset 0 1px 0 #ffffffaa;
+}
+.home-rework.wh-motion-on .wh-service.wh-inview,.home-rework.wh-motion-on .wh-process-step.wh-inview,.home-rework.wh-motion-on .wh-team-card.wh-inview{
+ animation:wh-glass-intro .85s ease-out both;
+}
+@keyframes wh-glass-intro{0%{box-shadow:0 0 0 #0000}65%{box-shadow:0 16px 39px #44c8ec35,0 0 0 1px #a0e9f14d}100%{box-shadow:0 15px 42px #0d385b16}}
+@media(max-width:760px){
+ .home-rework .wh-deal{padding:23px 20px;border-radius:23px}
+ .home-rework .wh-deal-layout{grid-template-columns:1fr;gap:20px}
+ .home-rework .wh-deal-eyebrow{font-size:9px;line-height:1.5}
+ .home-rework .wh-deal-main h2{font-size:clamp(31px,8.5vw,43px)}
+ .home-rework .wh-deal-value strong{font-size:39px}
+ .home-rework .wh-deal-time{padding:16px}
+ .home-rework .wh-deal-clock strong{font-size:clamp(23px,6vw,32px)}
+ .home-rework .wh-deal-button{width:100%}
+}
+@media(prefers-reduced-motion:reduce){
+ .home-rework.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal,.about-willai.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal{filter:none!important;opacity:1!important;transform:none!important;transition:none!important}
+ .home-rework.wh-motion-on .wh-service.wh-inview,.home-rework.wh-motion-on .wh-process-step.wh-inview,.home-rework.wh-motion-on .wh-team-card.wh-inview{animation:none!important}
+}
+
 </style>
 </head>
 <body>
