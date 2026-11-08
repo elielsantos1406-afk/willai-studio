@@ -1293,6 +1293,71 @@ html{scroll-padding-top:90px}
  .home-rework .wh-hero-orb{animation:none!important}
 }
 
+
+/* Correções específicas da primeira tela: tipografia estável, ondas visíveis e esfera física. */
+.home-rework .wh-hero-wave{
+ filter:blur(1px) brightness(1.14) saturate(1.26);
+ mix-blend-mode:screen;
+ animation-name:wh-wave-dissolve-visible,wh-wave-ambient;
+}
+.home-rework .wh-hero-motion::after{
+ background:
+ linear-gradient(90deg,#061a328c 0%,#061b336b 38%,#071e3742 68%,#07192a72 100%),
+ linear-gradient(0deg,#071b3452,transparent 36%,transparent 73%,#071b3437);
+}
+@keyframes wh-wave-dissolve-visible{
+ 0%,100%{opacity:.25}
+ 6%,24%{opacity:.55}
+ 33%{opacity:0}
+ 95%{opacity:0}
+}
+.home-rework .wh-hero-orb{opacity:.65}
+.home-rework .wh-hero-orb.wh-orb-physics{
+ left:0!important;right:auto!important;top:0!important;
+ animation:none!important;transition:none!important;
+ will-change:transform;
+}
+/* Não deslocar letras nem acender/apagar brilhos no hover do título. */
+.home-rework .wh-hero .wh-hero-title,
+.home-rework .wh-hero .wh-hero-title .wh-title-word,
+.home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble,
+.home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble::after{
+ animation:none!important;
+ transition:none!important;
+}
+.home-rework .wh-hero .wh-hero-title .wh-title-word{
+ transform:none!important;will-change:auto!important;
+}
+.home-rework .wh-hero .wh-hero-title::before,
+.home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble::after{
+ content:none!important;
+}
+.home-rework .wh-hero .wh-hero-title:hover,
+.home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble:hover{
+ filter:none!important;opacity:1!important;
+}
+@media(max-width:760px){
+ .home-rework .wh-hero-wave{
+  filter:blur(1.2px) brightness(1.07) saturate(1.16);
+  animation-name:wh-wave-dissolve-mobile-visible,wh-wave-ambient;
+ }
+ .home-rework .wh-hero-motion::after{
+  background:linear-gradient(90deg,#06182fad,#06182f85 70%,#061b3668),
+  linear-gradient(0deg,#071b345c,transparent 65%);
+ }
+ .home-rework .wh-hero-orb{opacity:.38}
+}
+@keyframes wh-wave-dissolve-mobile-visible{
+ 0%,100%{opacity:.18}
+ 6%,24%{opacity:.41}
+ 33%,95%{opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+ .home-rework .wh-hero-wave{animation:none!important;opacity:0!important}
+ .home-rework .wh-hero-wave--two{opacity:.25!important}
+ .home-rework .wh-hero-orb{animation:none!important;will-change:auto!important}
+}
+
 </style>
 </head>
 <body>
@@ -2043,69 +2108,143 @@ setInterval(syncOnepageOffer,1000);
 
 
 // Movimentos de ponteiro: efeito apenas em desktop com mouse e sem preferência por movimento reduzido.
+// A tipografia do hero é estática. A antiga movimentação magnética de palavras
+// alterava suas áreas de hover e fazia a bolha piscar quando o cursor passava.
 function initHeroInteractivity(){
- const hero=document.querySelector('#app .wh-hero');
- if(!hero||!window.matchMedia?.('(hover: hover) and (pointer: fine)')?.matches
-  ||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
- const title=hero.querySelector('[data-wh-magnetic]');
- let frame=0;
- hero.addEventListener('pointermove',event=>{
-  if(frame)return;
-  const x=event.clientX,y=event.clientY;
-  frame=requestAnimationFrame(()=>{
-   frame=0;
-   if(!hero.isConnected)return;
-   const box=hero.getBoundingClientRect();
-   hero.style.setProperty('--hero-pointer-x',(((x-box.left)/box.width)*100).toFixed(1)+'%');
-   hero.style.setProperty('--hero-pointer-y',(((y-box.top)/box.height)*100).toFixed(1)+'%');
-  });
- },{passive:true});
- if(title){
-  const words=[...title.querySelectorAll('.wh-title-word')];
-  let titleFrame=0,px=0,py=0;
-  title.addEventListener('pointermove',event=>{
-   px=event.clientX;py=event.clientY;
-   if(titleFrame)return;
-   titleFrame=requestAnimationFrame(()=>{
-    titleFrame=0;if(!title.isConnected)return;
-    const bounds=title.getBoundingClientRect();
-    title.style.setProperty('--cursor-x',(((px-bounds.left)/bounds.width)*100).toFixed(1)+'%');
-    title.style.setProperty('--cursor-y',(((py-bounds.top)/bounds.height)*100).toFixed(1)+'%');
-    words.forEach(word=>{
-     const r=word.getBoundingClientRect(),dx=px-(r.left+r.width/2),dy=py-(r.top+r.height/2),d=Math.hypot(dx,dy);
-     if(d<118){const strength=(1-d/118)*3.5;word.style.transform='translate3d('+((dx/(d||1))*strength).toFixed(2)+'px,'+((dy/(d||1))*strength).toFixed(2)+'px,0)'}
-     else word.style.transform='';
-    });
-   });
-  },{passive:true});
-  title.addEventListener('pointerleave',()=>{
-   words.forEach(word=>{word.style.transform=''});
-   title.style.removeProperty('--cursor-x');
-   title.style.removeProperty('--cursor-y');
-  });
- }
- document.querySelectorAll('#app .wh-service').forEach(card=>{
-  let tiltFrame=0,px=0,py=0;
+ const root=document.querySelector('#app .home-rework');
+ if(!root||!window.matchMedia?.('(hover: hover) and (pointer: fine)')?.matches
+    ||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
+ // Mantém a interação 3D que já existia nos serviços; não altera o título.
+ root.querySelectorAll('.wh-service').forEach(card=>{
+  let frame=0,px=0,py=0;
   card.addEventListener('pointermove',event=>{
    px=event.clientX;py=event.clientY;
-   if(tiltFrame)return;
-   tiltFrame=requestAnimationFrame(()=>{
-    tiltFrame=0;if(!card.isConnected)return;
+   if(frame)return;
+   frame=requestAnimationFrame(()=>{
+    frame=0;if(!card.isConnected)return;
     const box=card.getBoundingClientRect();
-    const rx=(.5-(py-box.top)/box.height)*5.2,ry=((px-box.left)/box.width-.5)*5.2;
+    const rx=(.5-(py-box.top)/box.height)*5.2;
+    const ry=((px-box.left)/box.width-.5)*5.2;
     card.style.transform='perspective(900px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg) translateY(-3px)';
     card.style.setProperty('--wh-card-x',(((px-box.left)/box.width)*100).toFixed(1)+'%');
     card.style.setProperty('--wh-card-y',(((py-box.top)/box.height)*100).toFixed(1)+'%');
    });
   },{passive:true});
   card.addEventListener('pointerleave',()=>{
+   if(frame)cancelAnimationFrame(frame);
    card.style.transform='';
    card.style.removeProperty('--wh-card-x');
    card.style.removeProperty('--wh-card-y');
-  });
+  },{passive:true});
  });
 }
 
+// Física exclusiva da esfera do hero: flutuação, colisões e repulsão do ponteiro.
+// O loop é cancelado ao navegar ou quando a primeira tela não está visível.
+let whOrbCleanup=null;
+function initHeroOrbPhysics(){
+ if(whOrbCleanup){whOrbCleanup();whOrbCleanup=null}
+ const hero=document.querySelector('#app .home-rework .wh-hero');
+ const orb=hero?.querySelector('.wh-hero-orb');
+ if(!hero||!orb||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
+ const finePointer=window.matchMedia?.('(hover: hover) and (pointer: fine)')?.matches;
+ orb.classList.add('wh-orb-physics');
+ let width=hero.clientWidth,height=hero.clientHeight,radius=orb.offsetWidth/2;
+ const pad=10;
+ let x=Math.max(radius+pad,Math.min(width-radius-pad,width*.79));
+ let y=Math.max(radius+pad,Math.min(height-radius-pad,height*.42));
+ let vx=.27,vy=.17;
+ let mouseX=-10000,mouseY=-10000,mouseActive=false;
+ let frame=0,previous=0,visible=true,disposed=false;
+ const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
+ const place=()=>{orb.style.transform='translate3d('+Math.round(x*10)/10+'px,'+Math.round(y*10)/10+'px,0)'};
+ // Posições x e y representam a borda superior esquerda, não o centro.
+ x=clamp(width*.79-radius,pad,Math.max(pad,width-radius*2-pad));
+ y=clamp(height*.42-radius,pad,Math.max(pad,height-radius*2-pad));
+ place();
+ const resize=()=>{
+  width=hero.clientWidth;height=hero.clientHeight;
+  radius=orb.offsetWidth/2;
+  x=clamp(x,pad,Math.max(pad,width-radius*2-pad));
+  y=clamp(y,pad,Math.max(pad,height-radius*2-pad));
+  place();
+ };
+ const move=event=>{
+  const box=hero.getBoundingClientRect();
+  mouseX=event.clientX-box.left;
+  mouseY=event.clientY-box.top;
+  mouseActive=true;
+ };
+ const leave=()=>{mouseActive=false;mouseX=-10000;mouseY=-10000};
+ if(finePointer){
+  hero.addEventListener('pointermove',move,{passive:true});
+  hero.addEventListener('pointerleave',leave,{passive:true});
+ }
+ const tick=time=>{
+  frame=0;
+  if(disposed||!orb.isConnected||!visible)return;
+  const dt=Math.min(2.1,(time-(previous||time))/16.67||1);previous=time;
+  // A pequena tendência de movimento evita que o atrito pare a esfera.
+  vx+=(.28-vx)*.0035*dt;
+  vy+=(.17-vy)*.0035*dt;
+  if(mouseActive){
+   const dx=x+radius-mouseX,dy=y+radius-mouseY;
+   const distance=Math.hypot(dx,dy);
+   const safeDistance=radius+110; // começa a fugir antes do mouse tocar.
+   if(distance<safeDistance){
+    const nx=distance>1?dx/distance:1;
+    const ny=distance>1?dy/distance:0;
+    const strength=Math.pow((safeDistance-distance)/safeDistance,1.3);
+    vx+=nx*strength*.48*dt;
+    vy+=ny*strength*.48*dt;
+   }
+  }
+  const topSpeed=mouseActive?2.5:1;
+  const speed=Math.hypot(vx,vy);
+  if(speed>topSpeed){vx=vx/speed*topSpeed;vy=vy/speed*topSpeed}
+  vx*=Math.pow(.996,dt);vy*=Math.pow(.996,dt);
+  x+=vx*dt;y+=vy*dt;
+  const maxX=Math.max(pad,width-radius*2-pad);
+  const maxY=Math.max(pad,height-radius*2-pad);
+  if(x<=pad){x=pad;vx=Math.abs(vx)||.24}
+  else if(x>=maxX){x=maxX;vx=-Math.abs(vx)||-.24}
+  if(y<=pad){y=pad;vy=Math.abs(vy)||.16}
+  else if(y>=maxY){y=maxY;vy=-Math.abs(vy)||-.16}
+  place();
+  frame=requestAnimationFrame(tick);
+ };
+ const start=()=>{
+  if(!frame&&!disposed&&visible&&document.visibilityState!=='hidden'){
+   previous=0;frame=requestAnimationFrame(tick);
+  }
+ };
+ const onVisibility=()=>{
+  if(document.visibilityState==='hidden'){
+   if(frame)cancelAnimationFrame(frame);
+   frame=0;
+  }else start();
+ };
+ const observer=('IntersectionObserver' in window)?new IntersectionObserver(entries=>{
+  visible=entries[0]?.isIntersecting??true;
+  if(!visible){if(frame)cancelAnimationFrame(frame);frame=0}
+  else start();
+ },{threshold:0}):null;
+ if(observer)observer.observe(hero);
+ window.addEventListener('resize',resize,{passive:true});
+ document.addEventListener('visibilitychange',onVisibility);
+ start();
+ whOrbCleanup=()=>{
+  disposed=true;
+  if(frame)cancelAnimationFrame(frame);
+  observer?.disconnect();
+  window.removeEventListener('resize',resize);
+  document.removeEventListener('visibilitychange',onVisibility);
+  if(finePointer){
+   hero.removeEventListener('pointermove',move);
+   hero.removeEventListener('pointerleave',leave);
+  }
+ };
+}
 
 /* Duas aparências do menu: barra de vidro e cápsula flutuante. */
 let whHeaderExpandedByClick=false;
@@ -2161,7 +2300,7 @@ function initAdaptiveHeader(){
  updateAdaptiveHeader();
 }
 
-function render(){document.getElementById('site-header').innerHTML=header();initAdaptiveHeader();renderContent();initHeroInteractivity();syncOnepageOffer();document.getElementById('site-footer').innerHTML=footer();document.getElementById('editor-root').innerHTML=editor();if(!adminMode){document.querySelectorAll('a[href^="#/"]').forEach(a=>a.setAttribute('href','/'+a.getAttribute('href').slice(2)))}}
+function render(){document.getElementById('site-header').innerHTML=header();initAdaptiveHeader();renderContent();initHeroInteractivity();initHeroOrbPhysics();syncOnepageOffer();document.getElementById('site-footer').innerHTML=footer();document.getElementById('editor-root').innerHTML=editor();if(!adminMode){document.querySelectorAll('a[href^="#/"]').forEach(a=>a.setAttribute('href','/'+a.getAttribute('href').slice(2)))}}
 const portalPublicRoutes=new Set(['','projeto','servicos','portfolio','sobre','contato','suporte','login','plaquinhas']);
 function isPortalNavigation(href){
  try{
