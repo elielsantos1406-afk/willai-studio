@@ -1961,6 +1961,9 @@ function updateAdaptiveHeader(){
  const compact=y>=90&&!whHeaderExpandedByClick&&!ui.menu;
  holder.classList.toggle('wh-header-compact',compact);
  holder.classList.toggle('wh-header-expanded',!compact);
+ const full=holder.querySelector('.site-header'),dock=holder.querySelector('.wh-compact-header');
+ if(full)full.inert=compact;
+ if(dock)dock.inert=!compact;
  whHeaderLastY=y;
 }
 function requestHeaderMotion(){if(whHeaderFrame)return;whHeaderFrame=requestAnimationFrame(()=>{whHeaderFrame=0;updateAdaptiveHeader()})}
@@ -1975,6 +1978,10 @@ function initAdaptiveHeader(){
   whHeaderMotionBound=true;
   window.addEventListener('scroll',requestHeaderMotion,{passive:true});
   window.addEventListener('resize',requestHeaderMotion,{passive:true});
+  document.addEventListener('click',event=>{
+   const dock=event.target.closest('#site-header.wh-header-compact .wh-compact-header');
+   if(dock&&!event.target.closest('a,button'))expandAdaptiveHeader();
+  });
   document.addEventListener('pointerdown',event=>{
    if(!whHeaderExpandedByClick||!document.getElementById('site-header'))return;
    if(!event.target.closest('#site-header')){
