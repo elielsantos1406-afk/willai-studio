@@ -11,6 +11,22 @@ body{margin:0;background:#f4f8fd;font-family:Inter,system-ui,-apple-system,"Sego
 @keyframes willai-progress{from{transform:translateX(-110%)}to{transform:translateX(330%)}}
 @media(prefers-reduced-motion:reduce){.loading-track::after{animation:none;width:100%}}
 #app{min-height:50vh}
+
+/* Primeira pintura: fundo premium no lugar da tela branca, removido ao montar o portal. */
+body{background:#071b34}
+#app{min-height:100svh}
+.willai-first-paint{min-height:100svh;padding:40px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;color:#fff;background:radial-gradient(ellipse at 55% 35%,#124972 0%,#071b34 58%,#061629 100%)}
+.willai-first-logo{display:grid;place-items:center;width:72px;height:72px;border-radius:24px;border:1px solid #80dff33d;background:#ffffff0e;box-shadow:inset 0 1px #ffffff30,0 18px 60px #0002}
+.willai-first-logo img{display:block;object-fit:contain;width:48px;height:48px}
+.willai-first-paint strong{font-weight:850;font-size:26px;letter-spacing:.18em;margin-top:8px}
+.willai-first-paint small{color:#b8d6e9;letter-spacing:.17em;font-size:10px;font-weight:700;text-align:center}
+.willai-first-line{display:block;margin-top:12px;width:76px;height:2px;overflow:hidden;border-radius:5px;background:linear-gradient(90deg,transparent,#7ed8ed,transparent);animation:first-line-glow 1.6s ease-in-out infinite alternate}
+@keyframes first-line-glow{from{opacity:.35;transform:scaleX(.65)}to{opacity:1;transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.willai-first-line{animation:none}}
 </style></head>
-<body><main id="app"></main><aside id="dock" class="banner-dock" aria-label="Carrossel institucional"></aside><div id="toast" class="toast" role="status" aria-live="polite"></div><div id="infoDialog" class="dialogwrap"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><p id="modalText"></p><button type="button" class="done">Fechar</button></div></div>
+<body><main id="app"><div class="willai-first-paint" role="status" aria-label="Abrindo WillAI">
+ <span class="willai-first-logo"><img src="/assets/willai-logo-original.png" alt="" width="48" height="48"></span>
+ <strong>WILLAI</strong><small>TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</small>
+ <span class="willai-first-line" aria-hidden="true"></span>
+ </div></main><aside id="dock" class="banner-dock" aria-label="Carrossel institucional"></aside><div id="toast" class="toast" role="status" aria-live="polite"></div><div id="infoDialog" class="dialogwrap"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><p id="modalText"></p><button type="button" class="done">Fechar</button></div></div>
 <script src="/config.js"></script><script src="/assets/router.js"></script></body></html>
