@@ -1039,6 +1039,13 @@ html{scroll-padding-top:90px}
  .home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble::after{animation:none!important}
 }
 
+
+/* Não reinicia a animação do título quando a página estática é hidratada. */
+#app.wh-seamless-init .home-rework .wh-hero-copy>*
+{animation:none!important;transition:none!important}
+#app.wh-seamless-init .home-rework .wh-hero-title::before
+{transition:none!important}
+
 </style>
 </head>
 <body>
@@ -1714,7 +1721,7 @@ function initInstitutionalMotion(){
  items.forEach(item=>whInstitutionalObserver.observe(item));
 }
 
-function renderContent(){const r=route(),bits=r.split('/');let html;if(!r)html=home();else if(r==='projeto')html=project();else if(r==='portfolio')html=portfolioPage();else if(r==='sobre')html=aboutPage();else if(r==='contato')html=contactPage();else if(r==='suporte')html=supportPage();else if(r==='servicos')html=servicesPage();else if(r==='login')html=login();else if(r==='plaquinhas')html=plates();else if(r==='studio')html=login();else if(bits[0]==='pagina')html=customPage(bits[1]);else if(bits[0]==='p')html=singlePlate(bits[1]);else if(bits.length===2&&state.companies[bits[1]])html=company(bits[0],bits[1]);else if(state.cities[r])html=city(r);else html=notFound();document.getElementById('app').innerHTML=html;document.documentElement.style.setProperty('--blue',state.theme.primary);document.documentElement.style.setProperty('--accent',state.theme.accent);updateSeoMeta();initHomeMotion();initPricingMotion();initInstitutionalMotion();initScrollBlur();initTouchGlass()}
+function renderContent(){const r=route(),bits=r.split('/');let html;if(!r)html=home();else if(r==='projeto')html=project();else if(r==='portfolio')html=portfolioPage();else if(r==='sobre')html=aboutPage();else if(r==='contato')html=contactPage();else if(r==='suporte')html=supportPage();else if(r==='servicos')html=servicesPage();else if(r==='login')html=login();else if(r==='plaquinhas')html=plates();else if(r==='studio')html=login();else if(bits[0]==='pagina')html=customPage(bits[1]);else if(bits[0]==='p')html=singlePlate(bits[1]);else if(bits.length===2&&state.companies[bits[1]])html=company(bits[0],bits[1]);else if(state.cities[r])html=city(r);else html=notFound();const app=document.getElementById('app');const firstPaint=!!app?.querySelector('.wh-immediate-hero');app.innerHTML=html;app.classList.toggle('wh-seamless-init',firstPaint&&!r);document.documentElement.style.setProperty('--blue',state.theme.primary);document.documentElement.style.setProperty('--accent',state.theme.accent);updateSeoMeta();initHomeMotion();initPricingMotion();initInstitutionalMotion();initScrollBlur();initTouchGlass()}
 function routePath(){const r=route();if(!r)return'home';if(r==='projeto')return'project';if(state.cities[r])return'cities.'+r;if(r.startsWith('pagina/')&&state.pages[r.slice(7)])return'pages.'+r.slice(7);if(r.split('/').length===2&&state.companies[r.split('/')[1]])return'companies.'+r.split('/')[1];return'home'}
 function get(path){return path.split('.').reduce((a,k)=>a?.[k],state)}
 function set(path,value){const parts=path.split('.');const last=parts.pop();const obj=parts.reduce((a,k)=>a?.[k],state);if(!obj)return;obj[last]=value;save();renderContent();document.getElementById('site-header').innerHTML=header();document.getElementById('site-footer').innerHTML=footer()}
