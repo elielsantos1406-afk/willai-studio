@@ -12,21 +12,42 @@ body{margin:0;background:#f4f8fd;font-family:Inter,system-ui,-apple-system,"Sego
 @media(prefers-reduced-motion:reduce){.loading-track::after{animation:none;width:100%}}
 #app{min-height:50vh}
 
-/* Primeira pintura: fundo premium no lugar da tela branca, removido ao montar o portal. */
-body{background:#071b34}
+
+/* Primeira tela de verdade, presente no HTML antes de qualquer consulta. Nenhum loader. */
+html,body{margin:0;min-height:100%;background:#071b34}
 #app{min-height:100svh}
-.willai-first-paint{min-height:100svh;padding:40px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;color:#fff;background:radial-gradient(ellipse at 55% 35%,#124972 0%,#071b34 58%,#061629 100%)}
-.willai-first-logo{display:grid;place-items:center;width:72px;height:72px;border-radius:24px;border:1px solid #80dff33d;background:#ffffff0e;box-shadow:inset 0 1px #ffffff30,0 18px 60px #0002}
-.willai-first-logo img{display:block;object-fit:contain;width:48px;height:48px}
-.willai-first-paint strong{font-weight:850;font-size:26px;letter-spacing:.18em;margin-top:8px}
-.willai-first-paint small{color:#b8d6e9;letter-spacing:.17em;font-size:10px;font-weight:700;text-align:center}
-.willai-first-line{display:block;margin-top:12px;width:76px;height:2px;overflow:hidden;border-radius:5px;background:linear-gradient(90deg,transparent,#7ed8ed,transparent);animation:first-line-glow 1.6s ease-in-out infinite alternate}
-@keyframes first-line-glow{from{opacity:.35;transform:scaleX(.65)}to{opacity:1;transform:scaleX(1)}}
-@media(prefers-reduced-motion:reduce){.willai-first-line{animation:none}}
+.wh-immediate-hero{box-sizing:border-box;min-height:100svh;color:#fff;background:radial-gradient(ellipse at 80% 16%,#19588466,transparent 54%),linear-gradient(140deg,#071a31,#0a2a49 70%,#061a30);padding:0 max(22px,calc((100vw - 1144px)/2));font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.wh-immediate-head{display:flex;align-items:center;gap:10px;min-height:75px}
+.wh-immediate-head img{width:37px;height:37px;object-fit:contain}
+.wh-immediate-brand{font-size:17px;font-weight:850;letter-spacing:.045em}
+.wh-immediate-inner{min-height:calc(100svh - 75px);display:flex;justify-content:center;flex-direction:column;padding:38px 0 76px;max-width:860px;box-sizing:border-box}
+.wh-immediate-tag{color:#a0deed;font-weight:800;font-size:11px;letter-spacing:.13em}
+.wh-immediate-inner h1{font-weight:820;font-size:clamp(43px,5.8vw,76px);line-height:1.1;letter-spacing:-.055em;margin:23px 0 12px;text-wrap:balance;overflow-wrap:break-word}
+.wh-immediate-inner h1 em{font-style:normal;color:#76dff4;display:block}
+.wh-immediate-inner p{font-size:clamp(15px,1.8vw,19px);line-height:1.5;color:#c5d9e8;margin:0 0 28px}
+.wh-immediate-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.wh-immediate-ctas a{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;min-height:51px;border-radius:14px;padding:13px 20px;font-weight:800;font-size:14px;text-decoration:none;color:#fff;border:1px solid #ffffff66}
+.wh-immediate-ctas a:first-child{background:#73dcec;color:#073047;border-color:#73dcec}
+.wh-immediate-bottom{display:flex;align-items:center;gap:13px;color:#9bc4d5;font-size:11px;letter-spacing:.1em;margin-top:50px;text-transform:uppercase}
+.wh-immediate-bottom span{display:inline-block;color:#9be8f4}
+@media(max-width:760px){
+.wh-immediate-hero{padding:0 22px}
+.wh-immediate-head{min-height:69px}
+.wh-immediate-inner{min-height:calc(100svh - 69px);padding:24px 0 56px}
+.wh-immediate-inner h1{font-size:clamp(34px,8.5vw,50px);line-height:1.12;margin:18px 0 14px}
+.wh-immediate-inner p{font-size:15px;margin-bottom:23px}
+.wh-immediate-ctas{flex-direction:column;gap:10px}
+.wh-immediate-ctas a{min-height:52px;width:100%}
+.wh-immediate-bottom{margin-top:33px}
+}
+@media(prefers-reduced-motion:reduce){.wh-immediate-hero *{scroll-behavior:auto}}
 </style></head>
-<body><main id="app"><div class="willai-first-paint" role="status" aria-label="Abrindo WillAI">
- <span class="willai-first-logo"><img src="/assets/willai-logo-original.png" alt="" width="48" height="48"></span>
- <strong>WILLAI</strong><small>TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</small>
- <span class="willai-first-line" aria-hidden="true"></span>
- </div></main><aside id="dock" class="banner-dock" aria-label="Carrossel institucional"></aside><div id="toast" class="toast" role="status" aria-live="polite"></div><div id="infoDialog" class="dialogwrap"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><p id="modalText"></p><button type="button" class="done">Fechar</button></div></div>
+<body><main id="app"><div class="wh-immediate-hero" aria-label="Página inicial WillAI">
+ <div class="wh-immediate-head"><img src="/assets/willai-logo-original.png" width="37" height="37" alt=""><span class="wh-immediate-brand">WILLAI</span></div>
+ <div class="wh-immediate-inner"><span class="wh-immediate-tag">WILLAI · TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</span>
+ <h1>Seu negócio merece mais do que um site.<em>Merece evoluir.</em></h1>
+ <p>Sites, sistemas e automações sob medida.</p>
+ <div class="wh-immediate-ctas"><a href="/contato">Solicitar orçamento ↗</a><a href="/portfolio">Ver projetos</a></div>
+ <div class="wh-immediate-bottom">EXPLORE NOSSAS SOLUÇÕES <span aria-hidden="true">↓</span></div>
+ </div></div></main><aside id="dock" class="banner-dock" aria-label="Carrossel institucional"></aside><div id="toast" class="toast" role="status" aria-live="polite"></div><div id="infoDialog" class="dialogwrap"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><p id="modalText"></p><button type="button" class="done">Fechar</button></div></div>
 <script src="/config.js"></script><script src="/assets/router.js"></script></body></html>
