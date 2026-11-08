@@ -954,6 +954,91 @@ html{scroll-padding-top:90px}
  .home-rework.wh-motion-on .wh-service.wh-inview,.home-rework.wh-motion-on .wh-process-step.wh-inview,.home-rework.wh-motion-on .wh-team-card.wh-inview{animation:none!important}
 }
 
+
+/* WILLAI / GLASS HIGHLIGHTS — destaque de texto transparente e minimalista. */
+.home-rework .wh-glass-highlight,.about-willai .wh-glass-highlight,
+.pricing-page .wh-glass-highlight,.quote-section .wh-glass-highlight,
+#app .section .wh-glass-highlight{
+ -webkit-box-decoration-break:clone;box-decoration-break:clone;
+ position:relative;display:inline;white-space:normal;
+ padding:.06em .28em .10em;border-radius:.38em;
+ border:1px solid #a0d9f4aa;
+ background:linear-gradient(125deg,#fffefef0 0%,#d9f3fff2 53%,#a8ddefa3 100%);
+ box-shadow:inset 0 1px 0 #ffffffee,inset 0 -1px 0 #4da3c82c,0 6px 18px #08528b17;
+ color:#075381;font:inherit;-webkit-text-fill-color:#075381;
+ -webkit-backdrop-filter:blur(10px) saturate(140%);backdrop-filter:blur(10px) saturate(140%);
+}
+.home-rework .wh-community .wh-glass-highlight,
+.home-rework .wh-final .wh-glass-highlight,
+.home-rework .wh-team .wh-glass-highlight,
+#app .wh-hero .wh-glass-highlight{
+ background:linear-gradient(120deg,#ffffff35,#77dbf52d 53%,#ad8efe23);
+ border-color:#dbf6ff6b;color:#f7fcff;-webkit-text-fill-color:#f7fcff;
+ box-shadow:inset 0 1px 0 #ffffff65,0 10px 26px #04172c35;
+}
+.home-rework .wh-hero .wh-hero-title{overflow:visible}
+.home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble{
+ display:inline-block;isolation:isolate;position:relative;vertical-align:baseline;
+ margin-top:.2em;padding:.13em .38em .19em;
+ border:1px solid #e0f9ff86;border-radius:.64em;
+ background:
+   linear-gradient(115deg,#ffffff32 0%,#a8f5ff1b 33%,#72d9f43a 55%,#9b8afa2d 100%) padding-box,
+   linear-gradient(145deg,#ffffffbb,#99eaff88 52%,#b1a2ff5f) border-box!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ -webkit-background-clip:border-box!important;background-clip:border-box!important;
+ box-shadow:inset 0 1px 0 #ffffffb8,inset 0 -2px 0 #ffffff16,0 12px 38px #2bb8dc29,0 0 45px #89eff71c;
+ text-shadow:0 2px 16px #58cef95b;
+ -webkit-backdrop-filter:blur(20px) saturate(155%);backdrop-filter:blur(20px) saturate(155%);
+ white-space:nowrap;max-width:100%;
+ animation:wh-liquid-float 6.3s ease-in-out infinite;
+}
+.home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble .wh-title-word{
+ display:inline!important;background:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ text-shadow:inherit;transform:none!important;
+}
+.home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble::before{
+ content:"";position:absolute;inset:0 0 auto 0;height:55%;border-radius:inherit;pointer-events:none;
+ background:linear-gradient(180deg,#ffffff40,transparent);opacity:.7;
+}
+.home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble::after{
+ content:"";position:absolute;top:-75%;left:-52%;height:250%;width:32%;transform:rotate(23deg);
+ background:linear-gradient(90deg,transparent,#ffffff39,transparent);
+ filter:blur(3px);pointer-events:none;animation:wh-liquid-glint 6s ease-in-out infinite;
+}
+@keyframes wh-liquid-float{0%,100%{box-shadow:inset 0 1px 0 #ffffffb8,0 12px 38px #2bb8dc29,0 0 40px #89eff718}50%{box-shadow:inset 0 1px 0 #ffffffcc,0 13px 46px #5bd8f149,0 0 55px #89eff72b}}
+@keyframes wh-liquid-glint{0%,15%{left:-52%;opacity:0}23%{opacity:.7}45%,100%{left:120%;opacity:0}}
+.home-rework .wh-team-header h2 em{
+ display:inline-block;padding:.035em .25em .09em;border:1px solid #dff7ff6b;
+ border-radius:.4em;background:linear-gradient(130deg,#ffffff36,#76d6f538 60%,#afa0ff28)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ -webkit-background-clip:border-box!important;background-clip:border-box!important;
+ box-shadow:inset 0 1px 0 #ffffff6b,0 9px 26px #0002;
+ -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+}
+.about-willai .about-highlight{display:inline-block;max-width:100%;padding:.28em .65em;border-radius:18px;
+ border:1px solid #a8d8f1b8;background:linear-gradient(130deg,#ffffffec,#c2e9f4c8,#deefffec);
+ -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+ box-shadow:inset 0 1px 0 #fff,0 10px 27px #0b56731b}
+.home-rework .wh-deal-main h2 em{display:inline-block;padding:.01em .2em .06em;border-radius:.35em;
+ border:1px solid #dfb2f75a;background:linear-gradient(110deg,#ffffff22,#cf7bfa25,#ffffff12);
+ color:#e7b6ff;-webkit-text-fill-color:#e7b6ff;
+ -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+@media(max-width:760px){
+ .home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble{
+  font-size:clamp(27px,7.1vw,41px);padding:.18em .28em .23em;
+  line-height:1.15;letter-spacing:-.05em;border-radius:.65em;margin-top:.23em;
+ }
+ .home-rework .wh-glass-highlight,.about-willai .wh-glass-highlight,
+ .pricing-page .wh-glass-highlight,.quote-section .wh-glass-highlight{padding:.04em .20em .10em;border-radius:.36em}
+}
+@media(max-width:360px){
+ .home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble{font-size:clamp(25px,7vw,29px);padding:.17em .22em}
+}
+@media(prefers-reduced-motion:reduce){
+ .home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble,
+ .home-rework .wh-hero .wh-hero-title em.wh-liquid-bubble::after{animation:none!important}
+}
+
 </style>
 </head>
 <body>
