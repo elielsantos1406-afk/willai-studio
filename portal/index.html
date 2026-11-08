@@ -984,19 +984,30 @@ function home(){
   <div class="wh-services-grid">${highlights.map((item,i)=>`<article class="wh-service"><span class="wh-service-index">${String(i+1).padStart(2,'0')}</span><h3>${esc(item.title)}</h3><p>${esc(item.desc||'')}</p><div class="wh-service-bottom"><strong>${esc(item.price)}</strong><a href="${serviceQuoteUrl(item)}">Solicitar orçamento ${icon('arrow',15)}</a></div></article>`).join('')}</div>
  </div></section>
 
- <section class="wh-offer-section" aria-label="Oferta de Site One Page"><div class="container"><div class="wh-offer-top"><span class="wh-eyebrow">OFERTA ESPECIAL</span><span>Para estética e barbearias</span></div>  <div class="wh-showcase">
-  <div class="wh-promo" data-onepage-offer>
-   <a class="wh-promo-art" href="${serviceQuoteUrl({id:"onepage"})}" aria-label="Site One Page de redirecionamento. De R$ 499,90 por R$ 99,90, pagamento único. Oferta para profissionais de estética e barbearia">
-    <div class="wh-promo-intro"><h2>Site <span>One Page</span></h2><p>Site de redirecionamento<br>para o seu negócio</p></div>
-    <div class="wh-promo-bottom"><div class="wh-promo-prices"><span class="wh-promo-old">De <s>R$ 499,90</s></span><div class="wh-promo-price"><small>por</small><strong>R$ 99,90</strong></div><span class="wh-promo-pay">Pagamento único</span></div><div class="wh-promo-audience">Exclusivo para <strong>profissionais de<br>estética e barbearia</strong></div></div>
-   </a>
-   <div class="wh-promo-countdown" role="timer" data-promo-countdown aria-label="Contagem regressiva da promoção"><span class="wh-promo-deadline">Promoção até 10/11</span><div class="wh-promo-time" aria-hidden="true"><span><strong data-promo-days>00</strong><small>dias</small></span><i>:</i><span><strong data-promo-hours>00</strong><small>horas</small></span><i>:</i><span><strong data-promo-minutes>00</strong><small>min</small></span><i>:</i><span><strong data-promo-seconds>00</strong><small>seg</small></span></div></div>
+ <section class="wh-offer-section" aria-label="Oferta de Site One Page"><div class="container">
+ <div class="wh-deal" data-onepage-offer>
+  <div class="wh-deal-top"><span class="wh-deal-eyebrow">OFERTA ESPECIAL · ESTÉTICA E BARBEARIA</span><span class="wh-deal-badge">PAGAMENTO ÚNICO</span></div>
+  <div class="wh-deal-layout"><div class="wh-deal-main">
+   <h2>Site <em>One Page</em></h2><p>Seu negócio profissional em um só link.</p>
+   <div class="wh-deal-value"><s>R$ 499,90</s><strong>R$ 99,90</strong></div>
+   <a class="wh-deal-button" href="${serviceQuoteUrl({id:'onepage'})}">Quero meu site ${icon('arrow',19)}</a>
   </div>
-  <div class="wh-promo-after" data-onepage-after hidden>${shot?`<a class="wh-showcase-frame" href="${shotHref}" ${shotHref.startsWith('https://')?'target="_blank" rel="noopener noreferrer"':''} aria-label="Conhecer projeto ${esc(shotTitle)}">
+  <div class="wh-deal-time" role="timer" data-promo-countdown aria-label="Contagem regressiva da oferta">
+   <span class="wh-deal-time-label">OFERTA TERMINA EM</span>
+   <div class="wh-deal-clock" aria-hidden="true">
+    <span><strong data-promo-days>00</strong><small>DIAS</small></span>
+    <span><strong data-promo-hours>00</strong><small>HORAS</small></span>
+    <span><strong data-promo-minutes>00</strong><small>MIN</small></span>
+    <span><strong data-promo-seconds>00</strong><small>SEG</small></span>
+   </div><small class="wh-deal-expires">Até 10/11 · Para estética e barbearia</small>
+  </div></div>
+ </div>
+ <div class="wh-offer-fallback"><div class="wh-promo-after" data-onepage-after hidden>${shot?`<a class="wh-showcase-frame" href="${shotHref}" ${shotHref.startsWith('https://')?'target="_blank" rel="noopener noreferrer"':''} aria-label="Conhecer projeto ${esc(shotTitle)}">
    <div class="wh-window-top"><span class="wh-window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>Prévia de projeto</span></div>
    <img src="${esc(shot)}" alt="Prévia do projeto ${esc(shotTitle)}" loading="eager" decoding="async" fetchpriority="high">
    <div class="wh-showcase-caption"><span>PROJETO EM DESTAQUE</span><strong>${esc(shotTitle)}</strong></div></a>`:
-   `<div class="wh-showcase-fallback"><img src="${esc(state.brand.logo||A+'willai-logo-original.png')}" alt="WillAI"><span>Projetos desenvolvidos sob medida</span></div>`}</div></div></div></section>
+   `<div class="wh-showcase-fallback"><img src="${esc(state.brand.logo||A+'willai-logo-original.png')}" alt="WillAI"><span>Projetos desenvolvidos sob medida</span></div>`}</div></div>
+ </div></section>
  <section class="wh-process wh-section" aria-labelledby="wh-process-title"><div class="container">
   <div class="wh-process-head"><span class="wh-eyebrow">COMO TRABALHAMOS</span><h2 id="wh-process-title">Da sua ideia à solução pronta.</h2></div>
   <div class="wh-process-steps">
@@ -1441,6 +1452,45 @@ function initHomeMotion(){
  },{threshold:0.07,rootMargin:'0px 0px -14px 0px'});
  nodes.forEach(n=>whMotionObserver.observe(n));
 }
+
+/* Rolagem com desembaçar progressivo, sem afetar telas de QR ou administração. */
+let whBlurCleanup=null;
+function initScrollBlur(){
+ if(whBlurCleanup){whBlurCleanup();whBlurCleanup=null}
+ const root=document.querySelector('#app .home-rework, #app .about-willai');
+ if(!root||!('IntersectionObserver' in window)||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
+ const nodes=[...root.querySelectorAll('.wh-service,.wh-project,.wh-process-step,.wh-team-card,.wh-heading,.wh-team-header,.about-value')];
+ nodes.forEach(n=>n.classList.add('wh-soft-reveal'));
+ let frame=0;
+ const update=()=>{
+  frame=0;const vh=window.innerHeight||700;
+  for(const n of nodes){
+   if(!n.isConnected)continue;
+   const r=n.getBoundingClientRect();if(r.top>vh+40||r.bottom<0)continue;
+   const p=Math.max(0,Math.min(1,(vh*.96-r.top)/(vh*.43)));
+   n.style.setProperty('--wh-scroll-blur',(7*(1-p)).toFixed(2)+'px');
+   n.style.setProperty('--wh-scroll-opacity',(0.58+0.42*p).toFixed(3));
+   n.style.setProperty('--wh-scroll-shift',(16*(1-p)).toFixed(1)+'px');
+  }
+ };
+ const schedule=()=>{if(!frame)frame=requestAnimationFrame(update)};
+ window.addEventListener('scroll',schedule,{passive:true});
+ window.addEventListener('resize',schedule,{passive:true});
+ schedule();
+ whBlurCleanup=()=>{window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);if(frame)cancelAnimationFrame(frame)};
+}
+function initTouchGlass(){
+ const root=document.querySelector('#app .home-rework, #app .about-willai, #app .pricing-page');
+ if(!root)return;
+ root.querySelectorAll('.wh-service,.wh-project,.wh-process-step,.wh-team-card,.pricing-featured-card,.pricing-item,.about-value').forEach(card=>{
+  let t;card.addEventListener('pointerdown',()=>{clearTimeout(t);card.classList.add('wh-glass-touched')},{passive:true});
+  const release=()=>{clearTimeout(t);t=setTimeout(()=>card.classList.remove('wh-glass-touched'),220)};
+  card.addEventListener('pointerup',release,{passive:true});
+  card.addEventListener('pointercancel',release,{passive:true});
+  card.addEventListener('pointerleave',release,{passive:true});
+ });
+}
+
 let pricingMotionObserver=null;
 function initPricingMotion(){
  if(pricingMotionObserver){pricingMotionObserver.disconnect();pricingMotionObserver=null;}
@@ -1499,7 +1549,7 @@ function initInstitutionalMotion(){
  items.forEach(item=>whInstitutionalObserver.observe(item));
 }
 
-function renderContent(){const r=route(),bits=r.split('/');let html;if(!r)html=home();else if(r==='projeto')html=project();else if(r==='portfolio')html=portfolioPage();else if(r==='sobre')html=aboutPage();else if(r==='contato')html=contactPage();else if(r==='suporte')html=supportPage();else if(r==='servicos')html=servicesPage();else if(r==='login')html=login();else if(r==='plaquinhas')html=plates();else if(r==='studio')html=login();else if(bits[0]==='pagina')html=customPage(bits[1]);else if(bits[0]==='p')html=singlePlate(bits[1]);else if(bits.length===2&&state.companies[bits[1]])html=company(bits[0],bits[1]);else if(state.cities[r])html=city(r);else html=notFound();document.getElementById('app').innerHTML=html;document.documentElement.style.setProperty('--blue',state.theme.primary);document.documentElement.style.setProperty('--accent',state.theme.accent);updateSeoMeta();initHomeMotion();initPricingMotion();initInstitutionalMotion()}
+function renderContent(){const r=route(),bits=r.split('/');let html;if(!r)html=home();else if(r==='projeto')html=project();else if(r==='portfolio')html=portfolioPage();else if(r==='sobre')html=aboutPage();else if(r==='contato')html=contactPage();else if(r==='suporte')html=supportPage();else if(r==='servicos')html=servicesPage();else if(r==='login')html=login();else if(r==='plaquinhas')html=plates();else if(r==='studio')html=login();else if(bits[0]==='pagina')html=customPage(bits[1]);else if(bits[0]==='p')html=singlePlate(bits[1]);else if(bits.length===2&&state.companies[bits[1]])html=company(bits[0],bits[1]);else if(state.cities[r])html=city(r);else html=notFound();document.getElementById('app').innerHTML=html;document.documentElement.style.setProperty('--blue',state.theme.primary);document.documentElement.style.setProperty('--accent',state.theme.accent);updateSeoMeta();initHomeMotion();initPricingMotion();initInstitutionalMotion();initScrollBlur();initTouchGlass()}
 function routePath(){const r=route();if(!r)return'home';if(r==='projeto')return'project';if(state.cities[r])return'cities.'+r;if(r.startsWith('pagina/')&&state.pages[r.slice(7)])return'pages.'+r.slice(7);if(r.split('/').length===2&&state.companies[r.split('/')[1]])return'companies.'+r.split('/')[1];return'home'}
 function get(path){return path.split('.').reduce((a,k)=>a?.[k],state)}
 function set(path,value){const parts=path.split('.');const last=parts.pop();const obj=parts.reduce((a,k)=>a?.[k],state);if(!obj)return;obj[last]=value;save();renderContent();document.getElementById('site-header').innerHTML=header();document.getElementById('site-footer').innerHTML=footer()}
@@ -1529,8 +1579,7 @@ const ONEPAGE_END=Date.parse('2026-11-10T23:59:59-03:00');
 function syncOnepageOffer(){
  const block=document.querySelector('[data-onepage-offer]');if(!block)return;
  const ms=Math.max(0,ONEPAGE_END-Date.now()),other=document.querySelector('[data-onepage-after]');
- const offerTop=document.querySelector('.wh-offer-top');
- if(offerTop){const eyebrow=offerTop.querySelector('.wh-eyebrow'),detail=offerTop.querySelector('span:last-child');if(eyebrow)eyebrow.textContent=ms?'OFERTA ESPECIAL':'PROJETO EM DESTAQUE';if(detail)detail.textContent=ms?'Para estética e barbearias':'Veja uma solução na prática'}
+ const fallback=document.querySelector('.wh-offer-fallback');if(fallback)fallback.hidden=Boolean(ms);
  if(!ms){block.hidden=true;if(other)other.hidden=false;return}
  block.hidden=false;if(other)other.hidden=true;
  const s=Math.floor(ms/1000),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];
