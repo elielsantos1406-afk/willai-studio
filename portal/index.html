@@ -689,6 +689,73 @@
 #app .portfolio-card .portfolio-card-visual img,#app .service-card{transition:none!important}
 }
 
+
+/* WillAI — interação premium 2026. Apenas componentes institucionais da página inicial. */
+.home-rework .wh-hero{--hero-pointer-x:50%;--hero-pointer-y:40%;isolation:isolate}
+.home-rework .wh-hero::after{content:"";position:absolute;inset:-50px;z-index:0;pointer-events:none;
+background:
+ radial-gradient(circle 220px at var(--hero-pointer-x) var(--hero-pointer-y),#32c9e923,transparent 75%),
+ linear-gradient(#8cdafa0b 1px,transparent 1px),
+ linear-gradient(90deg,#8cdafa0b 1px,transparent 1px);
+background-size:auto,47px 47px,47px 47px;
+-webkit-mask-image:linear-gradient(105deg,#0009,#0007 56%,transparent 100%);
+mask-image:linear-gradient(105deg,#0009,#0007 56%,transparent 100%);
+}
+.home-rework .wh-hero-grid{z-index:1}
+.home-rework .wh-hero-title{position:relative;isolation:isolate;cursor:default}
+.home-rework .wh-hero-title::before{content:"";position:absolute;inset:-22px;z-index:-1;pointer-events:none;
+background:radial-gradient(circle 120px at var(--cursor-x,50%) var(--cursor-y,50%),#65dff42b,transparent 85%);
+transition:opacity .3s ease;opacity:0}
+.home-rework .wh-hero-title:hover::before{opacity:1}
+.home-rework .wh-hero-title .wh-title-word{display:inline-block;position:relative;will-change:auto;transition:transform .3s cubic-bezier(.2,.75,.2,1);backface-visibility:hidden}
+.home-rework .wh-hero-title em{font-style:normal;color:#79daf1;background:linear-gradient(110deg,#69d5e9 3%,#dcfbff 46%,#5fc9ea 70%,#9eebff 100%);background-size:240% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:wh-title-shimmer 7s ease-in-out infinite alternate}
+@keyframes wh-title-shimmer{0%{background-position:0% center}100%{background-position:100% center}}
+@media(hover:hover) and (pointer:fine){
+.home-rework .wh-service{transform-style:preserve-3d;will-change:transform}
+.home-rework .wh-service::after{top:var(--wh-card-y,20%);right:auto;left:var(--wh-card-x,75%);transform:translate(-50%,-50%);background:radial-gradient(circle,#ffffffbd,#7cdef34a 48%,transparent 73%);opacity:.4;transition:opacity .25s}
+.home-rework .wh-service:hover::after{opacity:.85}
+}
+.home-rework .wh-process{background:#f7fbff;border-block:1px solid #e2edf6}
+.home-rework .wh-process-head{max-width:770px;margin-bottom:36px}
+.home-rework .wh-process h2{color:#0a3355;letter-spacing:-.045em;line-height:1.13;font-size:clamp(29px,3.8vw,49px);margin:12px 0 13px}
+.home-rework .wh-process-head>p{font-size:14px;color:#5c778c;line-height:1.75;margin:0}
+.home-rework .wh-process-steps{position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.home-rework .wh-process-steps::before{content:"";position:absolute;top:22px;left:20px;right:20px;height:1px;background:linear-gradient(90deg,#43b9d7,#85c5db55);pointer-events:none}
+.home-rework .wh-process-step{position:relative;padding:0 8px 12px 0;min-width:0}
+.home-rework .wh-process-number{width:44px;height:44px;border-radius:14px;background:linear-gradient(145deg,#ffffffbd,#e6f8ffce);border:1px solid #8bcfe6;box-shadow:0 5px 18px #0c648317,inset 0 1px 0 #fff;display:grid;place-items:center;font-size:12px;letter-spacing:.04em;font-weight:850;color:#0b5b81;position:relative;z-index:1;margin:0 0 22px}
+.home-rework .wh-process-step h3{color:#0d3857;line-height:1.3;letter-spacing:-.024em;font-size:18px;margin:0 0 10px}
+.home-rework .wh-process-step p{color:#5c778c;font-size:13px;line-height:1.7;margin:0}
+.home-rework .wh-process-link{display:inline-flex;align-items:center;gap:9px;margin-top:25px;color:#0a6b99;font-size:13px;font-weight:800;text-decoration:none}
+.home-rework .wh-process-link:hover{color:#06466c}
+.home-rework .wh-project-image,.portfolio-card .portfolio-card-visual{position:relative}
+.home-rework .wh-project-image::after,.portfolio-card .portfolio-card-visual::after{content:"";position:absolute;z-index:2;inset:0;background:linear-gradient(115deg,transparent 0%,#8fe9ff22 42%,#ffffff68 50%,transparent 60%);opacity:0;transform:translateX(-85%);pointer-events:none}
+@media(hover:hover) and (pointer:fine){
+ .home-rework .wh-project:hover .wh-project-image::after,.portfolio-card:hover .portfolio-card-visual::after{opacity:1;animation:wh-preview-scan 1.15s ease both}
+ .home-rework .wh-project:hover .wh-project-image img,.portfolio-card:hover .portfolio-card-visual img{animation:wh-preview-pan 4.5s ease-in-out alternate infinite}
+}
+@keyframes wh-preview-scan{from{transform:translateX(-90%)}to{transform:translateX(115%)}}
+@keyframes wh-preview-pan{from{object-position:top center;transform:scale(1.045)}to{object-position:bottom center;transform:scale(1.045)}}
+@media(max-width:880px){
+.home-rework .wh-process-steps{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:28px}
+.home-rework .wh-process-steps::before{display:none}
+}
+@media(max-width:540px){
+.home-rework .wh-process-steps{grid-template-columns:1fr;gap:20px}
+.home-rework .wh-process-step{display:grid;grid-template-columns:44px 1fr;column-gap:15px;padding:0}
+.home-rework .wh-process-number{grid-row:span 2;margin:0}
+.home-rework .wh-process-step h3{font-size:17px;margin:1px 0 5px}
+.home-rework .wh-process-step p{grid-column:2}
+.home-rework .wh-process-head{margin-bottom:27px}
+.home-rework .wh-process{padding:52px 0}
+.home-rework .wh-hero-title::before{display:none}
+.home-rework .wh-hero::after{background:radial-gradient(circle 220px at 25% 25%,#32c9e91c,transparent 75%),linear-gradient(#8cdafa0b 1px,transparent 1px),linear-gradient(90deg,#8cdafa0b 1px,transparent 1px)}
+}
+@media(prefers-reduced-motion:reduce){
+.home-rework .wh-hero-title em,.home-rework .wh-project:hover .wh-project-image img,.portfolio-card:hover .portfolio-card-visual img{animation:none!important}
+.home-rework .wh-hero-title .wh-title-word{transform:none!important;transition:none!important}
+.home-rework .wh-project-image::after,.portfolio-card .portfolio-card-visual::after{animation:none!important;opacity:0!important}
+}
+
 </style>
 </head>
 <body>
@@ -768,6 +835,7 @@ function teamSection(about=false){
  return html.replace('TEAM_CLASS',about?'wh-team wh-team--about':'wh-team').replace('TEAM_MORE',about?'':more);
 }
 function home(){
+ const heroWords=value=>String(value||'').trim().split(/\s+/).filter(Boolean).map(word=>'<span class="wh-title-word">'+esc(word)+'</span>').join(' ');
  const p=state.home||{},goto=path=>adminMode?'#/'+path:'/'+path;
  const navFor=(value,fallback)=>{
   const u=String(value||'').trim()||goto(fallback);
@@ -783,7 +851,7 @@ function home(){
  return `<div class="home-rework">
  <section class="wh-hero"><div class="container wh-hero-grid">
   <div class="wh-hero-copy"><span class="wh-kicker">${esc(p.tag||'WILLAI · TECNOLOGIA PARA EMPRESAS')}</span>
-   <h1>${esc(p.title||'Sites e soluções digitais')} <em>${esc(p.emphasis||'para o seu negócio.')}</em></h1>
+   <h1 class="wh-hero-title" data-wh-magnetic>${heroWords(p.title||'Sites e soluções digitais')} <em>${heroWords(p.emphasis||'para o seu negócio.')}</em></h1>
    <p>${esc(p.subtitle||'Criamos sites, páginas e sistemas para ajudar sua empresa a ter uma presença digital mais profissional.')}</p>
    <div class="wh-hero-actions"><a class="wh-button wh-button-primary" href="${navFor(p.primaryUrl,'contato')}">${esc(p.primaryLabel||'Solicitar orçamento')} ${icon('arrow',18)}</a>
    <a class="wh-button wh-button-line" href="${navFor(p.secondaryUrl,'portfolio')}">${esc(p.secondaryLabel||'Ver projetos')}</a></div>
@@ -808,6 +876,14 @@ function home(){
   <div class="wh-heading"><div><span class="wh-eyebrow">O QUE FAZEMOS</span><h2>Soluções para o dia a dia da sua empresa.</h2></div>
   <a class="wh-text-link" href="${goto('servicos')}">Todos os serviços ${icon('arrow',17)}</a></div>
   <div class="wh-services-grid">${highlights.map((item,i)=>`<article class="wh-service"><span class="wh-service-index">${String(i+1).padStart(2,'0')}</span><h3>${esc(item.title)}</h3><p>${esc(item.desc||'')}</p><div class="wh-service-bottom"><strong>${esc(item.price)}</strong><a href="${serviceQuoteUrl(item)}">Solicitar orçamento ${icon('arrow',15)}</a></div></article>`).join('')}</div>
+ </div></section>
+
+ <section class="wh-process wh-section" aria-labelledby="wh-process-title"><div class="container">
+  <div class="wh-process-head"><span class="wh-eyebrow">COMO TRABALHAMOS</span><h2 id="wh-process-title">Da sua ideia à solução pronta.</h2><p>Um caminho simples, transparente e personalizado para transformar o que você precisa em tecnologia funcional.</p></div>
+  <div class="wh-process-steps">
+   ${[['01','Entendemos sua ideia','Conversamos sobre seus objetivos, necessidades e público.'],['02','Planejamos a solução','Definimos o formato, a experiência e as funcionalidades.'],['03','Desenvolvemos','Construímos, ajustamos e testamos cada etapa.'],['04','Entregamos','Publicamos e orientamos você no uso da sua solução.']].map(item=>`<article class="wh-process-step"><span class="wh-process-number">${item[0]}</span><h3>${item[1]}</h3><p>${item[2]}</p></article>`).join('')}
+  </div>
+  <a class="wh-process-link" href="${goto('contato')}">Vamos desenvolver sua ideia ${icon('arrow',16)}</a>
  </div></section>
  <section class="wh-section wh-work" id="projetos"><div class="container">
   <div class="wh-heading"><div><span class="wh-eyebrow">PORTFÓLIO</span><h2>Veja o que já desenvolvemos.</h2></div>
@@ -1233,7 +1309,7 @@ function initHomeMotion(){
  if(whMotionObserver){whMotionObserver.disconnect();whMotionObserver=null}
  const root=document.querySelector('#app .home-rework, #app .about-willai');
  if(!root)return;
- const nodes=[...root.querySelectorAll('.wh-heading,.wh-service,.wh-project,.wh-community-grid,.wh-final-grid,.wh-team-header,.wh-team-card,.wh-team-foot,.about-intro,.about-value,.about-contact,.about-brand')];
+ const nodes=[...root.querySelectorAll('.wh-heading,.wh-service,.wh-project,.wh-process-head,.wh-process-step,.wh-process-link,.wh-community-grid,.wh-final-grid,.wh-team-header,.wh-team-card,.wh-team-foot,.about-intro,.about-value,.about-contact,.about-brand')];
  if(!nodes.length)return;
  if(!('IntersectionObserver' in window)||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
  for(const node of nodes){
@@ -1241,6 +1317,7 @@ function initHomeMotion(){
   if(node.classList.contains('wh-service'))node.style.setProperty('--wh-delay',((nodes.indexOf(node)%4)*65)+'ms');
   if(node.classList.contains('wh-project'))node.style.setProperty('--wh-delay',((nodes.indexOf(node)%2)*90)+'ms');
   if(node.classList.contains('wh-team-card')||node.classList.contains('about-value'))node.style.setProperty('--wh-delay',((nodes.indexOf(node)%2)*110)+'ms');
+  if(node.classList.contains('wh-process-step'))node.style.setProperty('--wh-delay',((nodes.indexOf(node)%4)*95)+'ms');
  }
  root.classList.add('wh-motion-on');
  whMotionObserver=new IntersectionObserver((entries,observer)=>{
@@ -1346,7 +1423,72 @@ function syncOnepageOffer(){
 }
 setInterval(syncOnepageOffer,1000);
 
-function render(){document.getElementById('site-header').innerHTML=header();renderContent();syncOnepageOffer();document.getElementById('site-footer').innerHTML=footer();document.getElementById('editor-root').innerHTML=editor();if(!adminMode){document.querySelectorAll('a[href^="#/"]').forEach(a=>a.setAttribute('href','/'+a.getAttribute('href').slice(2)))}}
+
+// Movimentos de ponteiro: efeito apenas em desktop com mouse e sem preferência por movimento reduzido.
+function initHeroInteractivity(){
+ const hero=document.querySelector('#app .wh-hero');
+ if(!hero||!window.matchMedia?.('(hover: hover) and (pointer: fine)')?.matches
+  ||window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches)return;
+ const title=hero.querySelector('[data-wh-magnetic]');
+ let frame=0;
+ hero.addEventListener('pointermove',event=>{
+  if(frame)return;
+  const x=event.clientX,y=event.clientY;
+  frame=requestAnimationFrame(()=>{
+   frame=0;
+   if(!hero.isConnected)return;
+   const box=hero.getBoundingClientRect();
+   hero.style.setProperty('--hero-pointer-x',(((x-box.left)/box.width)*100).toFixed(1)+'%');
+   hero.style.setProperty('--hero-pointer-y',(((y-box.top)/box.height)*100).toFixed(1)+'%');
+  });
+ },{passive:true});
+ if(title){
+  const words=[...title.querySelectorAll('.wh-title-word')];
+  let titleFrame=0,px=0,py=0;
+  title.addEventListener('pointermove',event=>{
+   px=event.clientX;py=event.clientY;
+   if(titleFrame)return;
+   titleFrame=requestAnimationFrame(()=>{
+    titleFrame=0;if(!title.isConnected)return;
+    const bounds=title.getBoundingClientRect();
+    title.style.setProperty('--cursor-x',(((px-bounds.left)/bounds.width)*100).toFixed(1)+'%');
+    title.style.setProperty('--cursor-y',(((py-bounds.top)/bounds.height)*100).toFixed(1)+'%');
+    words.forEach(word=>{
+     const r=word.getBoundingClientRect(),dx=px-(r.left+r.width/2),dy=py-(r.top+r.height/2),d=Math.hypot(dx,dy);
+     if(d<118){const strength=(1-d/118)*3.5;word.style.transform='translate3d('+((dx/(d||1))*strength).toFixed(2)+'px,'+((dy/(d||1))*strength).toFixed(2)+'px,0)'}
+     else word.style.transform='';
+    });
+   });
+  },{passive:true});
+  title.addEventListener('pointerleave',()=>{
+   words.forEach(word=>{word.style.transform=''});
+   title.style.removeProperty('--cursor-x');
+   title.style.removeProperty('--cursor-y');
+  });
+ }
+ document.querySelectorAll('#app .wh-service').forEach(card=>{
+  let tiltFrame=0,px=0,py=0;
+  card.addEventListener('pointermove',event=>{
+   px=event.clientX;py=event.clientY;
+   if(tiltFrame)return;
+   tiltFrame=requestAnimationFrame(()=>{
+    tiltFrame=0;if(!card.isConnected)return;
+    const box=card.getBoundingClientRect();
+    const rx=(.5-(py-box.top)/box.height)*5.2,ry=((px-box.left)/box.width-.5)*5.2;
+    card.style.transform='perspective(900px) rotateX('+rx.toFixed(2)+'deg) rotateY('+ry.toFixed(2)+'deg) translateY(-3px)';
+    card.style.setProperty('--wh-card-x',(((px-box.left)/box.width)*100).toFixed(1)+'%');
+    card.style.setProperty('--wh-card-y',(((py-box.top)/box.height)*100).toFixed(1)+'%');
+   });
+  },{passive:true});
+  card.addEventListener('pointerleave',()=>{
+   card.style.transform='';
+   card.style.removeProperty('--wh-card-x');
+   card.style.removeProperty('--wh-card-y');
+  });
+ });
+}
+
+function render(){document.getElementById('site-header').innerHTML=header();renderContent();initHeroInteractivity();syncOnepageOffer();document.getElementById('site-footer').innerHTML=footer();document.getElementById('editor-root').innerHTML=editor();if(!adminMode){document.querySelectorAll('a[href^="#/"]').forEach(a=>a.setAttribute('href','/'+a.getAttribute('href').slice(2)))}}
 const portalPublicRoutes=new Set(['','projeto','servicos','portfolio','sobre','contato','suporte','login','plaquinhas']);
 function isPortalNavigation(href){
  try{
@@ -1533,8 +1675,13 @@ document.addEventListener('submit',async e=>{if(e.target.id!=='portal-login-form
 (async()=>{
  if(!adminMode){
   restorePublicCache();
+  // Montagem única: elimina reinício das animações após a atualização do Supabase.
+  // Com rede lenta, exibe o último conteúdo em cache, sem renderizar a página duas vezes.
+  await Promise.race([
+   loadPublic().catch(e=>console.warn('Falha na atualização pública',e)),
+   new Promise(resolve=>setTimeout(resolve,2200))
+  ]);
   render();
-  loadPublic().then(()=>render()).catch(e=>console.warn('Falha na atualização pública',e));
   // Se o editor publicar em outra aba, atualiza automaticamente esta visualização.
   window.addEventListener('storage',e=>{
     if(e.key==='willai_portal_updated_at'){
