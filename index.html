@@ -98,12 +98,43 @@ html,body{margin:0;min-height:100%;background:#071b34}
 .wh-immediate-menu span{background:#d3f9ff}
 @media(max-width:860px){#site-header{height:68px}}
 
+
+/* A primeira pintura já mostra o mesmo ambiente tecnológico da home. */
+.wh-immediate-hero{position:relative;isolation:isolate;overflow:hidden}
+.wh-immediate-wave{
+ position:absolute;inset:-6%;z-index:-1;pointer-events:none;
+ background:url('/assets/hero-wave-2.webp') center/cover no-repeat;
+ filter:blur(2px) brightness(.72);
+ opacity:.1;
+ animation:wh-first-wave-drift 44s ease-in-out infinite alternate;
+}
+.wh-immediate-hero::before{
+ content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+ background:linear-gradient(90deg,#061a32b8,#061b337c 55%,#061b3399);
+}
+.wh-immediate-inner{position:relative;z-index:2}
+.wh-immediate-orb{
+ position:absolute;z-index:1;pointer-events:none;right:clamp(24px,10vw,190px);top:20%;
+ width:clamp(145px,20vw,290px);aspect-ratio:1;border-radius:50%;opacity:.44;
+ background:radial-gradient(circle at 28% 23%,#ffffff72,#baf7ff3b 14%,transparent 34%),
+ radial-gradient(circle at 65% 78%,#6b83fa4d,#55d4ff2d 46%,transparent 72%),
+ radial-gradient(circle,#bafaff16,#2074b83d);
+ border:1px solid #b2efff64;
+ box-shadow:inset 13px 13px 32px #ffffff20,inset -18px -15px 35px #0074c134,0 0 55px #3bcaff20;
+ animation:wh-first-orb-float 15s ease-in-out infinite;
+}
+@keyframes wh-first-orb-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+@keyframes wh-first-wave-drift{from{transform:scale(1.05) translateX(-1%)}to{transform:scale(1.09) translateX(1%)}}
+@media(max-width:760px){.wh-immediate-orb{right:-36px;top:30%;width:145px;opacity:.25}.wh-immediate-wave{opacity:.08}}
+@media(prefers-reduced-motion:reduce){.wh-immediate-wave,.wh-immediate-orb{animation:none!important}}
+
 </style></head>
 <body><header id="site-header"><div class="wh-immediate-site-header"><div class="wh-immediate-nav">
  <a href="/" class="wh-immediate-brand"><img src="/assets/willai-logo-original.png" width="44" height="44" alt=""><span class="wh-immediate-brand-copy"><strong>WillAI</strong><small>TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</small></span></a>
  <nav class="wh-immediate-links" aria-label="Navegação inicial"><a href="/">Início</a><a href="/servicos">Serviços</a><a href="/portfolio">Portfólio</a><a href="/sobre">Sobre nós</a><a href="/contato">Orçamento</a></nav>
  <a href="/login" class="wh-immediate-signin">Entrar</a><div class="wh-immediate-menu" aria-hidden="true"><span></span><span></span><span></span></div>
  </div></div></header><main id="app"><div class="wh-immediate-hero" aria-label="Página inicial WillAI">
+ <div class="wh-immediate-wave" aria-hidden="true"></div><div class="wh-immediate-orb" aria-hidden="true"></div>
  <div class="wh-immediate-inner"><span class="wh-immediate-tag">WILLAI · TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</span>
  <h1>Seu negócio merece mais do que um site.<em class="wh-immediate-bubble">Merece evoluir.</em></h1>
  <p>Sites, sistemas e automações sob medida.</p>
