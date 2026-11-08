@@ -865,6 +865,16 @@ html{scroll-padding-top:90px}
 @media(max-width:650px){.wh-team-card{grid-template-columns:92px minmax(0,1fr);gap:14px;min-height:0;padding:22px}.wh-team-card .wh-team-card-copy h3{font-size:24px}.wh-team-card .wh-team-card-copy .wh-team-role{font-size:12px}.wh-team-image{border-radius:15px}.wh-team-card .wh-team-skills{gap:6px}.wh-team-skills span{font-size:10px}}
 @media(max-width:365px){.wh-team-card{grid-template-columns:77px minmax(0,1fr);gap:12px;padding:18px}.wh-team-card .wh-team-card-copy h3{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.wh-team-image img{transition:none!important}}
+
+/* Detalhes finais de navegação e interação. */
+.home-rework .wh-service:active,.home-rework .wh-project:active{transform:scale(.985)}
+.quote-section .contact-switch a{min-height:54px;display:flex;align-items:center;justify-content:center;text-align:center;transition:transform .2s ease,background .2s ease}
+.quote-section .contact-switch a:active{transform:scale(.98)}
+.quote-section .quote-form input:focus,.quote-section .quote-form textarea:focus,.quote-section .quote-form select:focus{background:#fff;box-shadow:0 0 0 3px #58bcdf29;border-color:#2e9dc4}
+#app .portfolio-card{border:1px solid #cde7f5;background:linear-gradient(145deg,#fffffff0,#ecf8fce8);backdrop-filter:blur(16px);border-radius:24px;box-shadow:0 15px 32px #0c416016;overflow:hidden}
+#app .portfolio-card:active{transform:scale(.99)}
+@media(max-width:760px){.quote-section .contact-switch{gap:9px}.quote-section .contact-switch a{padding:12px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.home-rework .wh-service:active,.home-rework .wh-project:active,#app .portfolio-card:active{transform:none}}
 </style>
 </head>
 <body>
@@ -1237,7 +1247,7 @@ function contactPage(){
  const chosen=(state.services||[]).find(s=>s.id===requestedId)||null;
  const items=(state.services||[]).map(s=>`<option value="${esc(s.title)}"${chosen?.id===s.id?' selected':''}>${esc(s.title)}</option>`).join('');
  const picked=chosen?`<div class="quote-picked" role="status"><span>Serviço selecionado</span><strong>${esc(chosen.title)}</strong><small>${esc(chosen.price||'Sob orçamento')}</small></div>`:'';
- return `<section class="section quote-section"><div class="container"><div class="contact-switch" role="navigation" aria-label="Escolha o tipo de atendimento"><a href="${adminMode?'#/contato':'/contato'}" aria-current="page">Solicitar orçamento <span>Para contratar ou iniciar um projeto</span></a><a href="${adminMode?'#/suporte':'/suporte'}">Suporte técnico <span>Para serviços que você já utiliza</span></a></div><div class="quote-layout">
+ return `<section class="section quote-section"><div class="container"><div class="contact-switch" role="navigation" aria-label="Escolha o tipo de atendimento"><a href="${adminMode?'#/contato':'/contato'}" aria-current="page">Orçamento</a><a href="${adminMode?'#/suporte':'/suporte'}">Suporte técnico</a></div><div class="quote-layout">
  <div class="quote-copy"><span class="eyebrow">FAÇA UM ORÇAMENTO</span>
  <h1>Conte sua ideia. Nós criamos a solução.</h1>
  <p class="muted">Descreva o projeto. Respondemos pelo WhatsApp.</p>
@@ -1259,8 +1269,8 @@ function supportPage(){
  return `<section class="section quote-section support-section">
   <div class="container">
    <div class="contact-switch" role="navigation" aria-label="Escolha o tipo de atendimento">
-    <a href="${adminMode?'#/contato':'/contato'}">Solicitar orçamento <span>Para contratar ou iniciar um projeto</span></a>
-    <a href="${adminMode?'#/suporte':'/suporte'}" aria-current="page">Suporte técnico <span>Para serviços que você já utiliza</span></a>
+    <a href="${adminMode?'#/contato':'/contato'}">Orçamento</a>
+    <a href="${adminMode?'#/suporte':'/suporte'}" aria-current="page">Suporte técnico</a>
    </div>
    <div class="quote-layout">
     <div class="quote-copy"><span class="eyebrow">CENTRAL DE SUPORTE WILLAI</span>
@@ -1519,6 +1529,8 @@ const ONEPAGE_END=Date.parse('2026-11-10T23:59:59-03:00');
 function syncOnepageOffer(){
  const block=document.querySelector('[data-onepage-offer]');if(!block)return;
  const ms=Math.max(0,ONEPAGE_END-Date.now()),other=document.querySelector('[data-onepage-after]');
+ const offerTop=document.querySelector('.wh-offer-top');
+ if(offerTop){const eyebrow=offerTop.querySelector('.wh-eyebrow'),detail=offerTop.querySelector('span:last-child');if(eyebrow)eyebrow.textContent=ms?'OFERTA ESPECIAL':'PROJETO EM DESTAQUE';if(detail)detail.textContent=ms?'Para estética e barbearias':'Veja uma solução na prática'}
  if(!ms){block.hidden=true;if(other)other.hidden=false;return}
  block.hidden=false;if(other)other.hidden=true;
  const s=Math.floor(ms/1000),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];
