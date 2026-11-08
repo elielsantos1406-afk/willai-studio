@@ -80,6 +80,24 @@ html,body{margin:0;min-height:100%;background:#071b34}
 /* Mesmas dimensões do cabeçalho final para evitar deslocamento no celular. */
 @media(max-width:860px){.wh-immediate-site-header,.wh-immediate-nav{height:68px}.wh-immediate-links,.wh-immediate-signin{display:none}.wh-immediate-menu{display:flex}}
 @media(max-width:760px){.wh-immediate-site-header,.wh-immediate-nav{height:68px}}
+
+/* Primeira pintura mantém a mesma barra de vidro escuro do site carregado. */
+#site-header{position:sticky;top:0;z-index:100;height:78px;isolation:isolate}
+.wh-immediate-site-header{
+ background:linear-gradient(120deg,#061e36ed,#0b3150d9 60%,#061a32ee);
+ color:#f6fbff;border-bottom:1px solid #b2edff36;
+ -webkit-backdrop-filter:blur(23px) saturate(155%);backdrop-filter:blur(23px) saturate(155%);
+ box-shadow:inset 0 1px 0 #ffffff28,0 12px 33px #00172827;
+}
+.wh-immediate-brand{color:#f6fbff}
+.wh-immediate-brand-copy small{color:#b6d5e7}
+.wh-immediate-links a{color:#d0e1ee}
+.wh-immediate-links a:hover{color:#fff}
+.wh-immediate-signin{color:#032b45;background:#8adfec;border:1px solid #aff5ff82}
+.wh-immediate-menu{background:linear-gradient(130deg,#ffffff24,#77d5fa1a);border:1px solid #ffffff41}
+.wh-immediate-menu span{background:#d3f9ff}
+@media(max-width:860px){#site-header{height:68px}}
+
 </style></head>
 <body><header id="site-header"><div class="wh-immediate-site-header"><div class="wh-immediate-nav">
  <a href="/" class="wh-immediate-brand"><img src="/assets/willai-logo-original.png" width="44" height="44" alt=""><span class="wh-immediate-brand-copy"><strong>WillAI</strong><small>TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</small></span></a>
