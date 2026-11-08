@@ -62,7 +62,10 @@ async function loadPortal(){
  const desc=doc.querySelector('meta[name="description"]');
  if(desc){let d=document.querySelector('meta[name="description"]');if(!d){d=document.createElement('meta');d.name='description';document.head.append(d)}d.content=desc.content}
  document.title=doc.title;
+ // Preserva a primeira tela real entre o HTML de entrada e o portal: sem branco intermediário.
+ const immediate=(!first||first==='index.html')?document.querySelector('#app .wh-immediate-hero')?.outerHTML:null;
  document.body.innerHTML=doc.body.innerHTML.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');
+ if(immediate){const main=document.getElementById('app');if(main)main.innerHTML=immediate}
  const code=document.createElement('script');code.textContent=script.textContent;
  document.body.append(code);
 }
