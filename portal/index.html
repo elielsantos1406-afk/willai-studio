@@ -1336,7 +1336,8 @@ function contactPage(){
  const requestedId=new URLSearchParams(query).get('servico')||'';
  const chosen=(state.services||[]).find(s=>s.id===requestedId)||null;
  const items=(state.services||[]).map(s=>`<option value="${esc(s.title)}"${chosen?.id===s.id?' selected':''}>${esc(s.title)}</option>`).join('');
- const picked=chosen?`<div class="quote-picked" role="status"><span>Serviço selecionado</span><strong>${esc(chosen.title)}</strong><small>${esc(chosen.price||'Sob orçamento')}</small></div>`:'';
+ const chosenPrice=(chosen?.id==='onepage'&&Date.now()<Date.parse('2026-11-10T23:59:59-03:00'))?'Oferta: R$ 99,90 · estética/barbearia':(chosen?.price||'Sob orçamento');
+ const picked=chosen?`<div class="quote-picked" role="status"><span>Serviço selecionado</span><strong>${esc(chosen.title)}</strong><small>${esc(chosenPrice)}</small></div>`:'';
  return `<section class="section quote-section"><div class="container"><div class="contact-switch" role="navigation" aria-label="Escolha o tipo de atendimento"><a href="${adminMode?'#/contato':'/contato'}" aria-current="page">Orçamento</a><a href="${adminMode?'#/suporte':'/suporte'}">Suporte técnico</a></div><div class="quote-layout">
  <div class="quote-copy"><span class="eyebrow">FAÇA UM ORÇAMENTO</span>
  <h1>Conte sua ideia. Nós criamos a solução.</h1>
