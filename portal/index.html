@@ -756,6 +756,100 @@ transition:opacity .3s ease;opacity:0}
 .home-rework .wh-project-image::after,.portfolio-card .portfolio-card-visual::after{animation:none!important;opacity:0!important}
 }
 
+
+/* WillAI — acabamento mobile e cartões de vidro, preservando rotas e funcionalidades. */
+:root{--wh-gutter:clamp(21px,5vw,36px)}
+body{overflow-x:hidden}#app .container{min-width:0}
+.home-rework .wh-hero{min-height:min(670px,88svh);background:radial-gradient(ellipse at 80% 18%,#17608a44,transparent 50%),linear-gradient(140deg,#071a31,#0a2a49 70%,#061a30)}
+.home-rework .wh-hero-grid{grid-template-columns:minmax(0,1fr);min-height:min(670px,88svh);padding-block:clamp(80px,10vw,130px) clamp(50px,7vw,85px)}
+.home-rework .wh-hero-copy{width:100%;max-width:880px;min-width:0}
+.home-rework .wh-hero-title{max-width:870px;font-size:clamp(43px,5.65vw,77px);line-height:1.095;letter-spacing:-.053em;text-wrap:balance;overflow-wrap:break-word;word-break:normal}
+.home-rework .wh-hero-title em,.home-rework .wh-hero-title em .wh-title-word{color:#7ce7f7!important;-webkit-text-fill-color:#7ce7f7!important;background:none!important;text-shadow:0 0 42px #22cdec40}
+.home-rework .wh-hero-lead{font-size:clamp(15px,1.75vw,19px);line-height:1.5;color:#c4dce9;max-width:none;margin:12px 0 29px}
+.home-rework .wh-hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.home-rework .wh-hero-actions .wh-button{border-radius:16px;min-height:54px;position:relative;transition:transform .25s ease,background .25s ease,box-shadow .25s ease}
+.home-rework .wh-hero-actions .wh-button:active{transform:scale(.97)}
+.home-rework .wh-hero-actions .wh-button-primary{box-shadow:0 12px 36px #3bd5ec25}
+.home-rework .wh-scroll-cue{display:inline-flex;gap:11px;align-items:center;color:#aad3e6;margin-top:49px;font-size:11px;letter-spacing:.11em;text-transform:uppercase;font-weight:750;text-decoration:none}
+.home-rework .wh-scroll-arrow{width:30px;height:30px;border:1px solid #84dff35c;border-radius:50%;display:grid;place-items:center;color:#7de3ef;animation:wh-scroll-bob 2.4s ease-in-out infinite}
+@keyframes wh-scroll-bob{0%,100%{transform:translateY(-2px)}55%{transform:translateY(4px)}}
+.home-rework .wh-offer-section{padding:28px 0 42px;background:#f6faff}
+.home-rework .wh-offer-top{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:0 0 13px}
+.home-rework .wh-offer-top span:last-child{font-size:12px;color:#54718b}
+.home-rework .wh-offer-section .wh-showcase{width:100%;max-width:none;min-width:0}
+.home-rework .wh-offer-section .wh-promo{display:grid;grid-template-columns:minmax(0,1fr) minmax(155px,235px);align-items:stretch;gap:12px}
+.home-rework .wh-offer-section .wh-promo-art{aspect-ratio:auto;min-height:0;padding:20px 24px;border-radius:22px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.home-rework .wh-offer-section .wh-promo-intro h2{font-size:clamp(22px,2.7vw,35px)}
+.home-rework .wh-offer-section .wh-promo-intro p{font-size:12px;margin-top:6px}
+.home-rework .wh-offer-section .wh-promo-bottom{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+.home-rework .wh-offer-section .wh-promo-old{font-size:12px}
+.home-rework .wh-offer-section .wh-promo-price strong{font-size:clamp(23px,2.9vw,37px)}
+.home-rework .wh-offer-section .wh-promo-pay,.home-rework .wh-offer-section .wh-promo-audience{display:none}
+.home-rework .wh-offer-section .wh-promo-countdown{min-width:0;border-radius:22px;padding:14px;background:linear-gradient(125deg,#0b2946,#0d3a5c)}
+.home-rework .wh-offer-section .wh-promo-after{max-width:460px;margin:auto}
+.home-rework .wh-process-step{padding:20px;border:1px solid #cfe4f2;border-radius:24px;background:linear-gradient(145deg,#ffffffed,#e4f5fbcc);box-shadow:0 12px 30px #102b4612;backdrop-filter:blur(12px);transition:transform .3s ease,box-shadow .3s ease}
+.home-rework .wh-process-steps::before{display:none}
+.home-rework .wh-process-step:hover{transform:translateY(-4px);box-shadow:0 16px 32px #102b461d}
+.home-rework .wh-process-number{margin-bottom:18px}
+.home-rework .wh-service,.home-rework .wh-project{border-radius:24px;backdrop-filter:blur(18px);box-shadow:0 16px 38px #0d416114}
+.home-rework .wh-project{border:1px solid #bedbed;background:linear-gradient(140deg,#ffffffec,#eaf6fcdb)}
+.home-rework .wh-work,.home-rework .wh-services{background:radial-gradient(circle at 18% 15%,#a2d8f82a,transparent 55%),#f8fbfe}
+.home-rework .wh-heading h2{font-size:clamp(28px,3.6vw,45px);line-height:1.2}
+.quote-section{background:radial-gradient(ellipse at 15% 5%,#bce9fb5c,transparent 58%),#f6faff}
+.quote-section .contact-switch a{border-radius:18px}
+.quote-section .quote-layout{gap:clamp(20px,3.5vw,55px)}
+.quote-section .quote-copy h1{font-size:clamp(31px,4.1vw,59px);letter-spacing:-.045em;line-height:1.15;margin:12px 0}
+.quote-section .quote-copy>p{max-width:430px;color:#57758e;font-size:14px;line-height:1.65}
+.quote-section .quote-card{border:1px solid #d4ebf6;border-radius:27px;background:linear-gradient(145deg,#fffffff5,#f2faffed);backdrop-filter:blur(18px);box-shadow:0 16px 48px #10446d16}
+.quote-section .quote-card h2{font-size:22px;margin-bottom:12px}
+.about-willai .about-value{background:linear-gradient(145deg,#fff,#ecf8fdea);border:1px solid #d2e6f3;backdrop-filter:blur(12px);border-radius:25px}
+.about-willai .about-intro{margin-bottom:34px}
+.pricing-page .pricing-intro p{font-size:14px}
+.pricing-page .pricing-nav a{border-radius:999px}
+html{scroll-padding-top:90px}
+@media(max-width:760px){
+ .home-rework .container,.home-rework .wh-hero>.container,.quote-section>.container,.about-willai>.container,.pricing-page .container{width:100%;max-width:100%;padding-inline:var(--wh-gutter)!important;margin-inline:auto}
+ .home-rework .wh-hero{min-height:auto}
+ .home-rework .wh-hero-grid{min-height:clamp(495px,77svh,665px);padding-block:clamp(65px,10svh,95px) 44px!important;gap:0!important;grid-template-columns:minmax(0,1fr)!important}
+ .home-rework .wh-hero-title{font-size:clamp(34px,8.5vw,51px);line-height:1.12;margin:20px 0 14px;letter-spacing:-.048em;max-width:100%;word-break:normal;overflow-wrap:break-word;text-wrap:pretty}
+ .home-rework .wh-hero-lead{font-size:15px;max-width:350px;margin:0 0 24px}
+ .home-rework .wh-hero-copy{width:100%;min-width:0;max-width:100%;padding:0!important}
+ .home-rework .wh-hero-actions{display:grid;grid-template-columns:1fr;gap:10px}
+ .home-rework .wh-hero-actions .wh-button{width:100%;min-height:52px;justify-content:center;padding:14px 18px;font-size:14px}
+ .home-rework .wh-hero-actions .wh-button-line{border:1px solid #ffffff60;border-radius:16px;padding:12px 18px}
+ .home-rework .wh-scroll-cue{margin-top:31px;font-size:10px}
+ .home-rework .wh-offer-section .wh-promo{grid-template-columns:1fr}
+ .home-rework .wh-offer-section .wh-promo-art{padding:19px 20px}
+ .home-rework .wh-offer-section .wh-promo-bottom{flex-wrap:wrap}
+ .home-rework .wh-offer-section .wh-promo-countdown{padding:14px}
+ .home-rework .wh-services-grid{gap:13px}
+ .home-rework .wh-services-grid .wh-service{min-height:0;padding:20px;border-radius:22px}
+ .home-rework .wh-process-step{padding:18px}
+ .home-rework .wh-project-info{padding:16px}
+ .home-rework .wh-team-card{border-radius:23px}
+ .quote-section .quote-layout{grid-template-columns:minmax(0,1fr);gap:23px;padding-block:18px 30px}
+ .quote-section .quote-copy h1{font-size:clamp(32px,8.1vw,43px)}
+ .quote-section .quote-card{padding:23px 19px;border-radius:23px}
+ .quote-section .contact-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .quote-section .contact-switch a{padding:12px 10px;font-size:12px;min-width:0}
+ .quote-section .contact-switch a span{font-size:10px}
+}
+@media(max-width:430px){
+ :root{--wh-gutter:22px}
+ .home-rework .wh-hero-title{font-size:clamp(33px,8.2vw,38px)}
+ .home-rework .wh-hero .wh-kicker{font-size:9px;letter-spacing:.09em;white-space:normal}
+ .home-rework .wh-offer-section .wh-promo-art{display:flex;flex-wrap:wrap;gap:12px}
+ .home-rework .wh-offer-section .wh-promo-intro p{display:none}
+ .home-rework .wh-offer-section .wh-promo-bottom{margin-left:auto}
+ .home-rework .wh-offer-section .wh-promo-price strong{font-size:28px}
+ .home-rework .wh-process-step{display:grid;grid-template-columns:44px minmax(0,1fr);gap:3px 14px}
+ .home-rework .wh-process-number{grid-row:span 2;margin:0}
+ .home-rework .wh-process-step h3{margin:0}
+ .home-rework .wh-process-step p{grid-column:2}
+ .quote-section .quote-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){.home-rework .wh-scroll-arrow{animation:none!important}}
+
 </style>
 </head>
 <body>
