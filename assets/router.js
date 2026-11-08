@@ -51,7 +51,7 @@ async function isPortalRoute(){
  }catch(e){console.warn('Verificação de cidade indisponível',e);return false}
 }
 async function loadPortal(){
- const response=await fetch('/portal/index.html',{cache:'no-cache'});
+ const response=await fetch('/portal/index.html',{cache:'default'});
  if(!response.ok)throw Error('HTTP '+response.status+' ao carregar o portal');
  const html=await response.text();
  const doc=new DOMParser().parseFromString(html,'text/html');
@@ -63,9 +63,24 @@ async function loadPortal(){
  if(desc){let d=document.querySelector('meta[name="description"]');if(!d){d=document.createElement('meta');d.name='description';document.head.append(d)}d.content=desc.content}
  document.title=doc.title;
  // Preserva a primeira tela real entre o HTML de entrada e o portal: sem branco intermediário.
- const immediate=new Set(['','index.html','projeto','servicos','portfolio','sobre','contato','suporte']).has(first)?document.querySelector('#app .wh-immediate-hero')?.outerHTML:null;
- document.body.innerHTML=doc.body.innerHTML.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'');
- if(immediate){const main=document.getElementById('app');if(main)main.innerHTML=immediate}
+ // Preserva os elementos e a hero originais: não substitui body nem causa uma tela branca.
+ const app=document.getElementById('app');
+ if(!app)throw Error('Área principal da WillAI não encontrada');
+ if(!document.getElementById('site-header')){
+  const h=document.createElement('header');h.id='site-header';app.before(h);
+ }
+ if(!document.getElementById('site-footer')){
+  const footer=document.createElement('footer');footer.id='site-footer';app.after(footer);
+ }
+ if(!document.getElementById('editor-root')){
+  const root=document.createElement('div');root.id='editor-root';document.body.append(root);
+ }
+ if(!document.getElementById('toast')){
+  const toast=document.createElement('div');toast.id='toast';toast.setAttribute('role','status');
+  toast.setAttribute('aria-live','polite');document.body.append(toast);
+ }
+ document.getElementById('dock')?.remove();
+ document.getElementById('infoDialog')?.remove();
  const code=document.createElement('script');code.textContent=script.textContent;
  document.body.append(code);
 }
