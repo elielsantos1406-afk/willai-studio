@@ -2014,11 +2014,28 @@ document.addEventListener('submit',async e=>{if(e.target.id!=='portal-login-form
   restorePublicCache();
   // A primeira dobra já está no HTML. Limite a espera dos dados: sem splash ou tela branca.
   // Mantém a montagem única e utiliza cache/seed caso a rede esteja lenta.
-  await Promise.race([
-   loadPublic().catch(e=>console.warn('Falha na atualização pública',e)),
-   new Promise(resolve=>setTimeout(resolve,260))
-  ]);
+  const contentBefore=JSON.stringify({services:state.services,portfolio:state.portfolio,projectCover:state.project?.cover,home:state.home});
+  let finished=false;
+  const publicLoad=loadPublic().catch(e=>console.warn('Falha na atualização pública',e)).then(()=>{finished=true});
+  await Promise.race([publicLoad,new Promise(resolve=>setTimeout(resolve,260))]);
   render();
+  // Se os dados chegarem depois, atualize apenas as seções afetadas, mantendo a hero e os formulários intactos.
+  if(!finished)publicLoad.then(()=>{
+   if(JSON.stringify({services:state.services,portfolio:state.portfolio,projectCover:state.project?.cover,home:state.home})===contentBefore)return;
+   const currentRoute=route();
+   if(currentRoute===''){
+    const holder=document.createElement('div');holder.innerHTML=home();
+    const current=document.querySelector('#app .home-rework');
+    if(!current)return;
+    for(const selector of ['.wh-services-grid','.wh-project-grid','.wh-offer-fallback','.wh-community-grid']){
+     const live=current.querySelector(selector),fresh=holder.querySelector(selector);
+     if(live&&fresh)live.replaceWith(fresh);
+    }
+    syncOnepageOffer();
+   }else if(['servicos','portfolio','sobre','projeto'].includes(currentRoute)){
+    renderContent();
+   }
+  });
   // Se o editor publicar em outra aba, atualiza automaticamente esta visualização.
   window.addEventListener('storage',e=>{
     if(e.key==='willai_portal_updated_at'){
