@@ -850,14 +850,22 @@ function home(){
  const shotHref=portfolio[0]?.url&&/^https:\/\//i.test(portfolio[0].url)?link(portfolio[0].url):goto('portfolio');
  return `<div class="home-rework">
  <section class="wh-hero"><div class="container wh-hero-grid">
-  <div class="wh-hero-copy"><span class="wh-kicker">${esc(p.tag||'WILLAI · TECNOLOGIA PARA EMPRESAS')}</span>
-   <h1 class="wh-hero-title" data-wh-magnetic>${heroWords(p.title||'Sites e soluções digitais')} <em>${heroWords(p.emphasis||'para o seu negócio.')}</em></h1>
-   <p>${esc(p.subtitle||'Criamos sites, páginas e sistemas para ajudar sua empresa a ter uma presença digital mais profissional.')}</p>
+  <div class="wh-hero-copy"><span class="wh-kicker">WILLAI · TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</span>
+   <h1 class="wh-hero-title" data-wh-magnetic>${heroWords('Seu negócio merece mais do que um site.')} <em>${heroWords('Merece evoluir.')}</em></h1>
+   <p class="wh-hero-lead">Sites, sistemas e automações sob medida.</p>
    <div class="wh-hero-actions"><a class="wh-button wh-button-primary" href="${navFor(p.primaryUrl,'contato')}">${esc(p.primaryLabel||'Solicitar orçamento')} ${icon('arrow',18)}</a>
-   <a class="wh-button wh-button-line" href="${navFor(p.secondaryUrl,'portfolio')}">${esc(p.secondaryLabel||'Ver projetos')}</a></div>
-   <span class="wh-hero-aside">Sites, sistemas, automações e ferramentas sob medida.</span>
+   <a class="wh-button wh-button-line" href="#projetos">${esc(p.secondaryLabel||'Ver projetos')} ${icon('arrow',17)}</a></div>
+   <a class="wh-scroll-cue" href="#servicos" aria-label="Deslizar para conhecer os serviços"><span>Explore nossas soluções</span><span class="wh-scroll-arrow" aria-hidden="true">↓</span></a>
   </div>
-  <div class="wh-showcase">
+ </div></section>
+ <div class="wh-motion-band" role="note" aria-label="Sites, sistemas, automações, inteligência artificial, integrações e soluções digitais"><div class="wh-motion-track" aria-hidden="true"><div class="wh-motion-group"><span>SITES</span><span>SISTEMAS</span><span>AUTOMAÇÕES</span><span>INTELIGÊNCIA ARTIFICIAL</span><span>INTEGRAÇÕES</span><span>SOLUÇÕES DIGITAIS</span></div><div class="wh-motion-group"><span>SITES</span><span>SISTEMAS</span><span>AUTOMAÇÕES</span><span>INTELIGÊNCIA ARTIFICIAL</span><span>INTEGRAÇÕES</span><span>SOLUÇÕES DIGITAIS</span></div></div></div>
+ <section class="wh-section wh-services" id="servicos"><div class="container">
+  <div class="wh-heading"><div><span class="wh-eyebrow">O QUE FAZEMOS</span><h2>Tecnologia para o seu negócio.</h2></div>
+  <a class="wh-text-link" href="${goto('servicos')}">Todos os serviços ${icon('arrow',17)}</a></div>
+  <div class="wh-services-grid">${highlights.map((item,i)=>`<article class="wh-service"><span class="wh-service-index">${String(i+1).padStart(2,'0')}</span><h3>${esc(item.title)}</h3><p>${esc(item.desc||'')}</p><div class="wh-service-bottom"><strong>${esc(item.price)}</strong><a href="${serviceQuoteUrl(item)}">Solicitar orçamento ${icon('arrow',15)}</a></div></article>`).join('')}</div>
+ </div></section>
+
+ <section class="wh-offer-section" aria-label="Oferta de Site One Page"><div class="container"><div class="wh-offer-top"><span class="wh-eyebrow">OFERTA ESPECIAL</span><span>Para estética e barbearias</span></div>  <div class="wh-showcase">
   <div class="wh-promo" data-onepage-offer>
    <a class="wh-promo-art" href="${serviceQuoteUrl({id:"onepage"})}" aria-label="Site One Page de redirecionamento. De R$ 499,90 por R$ 99,90, pagamento único. Oferta para profissionais de estética e barbearia">
     <div class="wh-promo-intro"><h2>Site <span>One Page</span></h2><p>Site de redirecionamento<br>para o seu negócio</p></div>
@@ -869,25 +877,17 @@ function home(){
    <div class="wh-window-top"><span class="wh-window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>Prévia de projeto</span></div>
    <img src="${esc(shot)}" alt="Prévia do projeto ${esc(shotTitle)}" loading="eager" decoding="async" fetchpriority="high">
    <div class="wh-showcase-caption"><span>PROJETO EM DESTAQUE</span><strong>${esc(shotTitle)}</strong></div></a>`:
-   `<div class="wh-showcase-fallback"><img src="${esc(state.brand.logo||A+'willai-logo-original.png')}" alt="WillAI"><span>Projetos desenvolvidos sob medida</span></div>`}</div></div>
- </div></section>
- <div class="wh-motion-band" role="note" aria-label="Sites, sistemas, automações, inteligência artificial, integrações e soluções digitais"><div class="wh-motion-track" aria-hidden="true"><div class="wh-motion-group"><span>SITES</span><span>SISTEMAS</span><span>AUTOMAÇÕES</span><span>INTELIGÊNCIA ARTIFICIAL</span><span>INTEGRAÇÕES</span><span>SOLUÇÕES DIGITAIS</span></div><div class="wh-motion-group"><span>SITES</span><span>SISTEMAS</span><span>AUTOMAÇÕES</span><span>INTELIGÊNCIA ARTIFICIAL</span><span>INTEGRAÇÕES</span><span>SOLUÇÕES DIGITAIS</span></div></div></div>
- <section class="wh-section wh-services" id="servicos"><div class="container">
-  <div class="wh-heading"><div><span class="wh-eyebrow">O QUE FAZEMOS</span><h2>Soluções para o dia a dia da sua empresa.</h2></div>
-  <a class="wh-text-link" href="${goto('servicos')}">Todos os serviços ${icon('arrow',17)}</a></div>
-  <div class="wh-services-grid">${highlights.map((item,i)=>`<article class="wh-service"><span class="wh-service-index">${String(i+1).padStart(2,'0')}</span><h3>${esc(item.title)}</h3><p>${esc(item.desc||'')}</p><div class="wh-service-bottom"><strong>${esc(item.price)}</strong><a href="${serviceQuoteUrl(item)}">Solicitar orçamento ${icon('arrow',15)}</a></div></article>`).join('')}</div>
- </div></section>
-
+   `<div class="wh-showcase-fallback"><img src="${esc(state.brand.logo||A+'willai-logo-original.png')}" alt="WillAI"><span>Projetos desenvolvidos sob medida</span></div>`}</div></div></div></section>
  <section class="wh-process wh-section" aria-labelledby="wh-process-title"><div class="container">
-  <div class="wh-process-head"><span class="wh-eyebrow">COMO TRABALHAMOS</span><h2 id="wh-process-title">Da sua ideia à solução pronta.</h2><p>Um caminho simples, transparente e personalizado para transformar o que você precisa em tecnologia funcional.</p></div>
+  <div class="wh-process-head"><span class="wh-eyebrow">COMO TRABALHAMOS</span><h2 id="wh-process-title">Da sua ideia à solução pronta.</h2></div>
   <div class="wh-process-steps">
    ${[['01','Entendemos sua ideia','Conversamos sobre seus objetivos, necessidades e público.'],['02','Planejamos a solução','Definimos o formato, a experiência e as funcionalidades.'],['03','Desenvolvemos','Construímos, ajustamos e testamos cada etapa.'],['04','Entregamos','Publicamos e orientamos você no uso da sua solução.']].map(item=>`<article class="wh-process-step"><span class="wh-process-number">${item[0]}</span><h3>${item[1]}</h3><p>${item[2]}</p></article>`).join('')}
   </div>
   <a class="wh-process-link" href="${goto('contato')}">Vamos desenvolver sua ideia ${icon('arrow',16)}</a>
  </div></section>
  <section class="wh-section wh-work" id="projetos"><div class="container">
-  <div class="wh-heading"><div><span class="wh-eyebrow">PORTFÓLIO</span><h2>Veja o que já desenvolvemos.</h2></div>
-  <p>Demonstrações publicadas para você conhecer as soluções na prática.</p></div>
+  <div class="wh-heading"><div><span class="wh-eyebrow">PORTFÓLIO</span><h2>Projetos que mostram o que fazemos.</h2></div>
+  </div>
   ${portfolio.length?`<div class="wh-project-grid">${portfolio.map(item=>`<a class="wh-project" href="${link(item.url)}" target="_blank" rel="noopener noreferrer" aria-label="Abrir demonstração: ${esc(item.title)}">
    <div class="wh-project-image">${portfolioMedia(item)}</div>
    <div class="wh-project-info"><div><span class="wh-project-type">${esc(item.category||'Demonstração')}</span><h3>${esc(item.title)}</h3></div><span class="wh-project-open" aria-hidden="true">${icon('arrow',20)}</span></div>
@@ -896,13 +896,13 @@ function home(){
  </div></section>
  ${teamSection()}
  <section class="wh-community"><div class="container wh-community-grid">
-  <div><span class="wh-eyebrow">PROJETO DE INCLUSÃO DIGITAL</span><h2>Mais presença digital para pequenos negócios.</h2>
-   <p>Uma iniciativa da WillAI que ajuda empreendedores a apresentar seus negócios e facilitar o contato com clientes.</p>
+  <div><span class="wh-eyebrow">PROJETO DE INCLUSÃO DIGITAL</span><h2>Mais negócios no digital.</h2>
+   <p>Sites e ferramentas para pequenos empreendedores.</p>
    <a class="wh-text-link" href="${goto('projeto')}">Conheça o projeto ${icon('arrow',17)}</a></div>
   ${state.project?.cover?`<a class="wh-community-media" href="${goto('projeto')}" aria-label="Conheça o Projeto de Inclusão Digital"><img src="${esc(state.project.cover)}" alt="Projeto de Inclusão Digital WillAI" loading="lazy"></a>`:''}
  </div></section>
  <section class="wh-final"><div class="container wh-final-grid"><div><span class="wh-eyebrow">VAMOS CONVERSAR?</span><h2>O que sua empresa precisa criar?</h2>
-  <p>Conte sua ideia e receba um atendimento para definir a solução mais adequada.</p></div>
+  </div>
   <div class="wh-final-actions"><a class="wh-button wh-button-primary" href="${goto('contato')}">Solicitar orçamento ${icon('arrow',18)}</a>
    <a href="${goto('suporte')}" class="wh-final-support">Já é cliente? Acesse o suporte técnico.</a></div>
  </div></section></div>`;
@@ -1097,15 +1097,15 @@ function portfolioMedia(p){
  if(variant==='landing')return '<div class="portfolio-illustration portfolio-illustration-landing" role="img" aria-label="Ilustração gráfica de uma landing page"><div class="pv-browser"><i></i><i></i><i></i><small>LANDING PAGE</small></div><div class="pv-landing-grid"><div><span class="pv-kicker">SEU NEGÓCIO NO DIGITAL</span><div class="pv-brand">Seu próximo cliente começa aqui.</div><div class="pv-label">Uma página, novas oportunidades.</div><div class="pv-button">SAIBA MAIS <b>↗</b></div></div><div class="pv-decoration"><span></span><span></span><span></span></div></div><div class="pv-caption">Prévia ilustrativa do projeto</div></div>';
  return `<div class="portfolio-illustration portfolio-illustration-generic" role="img" aria-label="Ilustração gráfica do projeto"><div class="pv-brand">${esc(p?.title||'Projeto digital')}</div><div class="pv-label">Soluções digitais WillAI</div></div>`;
 }
-function portfolioPage(){const items=(state.portfolio||[]).filter(x=>x.visible!==false);return `<section class="section soft"><div class="container"><div class="section-head"><div><div class="eyebrow">PORTFÓLIO</div><h1>Projetos e soluções digitais.</h1></div><p>Conheça demonstrações e trabalhos de tecnologia desenvolvidos pela WillAI.</p></div><div class="grid three">${items.length?items.map(p=>`<article class="service-card portfolio-card"><div class="portfolio-card-visual">${portfolioMedia(p)}</div><span class="eyebrow">${esc(p.category||'Projeto')}</span><h3 style="margin-top:14px">${esc(p.title)}</h3><p>${esc(p.desc||'')}</p>${/^https:\/\//i.test(p.url||'')?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" class="link-plain">Ver projeto ${icon('arrow',16)}</a>`:''}</article>`).join(''):'<p>Novos projetos serão apresentados em breve.</p>'}</div></div></section>`}
+function portfolioPage(){const items=(state.portfolio||[]).filter(x=>x.visible!==false);return `<section class="section soft"><div class="container"><div class="section-head"><div><div class="eyebrow">PORTFÓLIO</div><h1>Projetos e soluções digitais.</h1></div><p>Explore nossos modelos e soluções.</p></div><div class="grid three">${items.length?items.map(p=>`<article class="service-card portfolio-card"><div class="portfolio-card-visual">${portfolioMedia(p)}</div><span class="eyebrow">${esc(p.category||'Projeto')}</span><h3 style="margin-top:14px">${esc(p.title)}</h3><p>${esc(p.desc||'')}</p>${/^https:\/\//i.test(p.url||'')?`<a href="${esc(p.url)}" target="_blank" rel="noopener noreferrer" class="link-plain">Ver projeto ${icon('arrow',16)}</a>`:''}</article>`).join(''):'<p>Novos projetos serão apresentados em breve.</p>'}</div></div></section>`}
 function aboutPage(){return `<section class="section about-willai"><div class="container">
  <div class="about-intro">
   <span class="eyebrow">QUEM SOMOS</span>
   <h1>Tecnologia com propósito.</h1>
   <p class="about-highlight">Transformamos ideias em soluções digitais.</p>
   <p>A WillAI nasceu com um propósito: tornar a tecnologia mais acessível, prática e útil para empresas, empreendedores e pessoas que desejam crescer no mundo digital.</p>
-  <p>Desenvolvemos sites profissionais, landing pages, sistemas de gestão, automações inteligentes, soluções com inteligência artificial e ferramentas digitais personalizadas.</p>
-  <p>Mais do que criar páginas e sistemas, buscamos compreender cada necessidade e desenvolver soluções que facilitem processos, organizem negócios e abram novas oportunidades.</p>
+  <p>Criamos sites, sistemas, automações e soluções digitais sob medida.</p>
+  
  </div>
  <div class="about-values">
   <article class="about-value"><span class="eyebrow">NOSSA ESSÊNCIA</span><h2>O que nos move</h2>
@@ -1130,12 +1130,10 @@ function contactPage(){
  const picked=chosen?`<div class="quote-picked" role="status"><span>Serviço selecionado</span><strong>${esc(chosen.title)}</strong><small>${esc(chosen.price||'Sob orçamento')}</small></div>`:'';
  return `<section class="section quote-section"><div class="container"><div class="contact-switch" role="navigation" aria-label="Escolha o tipo de atendimento"><a href="${adminMode?'#/contato':'/contato'}" aria-current="page">Solicitar orçamento <span>Para contratar ou iniciar um projeto</span></a><a href="${adminMode?'#/suporte':'/suporte'}">Suporte técnico <span>Para serviços que você já utiliza</span></a></div><div class="quote-layout">
  <div class="quote-copy"><span class="eyebrow">FAÇA UM ORÇAMENTO</span>
- <h1>Sua ideia merece sair do papel.</h1>
- <p class="muted">Conte o que você precisa. Nossa equipe analisará sua ideia e entrará em contato pelo WhatsApp informado.</p>
- <div class="quote-benefit">✓ Solicitação sem compromisso</div>
- <div class="quote-benefit">✓ Atendimento personalizado</div>
- <div class="quote-benefit">✓ Contato direto pelo WhatsApp</div></div>
- <div class="quote-card"><h2>Descreva seu projeto</h2><p class="muted">Preencha os dados abaixo para receber nosso retorno.</p>${picked}
+ <h1>Conte sua ideia. Nós criamos a solução.</h1>
+ <p class="muted">Descreva o projeto. Respondemos pelo WhatsApp.</p>
+ </div>
+ <div class="quote-card"><h2>Seu projeto</h2>${picked}
  <form id="willai-quote-form" class="quote-form">
  <div class="quote-grid"><div class="field"><label for="quoteName">Seu nome *</label><input id="quoteName" name="name" autocomplete="name" maxlength="120" minlength="2" required placeholder="Como podemos chamar você?"></div>
  <div class="field"><label for="quoteWhats">WhatsApp com DDD *</label><input id="quoteWhats" name="whatsapp" autocomplete="tel" inputmode="tel" maxlength="20" minlength="10" required placeholder="(41) 99999-9999"></div></div>
@@ -1157,16 +1155,13 @@ function supportPage(){
    </div>
    <div class="quote-layout">
     <div class="quote-copy"><span class="eyebrow">CENTRAL DE SUPORTE WILLAI</span>
-      <h1>Seu projeto precisa de ajuda?</h1>
-      <p class="muted">Se você já utiliza um site, sistema ou serviço da WillAI, descreva o problema e nossa equipe poderá analisar o atendimento.</p>
-      <div class="quote-benefit">✓ Problemas técnicos e dificuldades de acesso</div>
-      <div class="quote-benefit">✓ Ajustes e dúvidas de serviços existentes</div>
-      <div class="quote-benefit">✓ Solicitação registrada separadamente dos orçamentos</div>
+      <h1>Como podemos ajudar?</h1>
+      <p class="muted">Descreva o problema. Nós ajudamos.</p>
       <p class="support-note">Quer contratar um novo projeto? <a href="${adminMode?'#/contato':'/contato'}">Peça um orçamento</a>.</p>
     </div>
     <div class="quote-card">
       <h2>Abrir solicitação de suporte</h2>
-      <p class="muted">Informe o serviço e o que está acontecendo. Retornaremos pelo contato informado.</p>
+      
       <form id="willai-support-form" class="quote-form">
        <div class="quote-grid">
         <div class="field"><label for="supportName">Seu nome *</label><input id="supportName" name="name" autocomplete="name" minlength="2" maxlength="120" required placeholder="Nome do responsável"></div>
@@ -1353,7 +1348,7 @@ function servicesPage(){
  const groups=["Sites e páginas","Ferramentas digitais","Agendamentos e sistemas","Planos mensais","Soluções sob medida"];
  const extras=[...new Set(list.map(s=>s.group||"Soluções sob medida"))].filter(x=>!groups.includes(x));
  return `<div class="pricing-page">
- <section class="pricing-intro"><div class="container"><span class="eyebrow">SERVIÇOS E VALORES</span><h1>Soluções para cada fase do seu negócio.</h1><p>Conheça as opções de sites, ferramentas e sistemas da WillAI. Valores de referência para formatos e escopos básicos.</p><div class="pricing-nav"><a href="#pricing-featured">Em destaque</a><a href="#pricing-all">Todos os serviços</a><a href="#pricing-monthly">Planos mensais</a></div></div></section>
+ <section class="pricing-intro"><div class="container"><span class="eyebrow">SERVIÇOS E VALORES</span><h1>Soluções para cada fase do seu negócio.</h1><p>Escolha sua solução e peça um orçamento.</p><div class="pricing-nav"><a href="#pricing-featured">Em destaque</a><a href="#pricing-all">Todos os serviços</a><a href="#pricing-monthly">Planos mensais</a></div></div></section>
  <section class="pricing-featured" id="pricing-featured"><div class="container"><span class="eyebrow">EM DESTAQUE</span><h2>Quatro soluções para começar.</h2><div class="pricing-featured-grid">${featured.map(s=>`<article class="pricing-featured-card"><span class="pricing-feature-icon">${icon(s.icon||"globe",24)}</span><h3>${esc(s.title)}</h3><p>${esc(s.desc)}</p><div class="pricing-feature-bottom"><strong>${esc(s.price)}</strong><a href="${serviceQuoteUrl(s)}">Solicitar orçamento ${icon("arrow",16)}</a></div></article>`).join("")}</div></div></section>
  <section class="pricing-catalog" id="pricing-all"><div class="container"><span class="eyebrow">CATÁLOGO COMPLETO</span><h2>Outros serviços e soluções.</h2><p class="pricing-note">Os quatro destaques aparecem acima. Veja todas as demais opções:</p>${[...groups,...extras].map(group=>{const items=list.filter(s=>(s.group||"Soluções sob medida")===group&&!hidden.has(s.id));if(!items.length)return "";return `<div class="pricing-group"${group==="Planos mensais"?' id="pricing-monthly"':""}><h3>${esc(group)}</h3><div class="pricing-list">${items.map(s=>`<article class="pricing-item"><div class="pricing-item-text"><strong>${esc(s.title)}</strong><small>${esc(s.desc||"")}</small></div><div class="pricing-item-side"><span>${esc(s.price||"Sob orçamento")}</span><a href="${serviceQuoteUrl(s)}" aria-label="Solicitar orçamento de ${esc(s.title)}">${icon("arrow",16)}</a></div></article>`).join("")}</div></div>`}).join("")}</div></section>
  <section class="pricing-conditions"><div class="container"><p>Os valores apresentados são sugeridos para escopos definidos. Funcionalidades, integrações e personalizações extras são orçadas separadamente. Domínio, APIs e taxas de terceiros não estão incluídos.</p><p>Os planos mensais são opcionais e têm condições definidas na proposta. O orçamento confirma os entregáveis, prazos, revisões e suporte de cada contratação.</p><a href="${goto("contato")}">Descreva sua ideia e solicite um orçamento ${icon("arrow",17)}</a></div></section></div>`;
