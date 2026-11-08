@@ -50,4 +50,26 @@ html,body{margin:0;min-height:100%;background:#071b34}
  <div class="wh-immediate-ctas"><a href="/contato">Solicitar orçamento ↗</a><a href="/portfolio">Ver projetos</a></div>
  <div class="wh-immediate-bottom">EXPLORE NOSSAS SOLUÇÕES <span aria-hidden="true">↓</span></div>
  </div></div></main><aside id="dock" class="banner-dock" aria-label="Carrossel institucional"></aside><div id="toast" class="toast" role="status" aria-live="polite"></div><div id="infoDialog" class="dialogwrap"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle"></h2><p id="modalText"></p><button type="button" class="done">Fechar</button></div></div>
+<script>
+/* A primeira pintura reflete a rota pedida, antes do carregamento dinâmico. */
+(()=>{
+ const segment=location.pathname.split('/').filter(Boolean)[0]||'';
+ const pages={
+  contato:['Conte sua ideia. Nós criamos a solução.','Escolha a solução e solicite seu orçamento.'],
+  suporte:['Como podemos ajudar?','Fale com nossa equipe de suporte.'],
+  servicos:['Tecnologia para o seu negócio.','Sites, sistemas e automações sob medida.'],
+  portfolio:['Projetos que mostram o que fazemos.','Explore nossos modelos e soluções digitais.'],
+  sobre:['Quem está por trás da WillAI.','Tecnologia desenvolvida por pessoas.'],
+  projeto:['Mais negócios no digital.','Inclusão digital para pequenos empreendedores.']
+ };
+ if(!pages[segment])return;
+ const shell=document.querySelector('.wh-immediate-hero');
+ if(!shell)return;
+ shell.querySelector('h1').textContent=pages[segment][0];
+ shell.querySelector('.wh-immediate-inner p').textContent=pages[segment][1];
+ shell.querySelector('.wh-immediate-ctas').hidden=true;
+ shell.querySelector('.wh-immediate-bottom').hidden=true;
+})();
+</script>
+<style>.wh-immediate-ctas[hidden],.wh-immediate-bottom[hidden]{display:none!important}</style>
 <script src="/config.js"></script><script src="/assets/router.js"></script></body></html>
