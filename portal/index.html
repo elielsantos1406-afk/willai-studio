@@ -934,7 +934,7 @@ html{scroll-padding-top:90px}
  box-shadow:0 17px 47px #18a5e53a,0 0 0 2px #6ed8f17a,inset 0 1px 0 #ffffffaa;
 }
 .home-rework.wh-motion-on .wh-service.wh-inview,.home-rework.wh-motion-on .wh-process-step.wh-inview,.home-rework.wh-motion-on .wh-team-card.wh-inview{
- animation:wh-glass-intro .85s ease-out both;
+ animation:wh-glass-intro .85s ease-out;
 }
 @keyframes wh-glass-intro{0%{box-shadow:0 0 0 #0000}65%{box-shadow:0 16px 39px #44c8ec35,0 0 0 1px #a0e9f14d}100%{box-shadow:0 15px 42px #0d385b16}}
 @media(max-width:760px){
@@ -946,7 +946,9 @@ html{scroll-padding-top:90px}
  .home-rework .wh-deal-time{padding:16px}
  .home-rework .wh-deal-clock strong{font-size:clamp(23px,6vw,32px)}
  .home-rework .wh-deal-button{width:100%}
+ .home-rework .wh-service,.home-rework .wh-process-step,.home-rework .wh-team-card,.home-rework .wh-project{-webkit-backdrop-filter:blur(12px) saturate(130%);backdrop-filter:blur(12px) saturate(130%)}
 }
+
 @media(prefers-reduced-motion:reduce){
  .home-rework.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal,.about-willai.wh-motion-on .wh-reveal.wh-inview.wh-soft-reveal{filter:none!important;opacity:1!important;transform:none!important;transition:none!important}
  .home-rework.wh-motion-on .wh-service.wh-inview,.home-rework.wh-motion-on .wh-process-step.wh-inview,.home-rework.wh-motion-on .wh-team-card.wh-inview{animation:none!important}
