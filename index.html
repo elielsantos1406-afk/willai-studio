@@ -41,11 +41,50 @@ html,body{margin:0;min-height:100%;background:#071b34}
 .wh-immediate-bottom{margin-top:33px}
 }
 @media(prefers-reduced-motion:reduce){.wh-immediate-hero *{scroll-behavior:auto}}
+
+/* Cabeçalho real já disponível na primeira pintura, equivalente ao portal. */
+.wh-immediate-site-header{height:78px;background:#fffffff5;border-bottom:1px solid #e8eef5;position:relative;z-index:5;color:#082a55}
+.wh-immediate-nav{max-width:1200px;box-sizing:border-box;height:78px;padding:0 28px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:22px}
+.wh-immediate-brand{display:flex;align-items:center;gap:10px;color:#082a55;text-decoration:none;min-width:0}
+.wh-immediate-brand img{width:44px;height:44px;object-fit:contain;border-radius:12px}
+.wh-immediate-brand-copy{display:flex;flex-direction:column;gap:4px}
+.wh-immediate-brand-copy strong{font-weight:850;font-size:20px;letter-spacing:-.07em;line-height:1.08}
+.wh-immediate-brand-copy small{color:#7791aa;font-size:9px;font-weight:750;letter-spacing:.13em}
+.wh-immediate-links{display:flex;align-items:center;gap:22px;font-size:12px;font-weight:800}
+.wh-immediate-links a{color:#596f86;text-decoration:none}
+.wh-immediate-signin{padding:11px 14px;border-radius:10px;background:#082e52;color:#fff;font-size:12px;font-weight:750;text-decoration:none}
+.wh-immediate-menu{display:none;width:40px;height:40px;border-radius:10px;background:#edf4fc;align-items:center;justify-content:center;gap:4px;flex-direction:column}
+.wh-immediate-menu span{width:19px;height:2px;background:#0b5186;border-radius:5px}
+.wh-immediate-hero{min-height:0}
+.wh-immediate-inner{min-height:min(670px,88svh);padding:clamp(80px,10vw,130px) 0 clamp(50px,7vw,85px)}
+.wh-immediate-inner h1 em.wh-immediate-bubble{position:relative;display:inline-block;max-width:100%;white-space:nowrap;
+ margin-top:.2em;padding:.13em .38em .19em;border:1px solid #e0f9ff86;border-radius:.64em;
+ color:#fff;background:linear-gradient(115deg,#ffffff32,#a8f5ff1b 33%,#72d9f43a 55%,#9b8afa2d);
+ box-shadow:inset 0 1px 0 #ffffffb8,0 12px 38px #2bb8dc29,0 0 45px #89eff71c;
+ -webkit-backdrop-filter:blur(18px) saturate(150%);backdrop-filter:blur(18px) saturate(150%);
+ text-shadow:0 1px 12px #4accff44;
+}
+.wh-immediate-inner h1 em.wh-immediate-bubble::before{content:"";position:absolute;inset:0 0 48%;border-radius:inherit;background:linear-gradient(#ffffff32,transparent);pointer-events:none}
+@media(max-width:960px){.wh-immediate-links{display:none}.wh-immediate-menu{display:flex}}
+@media(max-width:760px){
+ .wh-immediate-nav{height:70px;padding-inline:22px}
+ .wh-immediate-site-header{height:70px}
+ .wh-immediate-brand-copy strong{font-size:19px}
+ .wh-immediate-brand-copy small{font-size:8px}
+ .wh-immediate-signin{margin-left:auto}
+ .wh-immediate-hero{padding-inline:22px}
+ .wh-immediate-inner{min-height:clamp(495px,77svh,665px);padding:clamp(65px,10svh,95px) 0 44px}
+ .wh-immediate-inner h1 em.wh-immediate-bubble{font-size:clamp(27px,7.1vw,41px);padding:.18em .28em .23em}
+}
+@media(max-width:360px){.wh-immediate-inner h1 em.wh-immediate-bubble{font-size:clamp(25px,7vw,29px);padding:.17em .22em}}
 </style></head>
-<body><main id="app"><div class="wh-immediate-hero" aria-label="Página inicial WillAI">
- <div class="wh-immediate-head"><img src="/assets/willai-logo-original.png" width="37" height="37" alt=""><span class="wh-immediate-brand">WILLAI</span></div>
+<body><header id="site-header"><div class="wh-immediate-site-header"><div class="wh-immediate-nav">
+ <a href="/" class="wh-immediate-brand"><img src="/assets/willai-logo-original.png" width="44" height="44" alt=""><span class="wh-immediate-brand-copy"><strong>WillAI</strong><small>TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</small></span></a>
+ <nav class="wh-immediate-links" aria-label="Navegação inicial"><a href="/">Início</a><a href="/servicos">Serviços</a><a href="/portfolio">Portfólio</a><a href="/sobre">Sobre nós</a><a href="/contato">Orçamento</a></nav>
+ <a href="/login" class="wh-immediate-signin">Entrar</a><div class="wh-immediate-menu" aria-hidden="true"><span></span><span></span><span></span></div>
+ </div></div></header><main id="app"><div class="wh-immediate-hero" aria-label="Página inicial WillAI">
  <div class="wh-immediate-inner"><span class="wh-immediate-tag">WILLAI · TECNOLOGIA &amp; SOLUÇÕES DIGITAIS</span>
- <h1>Seu negócio merece mais do que um site.<em>Merece evoluir.</em></h1>
+ <h1>Seu negócio merece mais do que um site.<em class="wh-immediate-bubble">Merece evoluir.</em></h1>
  <p>Sites, sistemas e automações sob medida.</p>
  <div class="wh-immediate-ctas"><a href="/contato">Solicitar orçamento ↗</a><a href="/portfolio">Ver projetos</a></div>
  <div class="wh-immediate-bottom">EXPLORE NOSSAS SOLUÇÕES <span aria-hidden="true">↓</span></div>
@@ -72,4 +111,4 @@ html,body{margin:0;min-height:100%;background:#071b34}
 })();
 </script>
 <style>.wh-immediate-ctas[hidden],.wh-immediate-bottom[hidden]{display:none!important}</style>
-<script src="/config.js"></script><script src="/assets/router.js"></script></body></html>
+<script src="/config.js" defer></script><script src="/assets/router.js" defer></script></body></html>
