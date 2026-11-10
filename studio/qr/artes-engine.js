@@ -30,7 +30,7 @@ function removeSampleCode(src,m){
 }
 async function svgTemplate(m){
  if(!modelSVG[m]){
-  const r=await fetch('/studio/qr/modelo-'+m+'.svg',{cache:'force-cache'});
+  const r=await fetch('/studio/qr/modelo-'+m+'.svg'+(m==='google'?'?v=20261110-google-novo':''),{cache:'force-cache'});
   if(!r.ok)throw Error('Modelo SVG não encontrado');
   modelSVG[m]=removeSampleCode(await r.text(),m);
  }
