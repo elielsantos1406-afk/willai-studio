@@ -44,7 +44,16 @@ function v4Config(d){
   visible:{whatsapp:!!d.whatsapp,instagram:!!absoluteUrl(d.instagram),site:!!absoluteUrl(d.site),...custom.visible},
   theme:{...V4_DEFAULT.theme,...custom.theme},
   extraButtons:(d.buttons||[]).filter(x=>x&&x.title&&absoluteUrl(x.url)).slice(0,12).map(x=>({title:x.title,url:absoluteUrl(x.url)})),
-  smart:d.smart?.enabled?d.smart:null
+  smart:d.smart?.enabled?d.smart:{
+    enabled:true,style:'clean',color:'#286a85',secondary:'#9bc7cd',background:'#f7f8fa',
+    category:String(d.category||''),description:String(d.description||''),
+    pixKey:'',pixPayload:'',
+    buttons:[
+     ...[['google','Avaliar no Google',d.google],['whatsapp','WhatsApp',d.whatsapp],['instagram','Instagram',d.instagram],['site','Nosso site',d.site]]
+       .filter(x=>x[2]).map(x=>({type:x[0],label:x[1],value:String(x[2])})),
+     ...(Array.isArray(d.buttons)?d.buttons:[]).filter(x=>x?.title&&x?.url).map(x=>({type:'url',label:String(x.title),value:String(x.url)}))
+    ].slice(0,24)
+   }
  };
 }
 function postV4(frameId){
