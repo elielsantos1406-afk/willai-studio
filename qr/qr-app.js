@@ -337,12 +337,16 @@ for(const id of ['goV4Design','goV4DesignBottom'])$(id).onclick=()=>{$('v4Design
 let saving=false;
 function saveFeedback(text,error=false){
  const status=$('saveStatus');status.textContent=text;status.className='message'+(error?'':' success');
- message(text,error);status.scrollIntoView({block:'nearest',behavior:'smooth'});
+ message(text,error);
+ const smartStatus=$('sbStatus');
+ if(smartStatus){smartStatus.textContent=text;smartStatus.style.color=error?'#a63855':'#22765f';smartStatus.scrollIntoView({block:'nearest',behavior:'smooth'});}
+ else status.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
 async function savePage(){
  if(saving)return;
  if(!jwt||!owner)return saveFeedback('Entre com a conta do proprietário para salvar.',true);
  const button=$('save');saving=true;button.disabled=true;button.textContent='Salvando…';
+ const quick=$('sbPublish');if(quick){quick.disabled=true;quick.textContent='Publicando…'}
  $('viewPublished').classList.add('hidden');
  let timer;
  try{
@@ -363,7 +367,7 @@ async function savePage(){
   $('viewPublished').classList.remove('hidden');
   saveFeedback('Página salva e publicada com sucesso! O QR Code já abre sua página.');
  }catch(e){saveFeedback(e.name==='AbortError'?'A confirmação demorou mais que o esperado. Confira a página pública antes de tentar novamente.':e.message||'Não foi possível salvar. Tente novamente.',true)}
- finally{clearTimeout(timer);saving=false;button.disabled=false;button.textContent='Salvar e publicar'}
+ finally{clearTimeout(timer);saving=false;button.disabled=false;button.textContent='Salvar e publicar';if(quick){quick.disabled=false;quick.textContent='Salvar e publicar'}}
 }
 $('save').onclick=savePage;
 $('signOut').onclick=()=>{jwt=null;owner=false;try{localStorage.removeItem(sessionKey)}catch{};if(active){if(record?.status==='pending')show('pending');else show('public')}else show('start');message('Você saiu da sua conta.');};
