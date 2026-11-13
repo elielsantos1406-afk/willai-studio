@@ -219,7 +219,14 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
   if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_RENDERED'},location.origin);
  });
  window.WILLAI_REVIEW=Object.freeze({render,getConfig:()=>structuredClone(config)});
- render({content:{companyName:'Sua empresa'},smart:{enabled:true,style:'clean',color:'#286a85',secondary:'#9bc7cd',background:'#f7f8fa',buttons:[]}});
+ render({content:{companyName:'Sua empresa'},smart:{enabled:true,style:'clean',color:'#286a85',secondary:'#9bc7cd',background:'#f7f8fa',description:'Tudo sobre seu negócio em um único lugar.',pixKey:'exemplo@pix.com',buttons:preview?[
+ {type:'google',label:'Avaliar no Google',value:'https://example.com/avaliacao'},
+ {type:'whatsapp',label:'WhatsApp',value:'5521999999999'},
+ {type:'instagram',label:'Instagram',value:'https://instagram.com/exemplo'},
+ {type:'pix',label:'Pagar com Pix'},
+ {type:'url',label:'Agendar horário',value:'https://example.com/agenda'},
+ {type:'site',label:'Nosso site',value:'https://example.com'}
+ ]:[]}});
  if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_READY'},location.origin);
 })();
 </script>
