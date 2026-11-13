@@ -1,5 +1,6 @@
 (()=>{'use strict';const cfg=window.WILLAI_CONFIG||{},code=(location.pathname.split('/').filter(Boolean).pop()||'').toUpperCase();const base=cfg.url,key=cfg.publishableKey;const $=id=>document.getElementById(id),pages=['unavailable','loadError','start','account','claim','editor','public','pending','approval','v4Public'];let jwt=null,owner=false,mode='register',active=false,record=null;const activationToken=/^[a-f0-9]{48}$/.test(new URLSearchParams(location.hash.slice(1)).get('ativar')||'')?new URLSearchParams(location.hash.slice(1)).get('ativar'):null;
 let data={name:'Meu estabelecimento',category:'',description:'Conheça nossos serviços.',address:'',hours:'',google:'',whatsapp:'',instagram:'',site:'',primary:'#14559e',background:'#eff8ff',ink:'#163c61',font:'system-ui',layout:'rounded',logo:'',cover:'',buttons:[]};
+const smartEditor=window.WILLAI_SMART_EDITOR||null;
 const esc=x=>String(x??'').replace(/[&<>"']/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[a]));
 const url=x=>{try{let u=new URL(x);return ['https:','http:'].includes(u.protocol)?u.href:'#'}catch{return '#'}};
 const message=(s,error=false)=>{const n=$('notice');n.textContent=s;n.className='message'+(error?'':' success')};
@@ -42,7 +43,8 @@ function v4Config(d){
   links:{google:absoluteUrl(d.google),whatsapp:d.whatsapp||'',instagram:absoluteUrl(d.instagram),site:absoluteUrl(d.site),login:''},
   visible:{whatsapp:!!d.whatsapp,instagram:!!absoluteUrl(d.instagram),site:!!absoluteUrl(d.site),...custom.visible},
   theme:{...V4_DEFAULT.theme,...custom.theme},
-  extraButtons:(d.buttons||[]).filter(x=>x&&x.title&&absoluteUrl(x.url)).slice(0,12).map(x=>({title:x.title,url:absoluteUrl(x.url)}))
+  extraButtons:(d.buttons||[]).filter(x=>x&&x.title&&absoluteUrl(x.url)).slice(0,12).map(x=>({title:x.title,url:absoluteUrl(x.url)})),
+  smart:d.smart?.enabled?d.smart:null
  };
 }
 function postV4(frameId){
@@ -68,14 +70,26 @@ function renderPublicV4Direct(){
   return false;
  }
 }
+function smartPageSrc(preview=false){
+ const src=data.smart?.enabled?'/assets/qr-smart-page.html?v=1':'/assets/review-v4.html?v=20261102-ios-fallback-2';
+ return src+(preview?'&preview=1':'');
+}
 function refreshV4(){
- postV4('v4Preview');
+ const preview=$('v4Preview'),previewSrc=smartPageSrc(true);
+ if(preview.getAttribute('src')!==previewSrc)preview.src=previewSrc;
+ else postV4('v4Preview');
+ const frame=$('v4Frame');
+ if(frame.getAttribute('src')==='about:blank')return;
+ if(document.body.classList.contains('is-v4-public')){
+  const src=smartPageSrc();
+  if(frame.getAttribute('src')!==src){frame.src=src;return}
+ }
  if(!renderPublicV4Direct())postV4('v4Frame');
 }
 function showV4(){
- const frame=$('v4Frame');
- if(frame.getAttribute('src')==='about:blank')frame.src='/assets/review-v4.html?v=20261102-ios-fallback-2';
- else if(!renderPublicV4Direct())postV4('v4Frame');
+ const frame=$('v4Frame'),src=smartPageSrc();
+ if(frame.getAttribute('src')!==src){frame.src=src;return}
+ if(!renderPublicV4Direct())postV4('v4Frame');
 }
 window.addEventListener('message',e=>{
  const framePublic=$('v4Frame'),framePreview=$('v4Preview');
@@ -190,6 +204,11 @@ function link(k){return k==='whatsapp'&&data.whatsapp?'https://wa.me/'+data.what
 function card(d,interactive=false){let main=url(d.google),corner=d.layout==='pill'?'28px':d.layout==='square'?'8px':'16px';return '<div style="background:'+esc(d.background)+';color:'+esc(d.ink)+';font-family:'+esc(d.font)+';min-height:540px;text-align:center;padding-bottom:24px"><div style="height:120px;background:'+esc(d.primary)+' '+(d.cover?'url('+JSON.stringify(d.cover)+') center/cover':'')+'"></div><div style="height:78px;width:78px;border-radius:22px;background:white;margin:-37px auto 12px;position:relative;display:grid;place-items:center;overflow:hidden;border:3px solid '+esc(d.background)+'">'+(d.logo?'<img alt="Logo" src="'+esc(d.logo)+'" style="width:100%;height:100%;object-fit:contain">':'✦')+'</div><div style="padding:0 18px"><h2 style="font-size:23px;margin:9px 0">'+esc(d.name)+'</h2><p style="font-size:12px;opacity:.7">'+esc(d.category)+'</p><p style="line-height:1.5;font-size:13px">'+esc(d.description)+'</p>'+((d.google&&main!=='#')?'<a target="_blank" rel="noopener noreferrer" href="'+esc(main)+'" style="display:block;background:'+esc(d.primary)+';color:#fff;padding:14px;border-radius:'+corner+';text-decoration:none;font-weight:750;margin:11px 0">★ Avaliar no Google</a>':'')+['instagram','whatsapp'].filter(x=>d[x]).map(x=>'<a target="_blank" rel="noopener noreferrer" href="'+esc(x==='whatsapp'?'https://wa.me/'+String(d.whatsapp).replace(/\D/g,''):url(d[x]))+'" style="display:block;background:white;border:1px solid #dbe5ee;color:'+esc(d.ink)+';padding:13px;text-decoration:none;border-radius:'+corner+';margin:8px 0">'+(x==='instagram'?'Instagram':'WhatsApp')+'</a>').join('')+(d.buttons||[]).filter(x=>x.title&&url(x.url)!=='#').map(x=>'<a target="_blank" rel="noopener noreferrer" href="'+esc(url(x.url))+'" style="display:block;background:white;color:'+esc(d.ink)+';padding:13px;border-radius:'+corner+';margin:8px 0;text-decoration:none">'+esc(x.title)+'</a>').join('')+'<p style="font-size:11px;opacity:.7;line-height:1.5">'+esc(d.address)+'<br>'+esc(d.hours)+'</p><p style="font-size:10px;opacity:.5;margin-top:20px">WillAI • Tecnologia & Soluções Digitais</p></div></div>'}
 function render(){refreshV4();$('buttonEditor').innerHTML=(data.buttons||[]).map((b,i)=>'<div class="field"><label>Botão '+(i+1)+'</label><div class="buttonline"><input data-button="'+i+'" data-prop="title" placeholder="Texto" value="'+esc(b.title)+'"><input data-button="'+i+'" data-prop="url" placeholder="https://..." value="'+esc(b.url)+'"><button class="btn danger" data-remove="'+i+'">×</button></div></div>').join('')}
 function fill(){
+ if(smartEditor)smartEditor.mount(data,{
+  preview:()=>refreshV4(),
+  upload:(file,kind)=>uploadQrImage(file,kind),
+  owned:()=>rpc('willai_qr_my_plaques',{},jwt)
+ });
  document.querySelectorAll('[data-key]').forEach(el=>{el.value=data[el.dataset.key]??''});
  document.querySelectorAll('[data-v4-content]').forEach(el=>{el.value=data.reviewV4?.content?.[el.dataset.v4Content]??V4_DEFAULT.content[el.dataset.v4Content]??''});
  document.querySelectorAll('[data-v4-theme]').forEach(el=>{el.value=data.reviewV4?.theme?.[el.dataset.v4Theme]??V4_DEFAULT.theme[el.dataset.v4Theme]??''});
@@ -331,7 +350,8 @@ async function savePage(){
   snapshot.name=String(snapshot.name||'').trim();
   snapshot.google=String(snapshot.google||'').trim();
   if(!snapshot.name)throw Error('Informe o nome do estabelecimento antes de publicar.');
-  if(snapshot.google&&!absoluteUrl(snapshot.google))throw Error('O link do Google está inválido. Corrija o endereço ou deixe o campo vazio.');
+  if(!snapshot.smart?.enabled&&snapshot.google&&!absoluteUrl(snapshot.google))throw Error('O link do Google está inválido. Corrija o endereço ou deixe o campo vazio.');
+  const smartError=smartEditor?.validate(snapshot);if(smartError)throw Error(smartError);
   saveFeedback('Salvando e publicando sua página…');
   if(!(await restoreSession()))throw Error('Sua sessão expirou. Entre novamente para salvar. Suas alterações continuam nesta tela.');
   const controller=new AbortController();timer=setTimeout(()=>controller.abort(),20000);
