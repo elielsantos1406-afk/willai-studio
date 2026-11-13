@@ -115,6 +115,46 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
   if(type==='email'){const e=String(value||'').trim();return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)?'mailto:'+e:''}
   return safeUrl(value);
  }
+
+ const ICONS={
+ whatsapp:'<path d="M20.3 11.4a8.4 8.4 0 0 1-12.5 7.2L3 20l1.4-4.8a8.4 8.4 0 1 1 15.9-3.8Z"/><path d="M8.6 8.2c.3-.4.6-.4.9 0l.9 1.3c.3.3.2.6-.1.9l-.3.4c.7 1.3 1.9 2.3 3.1 2.8l.4-.5c.2-.3.6-.4.9-.2l1.5.9c.3.2.4.5.1.9-.6.9-1.4 1.1-2.2.9-2.6-.6-5.3-3-5.9-5.5-.2-.8.1-1.5.7-1.9Z"/>',
+ instagram:'<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.7" r=".9" fill="currentColor" stroke="none"/>',
+ pix:'<path d="m8.5 4 2.4-2.2a1.6 1.6 0 0 1 2.2 0L15.5 4m4.5 4.5 2.2 2.4a1.6 1.6 0 0 1 0 2.2L20 15.5m-4.5 4.5-2.4 2.2a1.6 1.6 0 0 1-2.2 0L8.5 20M4 15.5l-2.2-2.4a1.6 1.6 0 0 1 0-2.2L4 8.5"/><path d="m6 12 3.2 3.2a4 4 0 0 0 5.6 0L18 12l-3.2-3.2a4 4 0 0 0-5.6 0L6 12Z"/>',
+ google:'<path d="M20.3 11.9H12v3.6h4.7a5.1 5.1 0 0 1-4.7 3.1A6.7 6.7 0 1 1 17 7.2"/><path d="M20.9 12c.1.9 0 1.7-.2 2.4"/>',
+ calendar:'<rect x="3" y="5" width="18" height="16" rx="2.3"/><path d="M7.5 2.5v5m9-5v5M3 10.4h18M8 15l2.3 2.3 5.8-5.5"/>',
+ globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c5.5 5 5.5 13 0 18M12 3c-5.5 5-5.5 13 0 18"/>',
+ map:'<path d="M19 10c0 5-7 11-7 11s-7-6-7-11a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.3"/>',
+ phone:'<path d="m6 3.5 3.4 3.6-1.9 2.3a13 13 0 0 0 6.1 6.1l2.3-1.9 3.6 3.4c.7.8.5 1.9-.4 2.5-2 1.3-4.6.6-8.7-3.5C6.3 12 3.1 7.3 3.8 5c.4-1 1.5-2 2.2-1.5Z"/>',
+ email:'<rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3 6 9 7 9-7"/>',
+ menu:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+ shop:'<path d="M4 8h16l-1 13H5L4 8ZM8 9V6a4 4 0 0 1 8 0v3"/>',
+ youtube:'<rect x="2" y="5" width="20" height="14" rx="5"/><path d="m10 9 5 3-5 3Z"/>',
+ facebook:'<path d="M14 21v-8h3l.5-4H14V7.2c0-1.2.6-1.7 1.8-1.7H18V2c-.9-.1-1.8-.2-2.7-.2-3.3 0-5.2 1.8-5.2 5.2V9H7v4h3v8"/>',
+ tiktok:'<path d="M14 3v11.2a4.2 4.2 0 1 1-3.9-4.2M14 3c.6 2.6 2.1 4.2 5.5 4.7"/>',
+ chat:'<path d="M20 11a8 8 0 0 1-8 8 9 9 0 0 1-4-.9L3 20l1.7-4.7A8 8 0 1 1 20 11Z"/>',
+ link:'<path d="m10 13 4-4M8.5 16H6a4 4 0 0 1 0-8h4M15.5 8H18a4 4 0 0 1 0 8h-4"/>'
+ };
+ function vector(name){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" aria-hidden="true" focusable="false">'+(ICONS[name]||ICONS.link)+'</svg>'}
+ function iconFor(type,label){
+  const l=String(label||'').toLowerCase();
+  if(type==='google'||/avaliar|avaliação|google/.test(l))return 'google';
+  if(type==='whatsapp'||/whats/.test(l))return 'whatsapp';
+  if(type==='instagram'||/instagram/.test(l))return 'instagram';
+  if(type==='pix'||/pix/.test(l))return 'pix';
+  if(type==='phone'||/ligar|telefone/.test(l))return 'phone';
+  if(type==='email'||/e-?mail/.test(l))return 'email';
+  if(/agend|reserva|horário|horario|marcar/.test(l))return 'calendar';
+  if(/cardápio|cardapio|menu/.test(l))return 'menu';
+  if(/maps|localiz|endereço|endereco|rota/.test(l))return 'map';
+  if(/youtube/.test(l))return 'youtube';
+  if(/facebook/.test(l))return 'facebook';
+  if(/tiktok/.test(l))return 'tiktok';
+  if(/delivery|catálogo|catalogo|loja|compr/.test(l))return 'shop';
+  if(/orçamento|orcamento/.test(l))return 'chat';
+  if(type==='site'||/site|web|página|pagina/.test(l))return 'globe';
+  return 'link';
+ }
+
  function render(c){
   config=c||{};
   const links=config.links||{},media=config.media||{},content=config.content||{};const smart=config.smart?.enabled?config.smart:(()=>{const buttons=[];for(const [type,label,value] of [['google','Avaliar no Google',links.google],['whatsapp','WhatsApp',links.whatsapp],['instagram','Instagram',links.instagram],['site','Nosso site',links.site]])if(value)buttons.push({type,label,value});(config.extraButtons||[]).forEach(b=>{if(b?.title&&b?.url)buttons.push({type:'url',label:b.title,value:b.url})});return {style:'clean',color:'#286a85',secondary:'#9bc7cd',background:'#f7f8fa',buttons}})();
@@ -130,7 +170,7 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
   $('smartCategory').hidden=!smart.category;
   $('smartDescription').textContent=smart.description||'';
   $('smartDescription').hidden=!smart.description;
-  const logo=safeUrl(media.logo),photo=safeUrl(media.photo);
+  const logo=safeUrl(media.logo),photo='';
   $('smartLogo').hidden=!logo;$('smartInitial').hidden=!!logo;
   if(logo)$('smartLogo').src=logo;else $('smartLogo').removeAttribute('src');
   $('smartInitial').textContent=String(content.companyName||'W').trim().slice(0,1).toUpperCase();
@@ -142,7 +182,7 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
   for(const item of buttons){
    const type=String(item?.type||'url'),label=String(item?.label||'').trim().slice(0,70);
    if(!label)continue;
-   const btn=document.createElement('button');btn.type='button';btn.className='action';btn.textContent=label;
+   const btn=document.createElement('button');btn.type='button';btn.className='action';btn.style.setProperty('--qr-order',String(Math.min(wrap.children.length,12)));const icon=document.createElement('span');icon.className='action-icon';icon.innerHTML=vector(iconFor(type,label));const title=document.createElement('span');title.className='action-label';title.textContent=label;btn.append(icon,title);
    if(type==='pix'){
     const payload=String(smart.pixPayload||'').trim();
     const key=String(smart.pixKey||'').trim();
@@ -179,7 +219,7 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
   if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_RENDERED'},location.origin);
  });
  window.WILLAI_REVIEW=Object.freeze({render,getConfig:()=>structuredClone(config)});
- render({content:{companyName:'Minha empresa'},smart:{style:'clean',buttons:[]}});
+ render({content:{companyName:'Sua empresa'},smart:{enabled:true,style:'clean',color:'#286a85',secondary:'#9bc7cd',background:'#f7f8fa',buttons:[]}});
  if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_READY'},location.origin);
 })();
 </script>
