@@ -84,14 +84,14 @@ main:before{content:"";pointer-events:none;position:absolute;z-index:-1;width:mi
  }
  function render(c){
   config=c||{};
-  const smart=config.smart||{},links=config.links||{},media=config.media||{},content=config.content||{};
-  const theme=['clean','glass','editorial'].includes(smart.style)?smart.style:'clean';
+  const links=config.links||{},media=config.media||{},content=config.content||{};const smart=config.smart?.enabled?config.smart:(()=>{const buttons=[];for(const [type,label,value] of [['google','Avaliar no Google',links.google],['whatsapp','WhatsApp',links.whatsapp],['instagram','Instagram',links.instagram],['site','Nosso site',links.site]])if(value)buttons.push({type,label,value});(config.extraButtons||[]).forEach(b=>{if(b?.title&&b?.url)buttons.push({type:'url',label:b.title,value:b.url})});return {style:'clean',color:'#286a85',secondary:'#9bc7cd',background:'#f7f8fa',buttons}})();
+  const theme='clean';
   root.dataset.theme=theme;
-  const custom=color(smart.color,theme==='glass'?'#70d8eb':theme==='editorial'?'#9b725b':'#14599b');
-  const background=color(smart.background,'');
+  const custom=color(smart.color,'#286a85');
+  const background=color(smart.background,'#f7f8fa');
   document.documentElement.style.setProperty('--accent',custom);
   document.documentElement.style.setProperty('--accent-text',smart.colorText==='dark'?'#112136':'#ffffff');
-  if(background){root.style.setProperty('--bg',background);root.style.background=background}else{root.style.removeProperty('--bg');root.style.removeProperty('background')}
+  root.style.setProperty('--bg',background);root.style.removeProperty('background');document.documentElement.style.setProperty('--secondary',color(smart.secondary,'#9bc7cd'));const rgb=[1,3,5].map(i=>parseInt(background.slice(i,i+2),16));const dark=.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2]<132;root.style.setProperty('--ink',dark?'#f5f8fc':'#192b3d');root.style.setProperty('--muted',dark?'#b5c4d2':'#738092');root.style.setProperty('--card',dark?'rgba(255,255,255,.1)':'rgba(255,255,255,.91)');root.style.setProperty('--line',dark?'rgba(255,255,255,.18)':'#dfe5e9');root.style.setProperty('--chip',dark?'rgba(255,255,255,.14)':'#edf3f6');
   $('smartName').textContent=content.companyName||'Meu negócio';
   $('smartCategory').textContent=smart.category||'';
   $('smartCategory').hidden=!smart.category;
