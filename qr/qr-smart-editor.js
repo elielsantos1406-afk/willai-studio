@@ -57,30 +57,31 @@
  }
  function html(){
   return '<h2>Personalize sua plaquinha</h2><p class="sb-lead">Escolha um modelo, adicione seus botões e publique. O QR Code impresso continua o mesmo.</p>'+
-  '<section class="sb-section"><h3>1. Seu negócio</h3>'+
+  '<nav class="sb-tabs" aria-label="Etapas de personalização">'+[['business','Negócio'],['design','Visual'],['buttons','Botões'],['plaques','Plaquinhas']].map(([k,t])=>'<button type="button" data-sb-tab="'+k+'" aria-current="'+(k==='business'?'step':'false')+'">'+t+'</button>').join('')+'</nav>'+ 
+  '<section class="sb-section is-active" data-sb-step="business"><h3>1. Seu negócio</h3>'+
   '<label class="sb-field">Nome do estabelecimento<input data-sb-key="name" maxlength="95" placeholder="Como seu negócio se chama?" required></label>'+
   '<label class="sb-field">O que você faz?<input data-sb-key="category" maxlength="75" placeholder="Ex.: Estética, Restaurante, Loja"></label>'+
   '<label class="sb-field">Descrição curta<textarea data-sb-key="description" maxlength="360" rows="2" placeholder="Uma frase sobre seu negócio"></textarea></label>'+
   '<div class="sb-two"><label class="sb-field">Seu logotipo<input id="sbLogoUpload" type="file" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG ou WebP até 5MB</small></label>'+
   '<label class="sb-field">Foto opcional<input id="sbCoverUpload" type="file" accept="image/png,image/jpeg,image/webp"><small>Foto do estabelecimento</small></label></div>'+
   '<div class="sb-upload"><button type="button" class="sb-soft-button" data-sb-clear="logo">Remover logo</button><button type="button" class="sb-soft-button" data-sb-clear="cover">Remover foto</button></div></section>'+
-  '<section class="sb-section"><h3>2. Escolha seu design</h3>'+
+  '<section class="sb-section" data-sb-step="design"><h3>2. Escolha seu design</h3>'+
   '<div class="sb-designs" role="group" aria-label="Modelos visuais">'+
   [['clean','Essencial'],['glass','Elegante'],['editorial','Destaque']].map(([val,label])=>'<button class="sb-design" type="button" data-sb-style="'+val+'" aria-pressed="false"><span class="sb-design__mini sb-design__mini--'+val+'"><i></i><i></i></span><strong>'+label+'</strong></button>').join('')+
   '</div><p class="sb-hint">Troque o modelo quando quiser. O conteúdo permanece salvo.</p>'+
   '<div class="sb-palette" role="group" aria-label="Cores rápidas">'+['#185c88','#10857d','#b23c73','#704aab','#a26c44','#253f56','#131d2d'].map(x=>'<button type="button" data-sb-palette="'+x+'" style="background:'+x+'" class="sb-color-choice" aria-label="Escolher cor '+x+'" aria-pressed="false"></button>').join('')+'</div>'+
   '<div class="sb-two"><label class="sb-color-custom">Cor personalizada<input type="color" id="sbAccentColor"></label><label class="sb-color-custom">Fundo personalizado<input type="color" id="sbBackgroundColor"></label></div>'+
   '<button type="button" class="sb-soft-button" id="sbResetBackground">Usar fundo original do modelo</button></section>'+
-  '<section class="sb-section"><h3>3. Seus botões</h3><p class="sb-hint">Os botões são exibidos na ordem abaixo. Você escolhe os nomes e destinos, sem ícones ou setas.</p>'+
+  '<section class="sb-section" data-sb-step="buttons"><h3>3. Seus botões</h3><p class="sb-hint">Os botões são exibidos na ordem abaixo. Você escolhe os nomes e destinos, sem ícones ou setas.</p>'+
   '<div id="sbButtons"></div><div class="sb-add-row"><select id="sbAddType" aria-label="Tipo de botão">'+presets.map((v,i)=>'<option value="'+i+'">'+esc(v[1])+'</option>').join('')+'</select><button type="button" id="sbAddButton">Adicionar botão</button></div>'+
   '<div id="sbPixConfig" hidden><div class="sb-section"><h3>Dados do Pix</h3>'+
   '<label class="sb-field">Chave Pix<input id="sbPixKey" maxlength="180" placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória"></label>'+
   '<label class="sb-field">Pix Copia e Cola (opcional)<textarea id="sbPixPayload" maxlength="800" rows="3" placeholder="Cole aqui o código Pix completo, se tiver"><\/textarea><small>Com um código completo, o botão copia o Pix Copia e Cola. Sem ele, copia a chave cadastrada. A WillAI não confirma pagamentos automaticamente.</small></label></div></div></section>'+
-  '<section class="sb-section"><h3>4. Minhas plaquinhas</h3><p class="sb-hint">Uma conta pode administrar várias plaquinhas, mantendo o endereço exclusivo de cada uma.</p>'+
+  '<section class="sb-section" data-sb-step="plaques"><h3>4. Minhas plaquinhas</h3><p class="sb-hint">Uma conta pode administrar várias plaquinhas, mantendo o endereço exclusivo de cada uma.</p>'+
   '<div id="sbOwnedList" class="sb-owned-list"></div><div class="sb-add-plate"><input id="sbNewCode" placeholder="W002" maxlength="9" aria-label="Código de outra plaquinha"><button type="button" id="sbAddPlate">Adicionar outra</button></div>'+
   '<p class="sb-hint" id="sbOwnedMessage" role="status">Carregando minhas plaquinhas…</p></section>'+
   '<section class="sb-advanced"><button id="sbAdvanced" type="button">Abrir editor clássico</button></section>'+
-  '<p id="sbStatus" role="status" class="sb-status"></p>';
+  '<div class="sb-toolbar"><button type="button" id="sbPreview" class="sb-soft-button">Ver prévia</button><button type="button" id="sbPublish" class="sb-publish">Salvar e publicar</button></div><p id="sbStatus" role="status" class="sb-status"></p>';
  }
  function updateStatus(text,error=false){if(statusArea){statusArea.textContent=text;statusArea.style.color=error?'#a63855':'#297e70'}}
  function refresh(){host?.preview?.()}
@@ -136,6 +137,9 @@
    });
    box.addEventListener('click',async e=>{
     const target=e.target.closest('button');if(!target)return;
+    if(target.dataset.sbTab){box.querySelectorAll('[data-sb-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.sbTab===target.dataset.sbTab?'step':'false'));box.querySelectorAll('[data-sb-step]').forEach(sec=>sec.classList.toggle('is-active',sec.dataset.sbStep===target.dataset.sbTab));return}
+    if(target.id==='sbPreview'){document.getElementById('v4Preview')?.scrollIntoView({behavior:'smooth',block:'center'});return}
+    if(target.id==='sbPublish'){document.getElementById('save')?.click();return}
     if(target.dataset.sbStyle){data.smart.style=target.dataset.sbStyle;data.smart.background='';syncFields();refresh();return}
     if(target.dataset.sbPalette){data.smart.color=target.dataset.sbPalette;data.smart.colorText=contrast(data.smart.color);syncFields();refresh();return}
     if(target.id==='sbResetBackground'){data.smart.background='';syncFields();refresh();return}
