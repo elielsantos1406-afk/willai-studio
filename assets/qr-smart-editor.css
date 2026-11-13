@@ -72,3 +72,16 @@
 .sb-publish:disabled{opacity:.6;cursor:wait}
 #editor.qr-smart-active #save{display:none}
 @media(max-width:390px){.sb-tabs button{font-size:10px;letter-spacing:-.02em}.sb-toolbar{padding:8px}}
+
+/* Seletor de tres cores no lugar dos modelos antigos */
+.sb-combos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 22px}
+.sb-combo{display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;min-width:0;min-height:88px;border:1px solid #dfe7ed;border-radius:13px;background:#fff;padding:11px 8px;cursor:pointer;transition:border-color .18s,transform .18s}
+.sb-combo:hover{transform:translateY(-2px);border-color:#7ba9bb}
+.sb-combo strong{color:#28475d;font-size:11px;font-weight:750}
+.sb-combo-colors{display:flex;justify-content:center;gap:0}
+.sb-combo-colors i{display:block;width:22px;height:28px;border:2px solid #fff;box-shadow:0 0 0 1px #dae5ec;border-radius:5px}
+.sb-combo-colors i+i{margin-left:-4px}
+.sb-three-colors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.sb-three-colors .sb-color-custom{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:9px;padding:13px 6px;border:1px solid #e1e9ef;border-radius:12px;text-align:center;font-size:11px;font-weight:720;color:#486276}
+.sb-three-colors input{width:100%;max-width:58px;height:39px;border:0;background:transparent;cursor:pointer}
+@media(max-width:420px){.sb-combos{gap:6px}.sb-three-colors{gap:5px}.sb-three-colors .sb-color-custom{font-size:10px;padding:11px 4px}}
