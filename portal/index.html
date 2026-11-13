@@ -1477,6 +1477,40 @@ function home(){
  const shot=p.photo||portfolio[0]?.image||'',shotTitle=p.photo?'Projeto digital WillAI':(portfolio[0]?.title||'Projeto WillAI');
  const shotHref=portfolio[0]?.url&&/^https:\/\//i.test(portfolio[0].url)?link(portfolio[0].url):goto('portfolio');
  return `<div class="home-rework">
+ <section class="wl-beauty" id="promo-beleza" aria-labelledby="wl-beauty-title">
+  <div class="wl-beauty__wrap">
+    <div class="wl-beauty__copy">
+      <span class="wl-beauty__eyebrow">OFERTA ESPECIAL PARA PROFISSIONAIS DA BELEZA</span>
+      <h2 id="wl-beauty-title">Seu site.<br><em>Sua agenda.</em><br>Do seu jeito.</h2>
+      <p class="wl-beauty__lead">Seus clientes escolhem o horário pelo celular. Você organiza tudo em um só lugar, com um site personalizado para seu negócio.</p>
+      <div class="wl-beauty__prices" aria-label="Implantação R$ 89,90 e mensalidade R$ 14,90">
+        <div class="wl-beauty__price"><small>Implantação</small><strong>R$ 89,90</strong></div>
+        <div class="wl-beauty__price-divider" aria-hidden="true"></div>
+        <div class="wl-beauty__price wl-beauty__price--pink"><small>Mensalidade</small><strong>R$ 14,90</strong></div>
+      </div>
+      <div class="wl-beauty__actions">
+        <button type="button" class="wl-beauty__cta" data-wl-open>Quero meu site com agenda <span aria-hidden="true">↗</span></button>
+        <a class="wl-beauty__wa" href="https://wa.me/5522997332202?text=Ol%C3%A1%21%20Vi%20a%20promo%C3%A7%C3%A3o%20de%20Site%20%2B%20Agenda%20da%20WillAI.%20Quero%20saber%20mais." target="_blank" rel="noopener noreferrer">Falar pelo WhatsApp <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="wl-beauty__footnote">Condição promocional para negócios da área da beleza.</p>
+    </div>
+    <div class="wl-beauty__preview" aria-label="Exemplo ilustrativo da agenda online">
+      <div class="wl-beauty__app">
+        <div class="wl-beauty__appbar"><strong>Studio Beauty</strong><span>AGENDA ONLINE</span></div>
+        <div class="wl-beauty__appbody">
+          <h3>Reserve seu horário.</h3><p>Seu próximo atendimento começa aqui.</p>
+          <div class="wl-beauty__day"><span>Selecione uma data</span><span aria-hidden="true">▾</span></div>
+          <div class="wl-beauty__slots">
+            <span class="wl-beauty__slot">09:00</span><span class="wl-beauty__slot wl-beauty__slot--active">10:30</span><span class="wl-beauty__slot">14:00</span>
+            <span class="wl-beauty__slot">15:30</span><span class="wl-beauty__slot">16:00</span><span class="wl-beauty__slot">17:00</span>
+          </div>
+          <div class="wl-beauty__fakebtn">Agendar horário →</div>
+        </div>
+      </div>
+      <span class="wl-beauty__preview-tag">Sua marca. Sua agenda.</span>
+    </div>
+  </div>
+</section>
  <section class="wh-hero">
  <div class="wh-hero-motion" aria-hidden="true">
   <div class="wh-hero-wave wh-hero-wave--one"></div>
