@@ -47,16 +47,18 @@
    for(const b of Array.isArray(data.buttons)?data.buttons:[]){
     if(b?.title&&b?.url)buttons.push({type:'url',label:String(b.title),value:String(b.url)});
    }
-   data.smart={enabled:true,style:'clean',color:'#185c88',colorText:'light',background:'',category:String(data.category||''),description:String(data.description||''),pixKey:'',pixPayload:'',buttons:buttons.slice(0,24)};
+   data.smart={enabled:true,style:'clean',color:'#286a85',secondary:'#9bc7cd',colorText:'light',background:'#f7f8fa',category:String(data.category||''),description:String(data.description||''),pixKey:'',pixPayload:'',buttons:buttons.slice(0,24)};
   }else{
    data.smart.enabled=true;
    data.smart.buttons=Array.isArray(data.smart.buttons)?data.smart.buttons.slice(0,24):[];
    if(!['clean','glass','editorial'].includes(data.smart.style))data.smart.style='clean';
-   if(!validHex(data.smart.color))data.smart.color='#185c88';
+   if(!validHex(data.smart.color))data.smart.color='#286a85';
+   if(!validHex(data.smart.secondary))data.smart.secondary='#9bc7cd';
+   if(!validHex(data.smart.background))data.smart.background='#f7f8fa';
   }
  }
  function html(){
-  return '<h2>Personalize sua plaquinha</h2><p class="sb-lead">Escolha um modelo, adicione seus botões e publique. O QR Code impresso continua o mesmo.</p>'+
+  return '<h2>Personalize sua plaquinha</h2><p class="sb-lead">Informe sua empresa, escolha suas cores e adicione botões. O QR Code permanece o mesmo.</p>'+
   '<nav class="sb-tabs" aria-label="Etapas de personalização">'+[['business','Negócio'],['design','Visual'],['buttons','Botões'],['plaques','Plaquinhas']].map(([k,t])=>'<button type="button" data-sb-tab="'+k+'" aria-current="'+(k==='business'?'step':'false')+'">'+t+'</button>').join('')+'</nav>'+ 
   '<section class="sb-section is-active" data-sb-step="business"><h3>1. Seu negócio</h3>'+
   '<label class="sb-field">Nome do estabelecimento<input data-sb-key="name" maxlength="95" placeholder="Como seu negócio se chama?" required></label>'+
@@ -65,14 +67,13 @@
   '<div class="sb-two"><label class="sb-field">Seu logotipo<input id="sbLogoUpload" type="file" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG ou WebP até 5MB</small></label>'+
   '<label class="sb-field">Foto opcional<input id="sbCoverUpload" type="file" accept="image/png,image/jpeg,image/webp"><small>Foto do estabelecimento</small></label></div>'+
   '<div class="sb-upload"><button type="button" class="sb-soft-button" data-sb-clear="logo">Remover logo</button><button type="button" class="sb-soft-button" data-sb-clear="cover">Remover foto</button></div></section>'+
-  '<section class="sb-section" data-sb-step="design"><h3>2. Escolha seu design</h3>'+
-  '<div class="sb-designs" role="group" aria-label="Modelos visuais">'+
-  [['clean','Essencial'],['glass','Elegante'],['editorial','Destaque']].map(([val,label])=>'<button class="sb-design" type="button" data-sb-style="'+val+'" aria-pressed="false"><span class="sb-design__mini sb-design__mini--'+val+'"><i></i><i></i></span><strong>'+label+'</strong></button>').join('')+
-  '</div><p class="sb-hint">Troque o modelo quando quiser. O conteúdo permanece salvo.</p>'+
-  '<div class="sb-palette" role="group" aria-label="Cores rápidas">'+['#185c88','#10857d','#b23c73','#704aab','#a26c44','#253f56','#131d2d'].map(x=>'<button type="button" data-sb-palette="'+x+'" style="background:'+x+'" class="sb-color-choice" aria-label="Escolher cor '+x+'" aria-pressed="false"></button>').join('')+'</div>'+
-  '<div class="sb-two"><label class="sb-color-custom">Cor personalizada<input type="color" id="sbAccentColor"></label><label class="sb-color-custom">Fundo personalizado<input type="color" id="sbBackgroundColor"></label></div>'+
-  '<button type="button" class="sb-soft-button" id="sbResetBackground">Usar fundo original do modelo</button></section>'+
-  '<section class="sb-section" data-sb-step="buttons"><h3>3. Seus botões</h3><p class="sb-hint">Os botões são exibidos na ordem abaixo. Você escolhe os nomes e destinos, sem ícones ou setas.</p>'+
+  '<section class="sb-section" data-sb-step="design"><h3>2. Cores da sua empresa</h3>'+
+  '<p class="sb-hint">Um único design para todos os negócios. Escolha uma combinação pronta ou personalize as três cores.</p>'+
+  '<div class="sb-combos" role="group" aria-label="Combinações de cores">'+
+  [['azul','Azul','#286a85','#9bc7cd','#f7f8fa'],['verde','Verde','#2f7567','#a7d9c2','#f8faf8'],['terra','Terra','#996e57','#e1c8b3','#fcfaf7']].map(p=>'<button type="button" class="sb-combo" data-sb-combo="'+p[0]+'" data-primary="'+p[2]+'" data-secondary="'+p[3]+'" data-background="'+p[4]+'"><span class="sb-combo-colors"><i style="background:'+p[2]+'"></i><i style="background:'+p[3]+'"></i><i style="background:'+p[4]+'"></i></span><strong>'+p[1]+'</strong></button>').join('')+
+  '</div><div class="sb-three-colors"><label class="sb-color-custom">Cor principal<input type="color" id="sbAccentColor"></label><label class="sb-color-custom">Cor de destaque<input type="color" id="sbSecondaryColor"></label><label class="sb-color-custom">Cor do fundo<input type="color" id="sbBackgroundColor"></label></div>'+
+  '<p class="sb-hint">As letras e os botões ajustam o contraste automaticamente.</p></section>'+
+  '<section class="sb-section" data-sb-step="buttons"><h3>3. Seus botões</h3><p class="sb-hint">Os ícones aparecem automaticamente. Você escolhe os nomes, links e a ordem.</p>'+
   '<div id="sbButtons"></div><div class="sb-add-row"><select id="sbAddType" aria-label="Tipo de botão">'+presets.map((v,i)=>'<option value="'+i+'">'+esc(v[1])+'</option>').join('')+'</select><button type="button" id="sbAddButton">Adicionar botão</button></div>'+
   '<div id="sbPixConfig" hidden><div class="sb-section"><h3>Dados do Pix</h3>'+
   '<label class="sb-field">Chave Pix<input id="sbPixKey" maxlength="180" placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória"></label>'+
@@ -92,10 +93,10 @@
   get('name').value=data.name||'';
   get('category').value=smart.category||'';
   get('description').value=smart.description||'';
-  const accent=document.getElementById('sbAccentColor'),bg=document.getElementById('sbBackgroundColor');
-  accent.value=smart.color||'#185c88';bg.value=validHex(smart.background)?smart.background:smart.style==='glass'?'#0b1b30':smart.style==='editorial'?'#fbf6ef':'#f8fafc';
-  document.querySelectorAll('#smartBuilder [data-sb-style]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sbStyle===smart.style)));
-  document.querySelectorAll('#smartBuilder [data-sb-palette]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sbPalette?.toLowerCase()===String(smart.color).toLowerCase())));
+  const accent=document.getElementById('sbAccentColor'),secondary=document.getElementById('sbSecondaryColor'),bg=document.getElementById('sbBackgroundColor');
+  accent.value=validHex(smart.color)?smart.color:'#286a85';
+  secondary.value=validHex(smart.secondary)?smart.secondary:'#9bc7cd';
+  bg.value=validHex(smart.background)?smart.background:'#f7f8fa';
   document.getElementById('sbPixKey').value=smart.pixKey||'';
   document.getElementById('sbPixPayload').value=smart.pixPayload||'';
   renderButtons();
@@ -132,7 +133,8 @@
     if(prop&&Number.isInteger(idx)&&data.smart.buttons[idx]){data.smart.buttons[idx][prop]=target.value;refresh();return}
     if(target.id==='sbPixKey'){data.smart.pixKey=target.value.trim();refresh()}
     if(target.id==='sbPixPayload'){data.smart.pixPayload=target.value.trim();refresh()}
-    if(target.id==='sbAccentColor'){data.smart.color=target.value;data.smart.colorText=contrast(target.value);refresh();box.querySelectorAll('[data-sb-palette]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.sbPalette===target.value)))}
+    if(target.id==='sbAccentColor'){data.smart.color=target.value;data.smart.colorText=contrast(target.value);refresh()}
+    if(target.id==='sbSecondaryColor'){data.smart.secondary=target.value;refresh()}
     if(target.id==='sbBackgroundColor'){data.smart.background=target.value;refresh()}
    });
    box.addEventListener('click',async e=>{
@@ -140,9 +142,7 @@
     if(target.dataset.sbTab){box.querySelectorAll('[data-sb-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.sbTab===target.dataset.sbTab?'step':'false'));box.querySelectorAll('[data-sb-step]').forEach(sec=>sec.classList.toggle('is-active',sec.dataset.sbStep===target.dataset.sbTab));return}
     if(target.id==='sbPreview'){document.getElementById('v4Preview')?.scrollIntoView({behavior:'smooth',block:'center'});return}
     if(target.id==='sbPublish'){document.getElementById('save')?.click();return}
-    if(target.dataset.sbStyle){data.smart.style=target.dataset.sbStyle;data.smart.background='';syncFields();refresh();return}
-    if(target.dataset.sbPalette){data.smart.color=target.dataset.sbPalette;data.smart.colorText=contrast(data.smart.color);syncFields();refresh();return}
-    if(target.id==='sbResetBackground'){data.smart.background='';syncFields();refresh();return}
+    if(target.dataset.sbCombo){data.smart.style='clean';data.smart.color=target.dataset.primary;data.smart.secondary=target.dataset.secondary;data.smart.background=target.dataset.background;data.smart.colorText=contrast(data.smart.color);syncFields();refresh();return}
     if(target.id==='sbAddButton'){
      if(data.smart.buttons.length>=24)return updateStatus('Limite de 24 botões por página.',true);
      const i=Number(document.getElementById('sbAddType').value),p=presets[i];if(!p)return;
