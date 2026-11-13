@@ -175,9 +175,7 @@
     <div class="wl-beauty-float__count">
      <span class="wl-beauty-float__ring" data-wl-clock-ring aria-hidden="true"><span class="wl-beauty-float__clockhand"></span></span>
      <div class="wl-beauty-float__timecopy">
-      <small>PRÓXIMO CICLO EM</small>
       <strong data-wl-timer>03:00:00</strong>
-      <span>Reinicia a cada 3h</span>
      </div>
     </div>
     <button type="button" class="wl-beauty-float__action" data-wl-open>Quero aproveitar <span aria-hidden="true">↗</span></button>
