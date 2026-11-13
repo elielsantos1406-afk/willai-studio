@@ -40,6 +40,7 @@
    if(gift){gift.remove();gift=null}
    if(giftTimer){clearTimeout(giftTimer);giftTimer=null}
    const d=ensureModal();
+   if(floatBanner)floatBanner.classList.remove('is-visible');
    if(!d.open){if(typeof d.showModal==='function')d.showModal();else d.setAttribute('open','')}
    d.querySelector('[name="name"]').focus({preventScroll:true});
  }
@@ -119,8 +120,89 @@
   if(!trigger)return;
   e.preventDefault();openPromo();
  });
+
+ // Barra compacta que acompanha a rolagem; o ciclo é informativo,
+ // não representa prazo real de encerramento da promoção.
+ const CYCLE_MS=3*60*60*1000;
+ const CYCLE_KEY='wl-beauty-countdown-cycle-v1';
+ let floatBanner=null,clockInterval=null,floatDismissed=false;
+ function activeCycleStart(now){
+  let start=NaN;
+  try{start=Number(localStorage.getItem(CYCLE_KEY))}catch{}
+  if(!Number.isFinite(start)||start<1600000000000||start>now){
+   start=now;
+   try{localStorage.setItem(CYCLE_KEY,String(start))}catch{}
+  }
+  if(now-start>=CYCLE_MS){
+   start+=Math.floor((now-start)/CYCLE_MS)*CYCLE_MS;
+   try{localStorage.setItem(CYCLE_KEY,String(start))}catch{}
+  }
+  return start;
+ }
+ function updateCountdown(){
+  if(!floatBanner)return;
+  const now=Date.now(),start=activeCycleStart(now),remaining=Math.max(0,CYCLE_MS-(now-start));
+  const sec=Math.ceil(remaining/1000);
+  const pad=n=>String(n).padStart(2,'0');
+  const clock=pad(Math.floor(sec/3600))+':'+pad(Math.floor(sec%3600/60))+':'+pad(sec%60);
+  const target=floatBanner.querySelector('[data-wl-timer]');
+  if(target)target.textContent=clock;
+  const ring=floatBanner.querySelector('[data-wl-clock-ring]');
+  if(ring)ring.style.setProperty('--wl-progress',String((CYCLE_MS-remaining)/CYCLE_MS));
+ }
+ function updateFloatingVisibility(){
+  if(!floatBanner)return;
+  const banner=atHome()?document.getElementById('promo-beleza'):null;
+  const shown=Boolean(banner&&banner.getBoundingClientRect().bottom<90&&!floatDismissed&&!modal?.open);
+  floatBanner.classList.toggle('is-visible',shown);
+  floatBanner.setAttribute('aria-hidden',shown?'false':'true');
+  floatBanner.inert=!shown;
+ }
+ function createFloatingBanner(){
+  if(floatBanner)return;
+  floatBanner=document.createElement('aside');
+  floatBanner.className='wl-beauty-float';
+  floatBanner.setAttribute('aria-label','Oferta Site com Agenda para profissionais da beleza');
+  floatBanner.setAttribute('aria-hidden','true');
+  floatBanner.inert=true;
+  floatBanner.innerHTML=`
+   <div class="wl-beauty-float__body">
+    <div class="wl-beauty-float__offer">
+     <span class="wl-beauty-float__kicker">ESPECIAL BELEZA</span>
+     <strong>Seu site. Sua agenda.</strong>
+     <span><b>R$ 89,90</b> implantação <i>+</i> <b>R$ 14,90</b>/mês</span>
+    </div>
+    <div class="wl-beauty-float__count">
+     <span class="wl-beauty-float__ring" data-wl-clock-ring aria-hidden="true"><span class="wl-beauty-float__clockhand"></span></span>
+     <div class="wl-beauty-float__timecopy">
+      <small>PRÓXIMO CICLO EM</small>
+      <strong data-wl-timer>03:00:00</strong>
+      <span>Reinicia a cada 3h</span>
+     </div>
+    </div>
+    <button type="button" class="wl-beauty-float__action" data-wl-open>Quero aproveitar <span aria-hidden="true">↗</span></button>
+    <button type="button" class="wl-beauty-float__close" data-wl-dismiss aria-label="Fechar oferta flutuante">×</button>
+   </div>`;
+  document.body.append(floatBanner);
+  floatBanner.querySelector('[data-wl-dismiss]').addEventListener('click',()=>{
+   floatDismissed=true;updateFloatingVisibility();
+  });
+  window.addEventListener('scroll',updateFloatingVisibility,{passive:true});
+  window.addEventListener('resize',updateFloatingVisibility,{passive:true});
+  window.addEventListener('popstate',updateFloatingVisibility);
+  modal?.addEventListener('close',updateFloatingVisibility);
+  updateCountdown();
+  clockInterval=setInterval(()=>{
+   updateCountdown();
+   // O portal usa navegação dinâmica: verificar a rota de tempos em tempos.
+   updateFloatingVisibility();
+  },1000);
+  updateFloatingVisibility();
+ }
+
  function init(){
   ensureModal();
+  createFloatingBanner();
   if(atHome())setTimeout(showGiftOnce,650);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
