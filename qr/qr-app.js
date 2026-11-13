@@ -71,7 +71,7 @@ function renderPublicV4Direct(){
  }
 }
 function smartPageSrc(preview=false){
- const src=data.smart?.enabled?'/assets/qr-smart-page.html?v=1':'/assets/review-v4.html?v=20261102-ios-fallback-2';
+ const src=data.smart?.enabled?'/assets/qr-smart-page.html?v=2':'/assets/review-v4.html?v=20261102-ios-fallback-2';
  return src+(preview?'&preview=1':'');
 }
 function refreshV4(){
