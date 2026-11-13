@@ -148,7 +148,7 @@
   const target=floatBanner.querySelector('[data-wl-timer]');
   if(target)target.textContent=clock;
   const ring=floatBanner.querySelector('[data-wl-clock-ring]');
-  if(ring)ring.style.setProperty('--wl-progress',String((CYCLE_MS-remaining)/CYCLE_MS));
+  if(ring)ring.style.setProperty('--wl-progress',((CYCLE_MS-remaining)/CYCLE_MS*100).toFixed(2)+'%');
  }
  function updateFloatingVisibility(){
   if(!floatBanner)return;
