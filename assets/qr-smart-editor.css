@@ -59,3 +59,16 @@
 @media(max-width:730px){#editor.qr-smart-active{display:flex;flex-direction:column;gap:0}#editor.qr-smart-active > div:first-child{order:1}#editor.qr-smart-active > .panel{order:2;margin-top:9px}#editor.qr-smart-active .phone{max-width:360px}}
 @media(max-width:460px){#smartBuilder{padding:18px 15px}.sb-designs{gap:6px}.sb-design{padding:6px}.sb-design__mini{height:78px;padding:9px}.sb-design strong{font-size:10px}.sb-two{grid-template-columns:1fr}.sb-add-row{flex-direction:column}.sb-add-row button{width:100%}.sb-btn-controls{gap:4px}.sb-button-control{padding:8px}}
 @media(prefers-reduced-motion:reduce){.sb-design{transition:none}.sb-design:hover{transform:none}}
+
+/* Fluxo em etapas; mantem o preview e a publicacao acessiveis no celular */
+#smartBuilder .sb-section[data-sb-step]{display:none}
+#smartBuilder .sb-section[data-sb-step].is-active{display:block}
+.sb-tabs{position:sticky;top:8px;z-index:15;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;background:#fffefef7;border:1px solid #e4ebf2;border-radius:13px;padding:5px;box-shadow:0 8px 25px #17334d11;backdrop-filter:blur(18px);margin-bottom:12px}
+.sb-tabs button{border:0;border-radius:9px;background:transparent;min-height:38px;padding:7px 4px;font-size:11px;font-weight:750;color:#73879b;cursor:pointer}
+.sb-tabs button[aria-current="step"]{background:#133a59;color:#fff;box-shadow:0 6px 17px #183f5529}
+.sb-toolbar{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:16;display:flex;gap:9px;padding:11px;margin:14px -4px 0;background:#fffffff0;border:1px solid #e2eaf1;border-radius:15px;backdrop-filter:blur(20px);box-shadow:0 13px 30px #082d4833}
+.sb-toolbar button{flex:1;min-width:0;min-height:46px;padding:10px}
+.sb-publish{border:0;border-radius:11px;background:#104b74;color:#fff;font-size:12px;font-weight:850;cursor:pointer}
+.sb-publish:disabled{opacity:.6;cursor:wait}
+#editor.qr-smart-active #save{display:none}
+@media(max-width:390px){.sb-tabs button{font-size:10px;letter-spacing:-.02em}.sb-toolbar{padding:8px}}
