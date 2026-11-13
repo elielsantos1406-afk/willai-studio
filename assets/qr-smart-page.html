@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f4f6f8">
+<title>Minha página | WillAI</title>
+<style>
+*{box-sizing:border-box}html{min-height:100%;scroll-behavior:smooth}body{margin:0;font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}button,a{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}[hidden]{display:none!important}
+main{min-height:100svh;position:relative;isolation:isolate;display:flex;flex-direction:column;overflow:hidden;color:var(--ink);background:var(--bg);transition:background .3s ease,color .3s ease}
+main:before{content:"";pointer-events:none;position:absolute;z-index:-1;width:min(80vw,490px);height:300px;left:50%;top:-240px;transform:translateX(-50%);background:var(--accent);filter:blur(110px);opacity:.21}
+.shell{flex:1;width:min(100% - 40px,460px);margin:0 auto;padding:42px 0 20px;text-align:center}
+.identity{display:flex;align-items:center;flex-direction:column}
+.logo{display:grid;place-items:center;overflow:hidden;width:98px;height:98px;border:1px solid var(--line);border-radius:26px;background:var(--card);box-shadow:0 16px 37px #00000013}
+.logo img{width:100%;height:100%;object-fit:contain}.logo span{font-size:32px;font-weight:750;letter-spacing:-.08em;color:var(--accent)}
+.business-type{font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:750;opacity:.62;margin:19px 0 8px}
+.business-name{font-size:clamp(27px,7vw,35px);line-height:1.13;letter-spacing:-.045em;margin:0 0 10px;font-weight:780;overflow-wrap:anywhere}
+.description{font-size:13.5px;line-height:1.65;color:var(--muted);max-width:340px;margin:0 auto 23px;white-space:pre-line}
+.cover{display:none;width:100%;height:150px;object-fit:cover;border:1px solid var(--line);border-radius:16px;margin-bottom:17px}.cover.has-photo{display:block}
+.actions{display:flex;flex-direction:column;gap:10px;width:100%;margin:20px auto 0}
+.action{position:relative;display:flex;align-items:center;justify-content:center;text-align:center;width:100%;min-height:54px;border-radius:var(--radius);background:var(--card);border:1px solid var(--line);color:var(--ink);font-size:14px;font-weight:730;letter-spacing:-.013em;text-decoration:none;padding:13px 16px;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;overflow-wrap:anywhere}
+.action:first-child{background:var(--accent);color:var(--accent-text);border-color:transparent}
+.action:active{transform:scale(.987)}.action:hover{transform:translateY(-2px);box-shadow:0 12px 27px #00000010}
+.footer{margin:36px auto 14px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:var(--muted);font-size:10px}
+.footer .brand{font-size:10px;letter-spacing:.07em;font-weight:750}
+.admin-link{display:inline-flex;background:none;border:0;color:var(--muted);font-size:11px;text-decoration:underline;text-underline-offset:4px;padding:8px}
+.preview-toast{position:fixed;z-index:20;bottom:20px;left:50%;transform:translateX(-50%);width:min(360px,calc(100% - 36px));background:var(--card);border:1px solid var(--line);border-radius:13px;box-shadow:0 20px 50px #0003;padding:13px 17px;text-align:center;font-size:12px}
+.pix-modal{border:1px solid var(--line);border-radius:23px;max-width:min(440px,calc(100% - 30px));width:100%;padding:0;color:var(--ink);background:var(--card);box-shadow:0 30px 85px #0005}.pix-modal::backdrop{background:#081a31ad;backdrop-filter:blur(5px)}
+.pix-inner{padding:27px 23px}.pix-head{display:flex;align-items:center;justify-content:space-between}.pix-head strong{font-size:20px;letter-spacing:-.035em}.pix-close{width:30px;height:30px;border:0;border-radius:50%;background:var(--bg);font-size:20px;color:var(--ink)}
+.pix-inner p{font-size:12px;line-height:1.5;color:var(--muted)}.pix-value{padding:15px;border:1px solid var(--line);border-radius:11px;margin:15px 0;overflow-wrap:anywhere;font-size:12px;line-height:1.65;background:var(--bg);max-height:135px;overflow:auto}
+.pix-copy{width:100%;min-height:49px;border:0;border-radius:12px;color:var(--accent-text);background:var(--accent);font-size:13px;font-weight:760}.pix-status{font-size:12px;min-height:16px;margin-top:13px;color:var(--muted)}
+[data-theme="clean"]{--bg:#f8fafc;--ink:#182d41;--muted:#6b7d8c;--card:#fff;--line:#dce5ea;--radius:15px}
+[data-theme="glass"]{--bg:#0b1b30;--ink:#f2f6ff;--muted:#a4b7ca;--card:#142a42;--line:#ffffff27;--radius:19px}
+[data-theme="editorial"]{--bg:#fbf6ef;--ink:#332d2a;--muted:#84776d;--card:#fffdfa;--line:#e7dfd5;--radius:8px}
+[data-theme="editorial"] .business-name{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:38px;letter-spacing:-.05em}
+[data-theme="editorial"] .logo{border-radius:50%}
+[data-theme="editorial"] .action{letter-spacing:.01em}
+[data-theme="glass"] .action{backdrop-filter:blur(14px);box-shadow:inset 0 1px 0 #ffffff13}
+[data-theme="glass"] main:before{opacity:.3}
+@media(max-width:430px){.shell{padding-top:32px;width:calc(100% - 34px)}.logo{width:86px;height:86px}.actions{gap:9px}.action{min-height:51px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<main data-theme="clean" id="smartRoot">
+ <div class="shell">
+  <section class="identity">
+   <div class="logo"><img id="smartLogo" alt="Logo da empresa" hidden><span id="smartInitial">W</span></div>
+   <span class="business-type" id="smartCategory"></span>
+   <h1 class="business-name" id="smartName">Seu negócio</h1>
+   <p class="description" id="smartDescription"></p>
+  </section>
+  <img id="smartCover" class="cover" alt="Imagem do estabelecimento" hidden>
+  <div class="actions" id="smartActions"></div>
+  <footer class="footer"><span class="brand">Criado por WillAI · by ELIX</span><button type="button" class="admin-link" id="smartLogin">Administrar minha plaquinha</button></footer>
+ </div>
+</main>
+<dialog id="pixModal" class="pix-modal" aria-labelledby="pixTitle"><div class="pix-inner"><div class="pix-head"><strong id="pixTitle">Pagar com Pix</strong><button class="pix-close" id="pixClose" type="button" aria-label="Fechar">×</button></div><p id="pixExplanation">Copie os dados e abra o aplicativo do seu banco para pagar.</p><div class="pix-value" id="pixValue"></div><button type="button" class="pix-copy" id="pixCopy">Copiar Pix</button><div id="pixStatus" class="pix-status" role="status"></div></div></dialog>
+<div id="toast" class="preview-toast" role="status" hidden></div>
+<script>
+(()=>{'use strict';
+ const root=document.getElementById('smartRoot'),$=id=>document.getElementById(id);
+ const preview=new URLSearchParams(location.search).has('preview');
+ let config={},toastId=0,pixToCopy='';
+ const safeUrl=value=>{try{const u=new URL(String(value||''));return ['https:','http:'].includes(u.protocol)?u.href:''}catch{return ''}};
+ const color=(x,f)=>/^#[0-9a-f]{6}$/i.test(x||'')?x:f;
+ const phone=v=>String(v||'').replace(/\D/g,'').slice(0,15);
+ const wa=v=>{const p=phone(v);return p.length>=10?'https://wa.me/'+p:''};
+ const showToast=t=>{const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toastId);toastId=setTimeout(()=>el.hidden=true,2900)};
+ function external(link,label){
+  if(!link){showToast('Este contato ainda não foi configurado.');return}
+  if(preview){showToast('Prévia: abrir '+label);return}
+  if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_EXTERNAL',url:link},location.origin);
+  else location.href=link;
+ }
+ function actionLink(type,value,links){
+  if(type==='google')return safeUrl(value||links.google);
+  if(type==='whatsapp')return wa(value||links.whatsapp);
+  if(type==='instagram')return safeUrl(value||links.instagram);
+  if(type==='site')return safeUrl(value||links.site);
+  if(type==='phone'){const n=phone(value);return n.length>=10?'tel:+'+n:''}
+  if(type==='email'){const e=String(value||'').trim();return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)?'mailto:'+e:''}
+  return safeUrl(value);
+ }
+ function render(c){
+  config=c||{};
+  const smart=config.smart||{},links=config.links||{},media=config.media||{},content=config.content||{};
+  const theme=['clean','glass','editorial'].includes(smart.style)?smart.style:'clean';
+  root.dataset.theme=theme;
+  const custom=color(smart.color,theme==='glass'?'#70d8eb':theme==='editorial'?'#9b725b':'#14599b');
+  const background=color(smart.background,'');
+  document.documentElement.style.setProperty('--accent',custom);
+  document.documentElement.style.setProperty('--accent-text',smart.colorText==='dark'?'#112136':'#ffffff');
+  if(background){root.style.setProperty('--bg',background);root.style.background=background}else{root.style.removeProperty('--bg');root.style.removeProperty('background')}
+  $('smartName').textContent=content.companyName||'Meu negócio';
+  $('smartCategory').textContent=smart.category||'';
+  $('smartCategory').hidden=!smart.category;
+  $('smartDescription').textContent=smart.description||'';
+  $('smartDescription').hidden=!smart.description;
+  const logo=safeUrl(media.logo),photo=safeUrl(media.photo);
+  $('smartLogo').hidden=!logo;$('smartInitial').hidden=!!logo;
+  if(logo)$('smartLogo').src=logo;else $('smartLogo').removeAttribute('src');
+  $('smartInitial').textContent=String(content.companyName||'W').trim().slice(0,1).toUpperCase();
+  // A foto é opcional e nunca substitui os dados do estabelecimento.
+  $('smartCover').hidden=!photo;$('smartCover').classList.toggle('has-photo',!!photo);
+  if(photo)$('smartCover').src=photo;else $('smartCover').removeAttribute('src');
+  const wrap=$('smartActions');wrap.replaceChildren();
+  const buttons=Array.isArray(smart.buttons)?smart.buttons.slice(0,24):[];
+  for(const item of buttons){
+   const type=String(item?.type||'url'),label=String(item?.label||'').trim().slice(0,70);
+   if(!label)continue;
+   const btn=document.createElement('button');btn.type='button';btn.className='action';btn.textContent=label;
+   if(type==='pix'){
+    const payload=String(smart.pixPayload||'').trim();
+    const key=String(smart.pixKey||'').trim();
+    if(!payload&&!key)continue;
+    btn.addEventListener('click',()=>{if(preview){showToast('Prévia: copiar dados Pix');return}
+      pixToCopy=payload||key;$('pixValue').textContent=pixToCopy;
+      $('pixTitle').textContent='Pagar com Pix';
+      $('pixExplanation').textContent=payload?'Copie o código Pix Copia e Cola e finalize o pagamento no seu banco.':'Copie a chave Pix e faça a transferência no aplicativo do seu banco.';
+      $('pixStatus').textContent='';$('pixModal').showModal();
+    });
+   }else{
+    const href=actionLink(type,item.value,links);
+    if(!href)continue;
+    btn.addEventListener('click',()=>{if(href.startsWith('tel:')||href.startsWith('mailto:')){if(preview)showToast('Prévia: '+label);else location.href=href;}else external(href,label)});
+   }
+   wrap.append(btn);
+  }
+  if(!wrap.children.length){const p=document.createElement('p');p.className='description';p.textContent='Em breve, nossos contatos estarão disponíveis aqui.';wrap.append(p)}
+  document.title=(content.companyName||'Meu negócio')+' | WillAI';
+ }
+ $('smartLogin').addEventListener('click',()=>{if(preview){showToast('Acesso do proprietário');return}if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_LOGIN'},location.origin)});
+ $('pixClose').addEventListener('click',()=>$('pixModal').close());
+ $('pixModal').addEventListener('click',e=>{if(e.target===$('pixModal'))$('pixModal').close()});
+ $('pixCopy').addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(pixToCopy);$('pixStatus').textContent='Pix copiado. Abra seu aplicativo bancário.'}
+  catch{
+   const area=document.createElement('textarea');area.value=pixToCopy;area.style.position='fixed';area.style.opacity='0';document.body.append(area);area.select();
+   try{$('pixStatus').textContent=document.execCommand('copy')?'Pix copiado.':'Selecione o código para copiar.'}catch{$('pixStatus').textContent='Selecione o código para copiar.'}
+   area.remove();
+  }
+ });
+ window.addEventListener('message',e=>{if(e.source!==window.parent||e.origin!==location.origin||e.data?.type!=='WILLAI_REVIEW_PREVIEW')return;
+  if(e.data.config&&typeof e.data.config==='object')render(e.data.config);
+  if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_RENDERED'},location.origin);
+ });
+ window.WILLAI_REVIEW=Object.freeze({render,getConfig:()=>structuredClone(config)});
+ render({content:{companyName:'Minha empresa'},smart:{style:'clean',buttons:[]}});
+ if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_READY'},location.origin);
+})();
+</script>
+</body></html>
