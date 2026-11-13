@@ -65,7 +65,7 @@ main:before{content:"";pointer-events:none;position:absolute;z-index:-1;width:mi
  const safeUrl=value=>{try{const u=new URL(String(value||''));return ['https:','http:'].includes(u.protocol)?u.href:''}catch{return ''}};
  const color=(x,f)=>/^#[0-9a-f]{6}$/i.test(x||'')?x:f;
  const phone=v=>String(v||'').replace(/\D/g,'').slice(0,15);
- const wa=v=>{const p=phone(v);return p.length>=10?'https://wa.me/'+p:''};
+ const wa=v=>{const value=String(v||'').trim();if(/^https?:\/\//i.test(value))return safeUrl(value);const p=phone(value);if(p.length===10||p.length===11)return 'https://wa.me/55'+p;if(p.length>=12&&p.length<=15)return 'https://wa.me/'+p;return ''};
  const showToast=t=>{const el=$('toast');el.textContent=t;el.hidden=false;clearTimeout(toastId);toastId=setTimeout(()=>el.hidden=true,2900)};
  function external(link,label){
   if(!link){showToast('Este contato ainda não foi configurado.');return}
