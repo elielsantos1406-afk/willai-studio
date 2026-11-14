@@ -75,6 +75,45 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
 .action-icon--logo,.action:first-child .action-icon--logo{background:var(--chip,#edf3f6)!important;color:inherit!important}
 .action-icon--logo img{display:block;width:28px;height:28px;object-fit:contain;flex:none}
 .action-icon--logo svg{display:none}
+
+/* Aurora Minimal — fundo neutro, degradê vivo e desfoque suave definido por três cores. */
+main#smartRoot{
+  background:var(--bg)!important;
+  background:linear-gradient(155deg,var(--bg) 0%,color-mix(in srgb,var(--secondary) 7%,var(--bg)) 55%,var(--bg) 100%)!important;
+  isolation:isolate;
+}
+main#smartRoot::before,main#smartRoot::after{
+  content:"";position:absolute;pointer-events:none;z-index:0;
+  border-radius:50%;transform:translate3d(0,0,0);
+}
+main#smartRoot::before{
+  left:-38%;top:-22%;width:122%;height:68%;
+  background:radial-gradient(ellipse at center,var(--accent) 0%,transparent 70%);
+  filter:blur(76px);opacity:.22;
+  animation:qr-aurora-left 22s ease-in-out infinite alternate;
+}
+main#smartRoot::after{
+  right:-41%;top:18%;width:113%;height:72%;
+  background:radial-gradient(ellipse at center,var(--secondary) 0%,transparent 70%);
+  filter:blur(84px);opacity:.28;
+  animation:qr-aurora-right 25s ease-in-out infinite alternate;
+}
+main#smartRoot>.shell{position:relative;z-index:1}
+@keyframes qr-aurora-left{
+ from{transform:translate3d(-18px,-8px,0) scale(1)}
+ to{transform:translate3d(50px,55px,0) scale(1.22)}
+}
+@keyframes qr-aurora-right{
+ from{transform:translate3d(18px,22px,0) scale(1.1)}
+ to{transform:translate3d(-50px,-40px,0) scale(.92)}
+}
+@media (max-width:520px){
+ main#smartRoot::before{filter:blur(64px);opacity:.19}
+ main#smartRoot::after{filter:blur(68px);opacity:.23}
+}
+@media (prefers-reduced-motion:reduce){
+ main#smartRoot::before,main#smartRoot::after{animation:none!important;transform:none!important}
+}
 </style>
 </head>
 <body>
@@ -161,13 +200,13 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
 
  function render(c){
   config=c||{};
-  const links=config.links||{},media=config.media||{},content=config.content||{};const smart=config.smart?.enabled?config.smart:(()=>{const buttons=[];for(const [type,label,value] of [['google','Avaliar no Google',links.google],['whatsapp','WhatsApp',links.whatsapp],['instagram','Instagram',links.instagram],['site','Nosso site',links.site]])if(value)buttons.push({type,label,value});(config.extraButtons||[]).forEach(b=>{if(b?.title&&b?.url)buttons.push({type:'url',label:b.title,value:b.url})});return {style:'clean',color:'#286a85',secondary:'#9bc7cd',background:'#f7f8fa',buttons}})();
+  const links=config.links||{},media=config.media||{},content=config.content||{};const smart=config.smart?.enabled?config.smart:(()=>{const buttons=[];for(const [type,label,value] of [['google','Avaliar no Google',links.google],['whatsapp','WhatsApp',links.whatsapp],['instagram','Instagram',links.instagram],['site','Nosso site',links.site]])if(value)buttons.push({type,label,value});(config.extraButtons||[]).forEach(b=>{if(b?.title&&b?.url)buttons.push({type:'url',label:b.title,value:b.url})});return {style:'clean',color:'#276c88',secondary:'#b2d8df',background:'#f7f9fb',buttons}})();
   root.dataset.theme='clean';
-  const custom=color(smart.color,'#286a85');
-  const background=color(smart.background,'#f7f8fa');
+  const custom=color(smart.color,'#276c88');
+  const background=color(smart.background,'#f7f9fb');
   document.documentElement.style.setProperty('--accent',custom);
   document.documentElement.style.setProperty('--accent-text',smart.colorText==='dark'?'#112136':'#ffffff');
-  root.style.setProperty('--bg',background);root.style.removeProperty('background');document.documentElement.style.setProperty('--secondary',color(smart.secondary,'#9bc7cd'));const rgb=[1,3,5].map(i=>parseInt(background.slice(i,i+2),16));const dark=.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2]<132;root.style.setProperty('--ink',dark?'#f5f8fc':'#192b3d');root.style.setProperty('--muted',dark?'#b5c4d2':'#738092');root.style.setProperty('--card',dark?'rgba(255,255,255,.1)':'rgba(255,255,255,.91)');root.style.setProperty('--line',dark?'rgba(255,255,255,.18)':'#dfe5e9');root.style.setProperty('--chip',dark?'rgba(255,255,255,.14)':'#edf3f6');
+  root.style.setProperty('--bg',background);root.style.removeProperty('background');document.documentElement.style.setProperty('--secondary',color(smart.secondary,'#b2d8df'));const rgb=[1,3,5].map(i=>parseInt(background.slice(i,i+2),16));const dark=.2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2]<132;root.style.setProperty('--ink',dark?'#f5f8fc':'#192b3d');root.style.setProperty('--muted',dark?'#b5c4d2':'#738092');root.style.setProperty('--card',dark?'rgba(255,255,255,.1)':'rgba(255,255,255,.91)');root.style.setProperty('--line',dark?'rgba(255,255,255,.18)':'#dfe5e9');root.style.setProperty('--chip',dark?'rgba(255,255,255,.14)':'#edf3f6');
   $('smartName').textContent=content.companyName||'Meu negócio';
   $('smartCategory').textContent=smart.category||'';
   $('smartCategory').hidden=!smart.category;
@@ -222,7 +261,7 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
   if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_RENDERED'},location.origin);
  });
  window.WILLAI_REVIEW=Object.freeze({render,getConfig:()=>structuredClone(config)});
- render({content:{companyName:'Sua empresa'},smart:{enabled:true,style:'clean',color:'#286a85',secondary:'#9bc7cd',background:'#f7f8fa',description:'Tudo sobre seu negócio em um único lugar.',pixKey:'exemplo@pix.com',buttons:preview?[
+ render({content:{companyName:'Sua empresa'},smart:{enabled:true,style:'clean',color:'#276c88',secondary:'#b2d8df',background:'#f7f9fb',description:'Tudo sobre seu negócio em um único lugar.',pixKey:'exemplo@pix.com',buttons:preview?[
  {type:'google',label:'Avaliar no Google',value:'https://example.com/avaliacao'},
  {type:'whatsapp',label:'WhatsApp',value:'5521999999999'},
  {type:'instagram',label:'Instagram',value:'https://instagram.com/exemplo'},
