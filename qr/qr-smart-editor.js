@@ -122,6 +122,36 @@
   for(const [field,output] of [['sbAccentColor','sbAccentHex'],['sbSecondaryColor','sbSecondaryHex'],['sbBackgroundColor','sbBackgroundHex']]){const color=document.getElementById(field);const text=document.getElementById(output);if(color&&text)text.textContent=color.value.toUpperCase()}
   boxUpdatePresets(data.smart);
  }
+ function quickConfig(type){
+  if(type==='calendar')return {type:'url',label:'Agendar horário',value:''};
+  if(type==='menu')return {type:'url',label:'Ver cardápio',value:''};
+  if(type==='location')return {type:'url',label:'Localização',value:''};
+  const p=presets.find(x=>x[0]===type);
+  return p?{type,label:p[1],value:['google','whatsapp','instagram','site'].includes(type)?String(data[type]||''):''}:null;
+ }
+ function matchQuick(button,type){
+  if(type==='calendar')return button.type==='url'&&/agend|horário|horario|reserva/i.test(button.label||'');
+  if(type==='menu')return button.type==='url'&&/cardápio|cardapio|menu/i.test(button.label||'');
+  if(type==='location')return button.type==='url'&&/localiza|endereço|endereco|mapa/i.test(button.label||'');
+  return button.type===type;
+ }
+ function gotoButton(type){
+  const index=data.smart.buttons.findIndex(b=>matchQuick(b,type));
+  if(index<0)return;
+  const target=buttonsArea?.querySelector('[data-sb-row="'+index+'"]');
+  if(type==='pix')document.getElementById('sbPixKey')?.focus();
+  else{
+   target?.scrollIntoView({behavior:'smooth',block:'nearest'});
+   target?.querySelector('input[data-sb-prop="value"]')?.focus();
+  }
+ }
+ function updateQuickButtons(){
+  document.querySelectorAll('#smartBuilder [data-sb-quick]').forEach(btn=>{
+   const exists=data.smart.buttons.some(b=>matchQuick(b,btn.dataset.sbQuick));
+   btn.setAttribute('aria-pressed',exists?'true':'false');
+   btn.title=exists?'Editar este botão':'Adicionar este botão';
+  });
+ }
  function renderButtons(){
   if(!buttonsArea||!data?.smart)return;
   const smart=data.smart;
@@ -137,6 +167,7 @@
    '<button type="button" class="sb-button-control sb-button-control--remove" data-sb-remove="'+i+'">Remover</button></div></article>'
   }).join('')||'<p class="sb-hint">Nenhum botão adicionado ainda.</p>';
   document.getElementById('sbPixConfig').hidden=!smart.buttons.some(x=>x.type==='pix');
+  updateQuickButtons();
  }
  function update(newData){data=newData;syncFields()}
  function mount(d,callbacks){
@@ -165,12 +196,23 @@
     if(target.id==='sbPublish'){document.getElementById('save')?.click();return}
     if(target.id==='sbResetColors'){data.smart.style='clean';data.smart.color='#276c88';data.smart.secondary='#b2d8df';data.smart.background='#f7f9fb';data.smart.colorText='light';syncFields();refresh();updateStatus('Cores padrão restauradas na prévia. Clique em Salvar e publicar para aplicar.');return}
     if(target.dataset.sbCombo){data.smart.style='clean';data.smart.color=target.dataset.primary;data.smart.secondary=target.dataset.secondary;data.smart.background=target.dataset.background;data.smart.colorText=contrast(data.smart.color);syncFields();refresh();return}
+    if(target.dataset.sbQuick){
+     const type=target.dataset.sbQuick,existing=data.smart.buttons.findIndex(b=>matchQuick(b,type));
+     if(existing>=0){gotoButton(type);updateStatus('Botão já adicionado. Você pode editar o destino abaixo.');return}
+     if(data.smart.buttons.length>=24){updateStatus('Sua página já tem 24 botões. Remova um antes de adicionar outro.',true);return}
+     const item=quickConfig(type);if(!item)return;
+     data.smart.buttons.push(item);renderButtons();refresh();
+     updateStatus(type==='pix'?'Pix adicionado. Informe a chave Pix abaixo e depois publique.':'Botão adicionado. Preencha o endereço e publique.');
+     if(type==='pix'){document.getElementById('sbPixKey')?.focus()}else gotoButton(type);
+     return;
+    }
     if(target.id==='sbAddButton'){
      if(data.smart.buttons.length>=24)return updateStatus('Limite de 24 botões por página.',true);
      const i=Number(document.getElementById('sbAddType').value),p=presets[i];if(!p)return;
      const type=p[0],value=['google','whatsapp','instagram','site'].includes(type)?String(data[type]||''):'';
      data.smart.buttons.push({type,label:p[1],value});
-     renderButtons();refresh();updateStatus('Botão adicionado. Preencha o destino, se necessário.');return;
+     renderButtons();refresh();updateStatus(type==='pix'?'Pix adicionado. Informe a chave ou código Copia e Cola.':'Botão adicionado. Preencha o destino, se necessário.');
+     if(type==='pix')document.getElementById('sbPixKey')?.focus();return;
     }
     if(target.dataset.sbRemove!==undefined){data.smart.buttons.splice(Number(target.dataset.sbRemove),1);renderButtons();refresh();return}
     if(target.dataset.sbMove!==undefined){
@@ -178,7 +220,6 @@
      if(i>=0&&j>=0&&j<data.smart.buttons.length){const b=data.smart.buttons.splice(i,1)[0];data.smart.buttons.splice(j,0,b);renderButtons();refresh()}return
     }
     if(target.dataset.sbClear){const kind=target.dataset.sbClear;data[kind]='';refresh();updateStatus('Imagem removida da prévia. Publique para atualizar.');return}
-    if(target.id==='sbAdvanced'){const open=ed.classList.toggle('qr-smart-advanced');target.textContent=open?'Fechar editor clássico':'Abrir editor clássico';return}
     if(target.id==='sbAddPlate'){
      const value=String(document.getElementById('sbNewCode').value||'').trim().toUpperCase();
      if(!/^W[0-9]{3,8}$/.test(value))return updateStatus('Informe um código no formato W002.',true);
