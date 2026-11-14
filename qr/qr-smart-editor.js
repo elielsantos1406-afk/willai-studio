@@ -58,8 +58,8 @@
   }
  }
  function html(){
-  return '<h2>Personalize sua plaquinha</h2><p class="sb-lead">Informe sua empresa, escolha suas cores e adicione botões. O QR Code permanece o mesmo.</p>'+
-  '<nav class="sb-tabs" aria-label="Etapas de personalização">'+[['business','Negócio'],['design','Visual'],['buttons','Botões'],['plaques','Plaquinhas']].map(([k,t])=>'<button type="button" data-sb-tab="'+k+'" aria-current="'+(k==='business'?'step':'false')+'">'+t+'</button>').join('')+'</nav>'+ 
+  return '<div class="sb-topline"><span class="sb-dot" aria-hidden="true"></span><span>WILLAI QR STUDIO</span></div><h2>Edite sua plaquinha</h2><p class="sb-lead">Altere o nome, as cores e os botões. Veja tudo na prévia e publique quando estiver pronto. Seu QR Code continua igual.</p>'+
+  '<nav class="sb-tabs" aria-label="Etapas de personalização">'+[['business','Negócio'],['design','Cores'],['buttons','Botões'],['plaques','Plaquinhas']].map(([k,t])=>'<button type="button" data-sb-tab="'+k+'" aria-current="'+(k==='business'?'step':'false')+'">'+t+'</button>').join('')+'</nav>'+ 
   '<section class="sb-section is-active" data-sb-step="business"><h3>1. Seu negócio</h3>'+
   '<label class="sb-field">Nome do estabelecimento<input data-sb-key="name" maxlength="95" placeholder="Como seu negócio se chama?" required></label>'+
   '<label class="sb-field">O que você faz?<input data-sb-key="category" maxlength="75" placeholder="Ex.: Estética, Restaurante, Loja"></label>'+
@@ -67,12 +67,12 @@
   '<div class="sb-two"><label class="sb-field">Seu logotipo<input id="sbLogoUpload" type="file" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG ou WebP até 5MB</small></label>'+
   '<label class="sb-field">Foto opcional<input id="sbCoverUpload" type="file" accept="image/png,image/jpeg,image/webp"><small>Foto do estabelecimento</small></label></div>'+
   '<div class="sb-upload"><button type="button" class="sb-soft-button" data-sb-clear="logo">Remover logo</button><button type="button" class="sb-soft-button" data-sb-clear="cover">Remover foto</button></div></section>'+
-  '<section class="sb-section" data-sb-step="design"><h3>2. Cores da sua empresa</h3>'+
-  '<p class="sb-hint">Um único design para todos os negócios. Escolha uma combinação pronta ou personalize as três cores.</p>'+
+  '<section class="sb-section" data-sb-step="design"><h3>2. Cores e fundo</h3>'+
+  '<p class="sb-hint">Escolha uma paleta pronta ou ajuste as três cores do fundo Aurora Minimal. As mudanças aparecem na prévia automaticamente.</p>'+
   '<div class="sb-combos" role="group" aria-label="Combinações de cores">'+
-  [['azul','Aurora (padrão)','#276c88','#b2d8df','#f7f9fb'],['verde','Verde','#2f7567','#a7d9c2','#f8faf8'],['terra','Terra','#996e57','#e1c8b3','#fcfaf7']].map(p=>'<button type="button" class="sb-combo" data-sb-combo="'+p[0]+'" data-primary="'+p[2]+'" data-secondary="'+p[3]+'" data-background="'+p[4]+'"><span class="sb-combo-colors"><i style="background:'+p[2]+'"></i><i style="background:'+p[3]+'"></i><i style="background:'+p[4]+'"></i></span><strong>'+p[1]+'</strong></button>').join('')+
-  '</div><div class="sb-three-colors"><label class="sb-color-custom">Cor principal<input type="color" id="sbAccentColor"></label><label class="sb-color-custom">Cor de destaque<input type="color" id="sbSecondaryColor"></label><label class="sb-color-custom">Cor do fundo<input type="color" id="sbBackgroundColor"></label></div>'+
-  '<div class="sb-aurora-preview" id="sbAuroraPreview" role="img" aria-label="Prévia do fundo Aurora Minimal com suas cores"><div class="sb-aurora-preview__content"><strong>Fundo Aurora Minimal</strong><span>Degradê suave com movimento discreto</span></div></div><p class="sb-hint">As três cores definem o fundo animado. Letras e botões mantêm o contraste automaticamente.</p></section>'+
+  [['azul','Aurora padrão','#276c88','#b2d8df','#f7f9fb'],['verde','Verde','#2f7567','#a7d9c2','#f8faf8'],['terra','Terra','#996e57','#e1c8b3','#fcfaf7']].map(p=>'<button type="button" class="sb-combo" data-sb-combo="'+p[0]+'" data-primary="'+p[2]+'" data-secondary="'+p[3]+'" data-background="'+p[4]+'"><span class="sb-combo-colors"><i style="background:'+p[2]+'"></i><i style="background:'+p[3]+'"></i><i style="background:'+p[4]+'"></i></span><strong>'+p[1]+'</strong></button>').join('')+
+  '</div><div class="sb-three-colors"><label class="sb-color-custom">Principal<input type="color" id="sbAccentColor"><output id="sbAccentHex" for="sbAccentColor">#276C88</output></label><label class="sb-color-custom">Secundária<input type="color" id="sbSecondaryColor"><output id="sbSecondaryHex" for="sbSecondaryColor">#B2D8DF</output></label><label class="sb-color-custom">Fundo<input type="color" id="sbBackgroundColor"><output id="sbBackgroundHex" for="sbBackgroundColor">#F7F9FB</output></label></div>'+
+  '<div class="sb-aurora-preview" id="sbAuroraPreview" role="img" aria-label="Prévia do fundo Aurora Minimal com suas cores"><div class="sb-aurora-preview__content"><strong>Fundo Aurora Minimal</strong><span>Degradê suave com movimento discreto</span></div></div><div class="sb-design-actions"><button type="button" id="sbResetColors" class="sb-soft-button">Restaurar cores padrão</button></div><p class="sb-hint">O degradê é automático e a animação é suave. As cores escolhidas ficam salvas quando você publica.</p></section>'+
   '<section class="sb-section" data-sb-step="buttons"><h3>3. Seus botões</h3><p class="sb-hint">Os ícones aparecem automaticamente. Você escolhe os nomes, links e a ordem.</p>'+
   '<div id="sbButtons"></div><div class="sb-add-row"><select id="sbAddType" aria-label="Tipo de botão">'+presets.map((v,i)=>'<option value="'+i+'">'+esc(v[1])+'</option>').join('')+'</select><button type="button" id="sbAddButton">Adicionar botão</button></div>'+
   '<div id="sbPixConfig" hidden><div class="sb-section"><h3>Dados do Pix</h3>'+
@@ -97,16 +97,30 @@
   accent.value=validHex(smart.color)?smart.color:'#276c88';
   secondary.value=validHex(smart.secondary)?smart.secondary:'#b2d8df';
   bg.value=validHex(smart.background)?smart.background:'#f7f9fb';
+  document.getElementById('sbAccentHex').textContent=accent.value.toUpperCase();
+  document.getElementById('sbSecondaryHex').textContent=secondary.value.toUpperCase();
+  document.getElementById('sbBackgroundHex').textContent=bg.value.toUpperCase();
+  boxUpdatePresets(smart);
   document.getElementById('sbPixKey').value=smart.pixKey||'';
   document.getElementById('sbPixPayload').value=smart.pixPayload||'';
   updateAuroraPreview();
   renderButtons();
+ }
+ function boxUpdatePresets(smart){
+  document.querySelectorAll('#smartBuilder [data-sb-combo]').forEach(button=>{
+   const matched=String(button.dataset.primary).toLowerCase()===String(smart.color).toLowerCase()
+     && String(button.dataset.secondary).toLowerCase()===String(smart.secondary).toLowerCase()
+     && String(button.dataset.background).toLowerCase()===String(smart.background).toLowerCase();
+   button.setAttribute('aria-pressed',matched?'true':'false');
+  });
  }
  function updateAuroraPreview(){
   const el=document.getElementById('sbAuroraPreview');if(!el||!data?.smart)return;
   el.style.setProperty('--sb-aurora-primary',data.smart.color||'#276c88');
   el.style.setProperty('--sb-aurora-secondary',data.smart.secondary||'#b2d8df');
   el.style.setProperty('--sb-aurora-base',data.smart.background||'#f7f9fb');
+  for(const [field,output] of [['sbAccentColor','sbAccentHex'],['sbSecondaryColor','sbSecondaryHex'],['sbBackgroundColor','sbBackgroundHex']]){const color=document.getElementById(field);const text=document.getElementById(output);if(color&&text)text.textContent=color.value.toUpperCase()}
+  boxUpdatePresets(data.smart);
  }
  function renderButtons(){
   if(!buttonsArea||!data?.smart)return;
@@ -149,6 +163,7 @@
     if(target.dataset.sbTab){box.querySelectorAll('[data-sb-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.sbTab===target.dataset.sbTab?'step':'false'));box.querySelectorAll('[data-sb-step]').forEach(sec=>sec.classList.toggle('is-active',sec.dataset.sbStep===target.dataset.sbTab));return}
     if(target.id==='sbPreview'){document.getElementById('v4Preview')?.scrollIntoView({behavior:'smooth',block:'center'});return}
     if(target.id==='sbPublish'){document.getElementById('save')?.click();return}
+    if(target.id==='sbResetColors'){data.smart.style='clean';data.smart.color='#276c88';data.smart.secondary='#b2d8df';data.smart.background='#f7f9fb';data.smart.colorText='light';syncFields();refresh();updateStatus('Cores padrão restauradas na prévia. Clique em Salvar e publicar para aplicar.');return}
     if(target.dataset.sbCombo){data.smart.style='clean';data.smart.color=target.dataset.primary;data.smart.secondary=target.dataset.secondary;data.smart.background=target.dataset.background;data.smart.colorText=contrast(data.smart.color);syncFields();refresh();return}
     if(target.id==='sbAddButton'){
      if(data.smart.buttons.length>=24)return updateStatus('Limite de 24 botões por página.',true);
