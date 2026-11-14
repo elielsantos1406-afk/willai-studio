@@ -239,7 +239,7 @@
    mounted=true;
   }
   syncFields();
-  updateStatus('Sua página antiga só será substituída quando você clicar em Salvar e publicar.');
+  updateStatus('Seus links anteriores foram carregados. Adicione Pix ou outros botões e toque em Salvar e publicar para atualizar a página.');
   Promise.resolve(host.owned()).then(rows=>renderOwned(rows)).catch(()=>renderOwned(null));
  }
  function renderOwned(rows){
