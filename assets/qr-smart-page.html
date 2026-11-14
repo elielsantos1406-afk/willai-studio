@@ -72,7 +72,7 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
 @keyframes qr-ambient{to{transform:translate3d(35px,25px,0) scale(1.12)}}
 @media(max-width:430px){.shell{width:calc(100% - 34px);padding-top:38px}.logo{width:82px;height:82px}.actions{gap:9px;margin-top:24px}.action{min-height:56px}}
 @media(prefers-reduced-motion:reduce){main:before,main:after,.identity,.action{animation:none!important}}
-.action-icon--logo,.action:first-child .action-icon--logo{background:transparent!important;color:inherit!important}
+.action-icon--logo,.action:first-child .action-icon--logo{background:var(--chip,#edf3f6)!important;color:inherit!important}
 .action-icon--logo img{display:block;width:28px;height:28px;object-fit:contain;flex:none}
 .action-icon--logo svg{display:none}
 </style>
@@ -185,7 +185,7 @@ main:after{content:"";position:absolute;right:-170px;top:130px;width:390px;heigh
   for(const item of buttons){
    const type=String(item?.type||'url'),label=String(item?.label||'').trim().slice(0,70);
    if(!label)continue;
-   const btn=document.createElement('button');btn.type='button';btn.className='action';btn.style.setProperty('--qr-order',String(Math.min(wrap.children.length,12)));const icon=document.createElement('span');icon.className='action-icon';const iconName=iconFor(type,label);if(ICON_FILES[iconName]){icon.classList.add('action-icon--logo');const img=document.createElement('img');img.src='/assets/qr-icons/'+ICON_FILES[iconName]+'?v=1';img.alt='';img.loading='eager';img.decoding='async';img.onerror=()=>{icon.classList.remove('action-icon--logo');icon.innerHTML=vector(iconName)};icon.append(img)}else{icon.innerHTML=vector(iconName)}const title=document.createElement('span');title.className='action-label';title.textContent=label;btn.append(icon,title);
+   const btn=document.createElement('button');btn.type='button';btn.className='action';btn.style.setProperty('--qr-order',String(Math.min(wrap.children.length,12)));const icon=document.createElement('span');icon.className='action-icon';const iconName=iconFor(type,label);if(ICON_FILES[iconName]){icon.classList.add('action-icon--logo');const img=document.createElement('img');img.src='/assets/qr-icons/'+ICON_FILES[iconName]+'?v=2';img.alt='';img.loading='eager';img.decoding='async';img.onerror=()=>{icon.classList.remove('action-icon--logo');icon.innerHTML=vector(iconName)};icon.append(img)}else{icon.innerHTML=vector(iconName)}const title=document.createElement('span');title.className='action-label';title.textContent=label;btn.append(icon,title);
    if(type==='pix'){
     const payload=String(smart.pixPayload||'').trim();
     const key=String(smart.pixKey||'').trim();
