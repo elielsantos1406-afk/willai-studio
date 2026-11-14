@@ -114,6 +114,121 @@ main#smartRoot>.shell{position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){
  main#smartRoot::before,main#smartRoot::after{animation:none!important;transform:none!important}
 }
+
+/* Modal Pix: visual sempre claro, independente das cores da empresa.
+   A página e os ícones dos botões permanecem personalizáveis. */
+.pix-modal{
+ color-scheme:light;
+ width:min(490px,calc(100vw - 28px));
+ max-width:calc(100vw - 28px);
+ max-height:min(88dvh,760px);
+ margin:auto;
+ padding:0;
+ overflow-x:hidden;
+ overflow-y:auto;
+ border:1px solid #e2e9f2;
+ border-radius:22px;
+ color:#162944;
+ background:linear-gradient(140deg,#fff 0%,#f5f9ff 100%);
+ box-shadow:0 26px 85px #091a3852,0 4px 14px #0c244c1c;
+ -webkit-font-smoothing:antialiased;
+}
+.pix-modal::backdrop{
+ background:rgba(10,23,44,.68);
+ -webkit-backdrop-filter:blur(5px);
+ backdrop-filter:blur(5px);
+}
+.pix-modal[open]{animation:pix-popup .2s ease-out both}
+.pix-modal .pix-inner{padding:clamp(21px,5vw,30px)}
+.pix-modal .pix-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pix-modal .pix-heading{display:flex;align-items:center;gap:12px;min-width:0}
+.pix-modal .pix-heading strong{font-size:clamp(22px,5.4vw,27px);line-height:1.15;font-weight:800;letter-spacing:-.045em;color:#12243f}
+.pix-modal .pix-brand{
+ display:grid;place-items:center;flex:none;
+ width:48px;height:48px;border-radius:13px;
+ background:#e0f7f4;
+}
+.pix-modal .pix-brand img{width:29px;height:29px;display:block;object-fit:contain}
+.pix-modal .pix-close{
+ flex:none;display:grid;place-items:center;
+ width:36px;height:36px;padding:0;
+ border:0;border-radius:9px;
+ background:transparent;color:#33455c;
+ font-size:29px;line-height:1;cursor:pointer;
+}
+.pix-modal .pix-close:hover{background:#eaf0f8}
+.pix-modal #pixExplanation{
+ font-size:14px;line-height:1.55;
+ color:#465771;margin:22px 0;
+}
+.pix-modal .pix-code-card{
+ border:1px solid #b4d6ff;
+ border-radius:14px;
+ padding:15px;
+ background:linear-gradient(125deg,#edf6ff,#e7f1ff);
+ box-shadow:inset 0 0 0 1px #d7e9ff;
+}
+.pix-modal .pix-code-label{display:flex;align-items:center;gap:8px;color:#15548b;font-size:13px;font-weight:800}
+.pix-modal .pix-value{
+ background:transparent;
+ border:0;
+ border-radius:0;
+ margin:12px 0 0;
+ padding:0;
+ max-height:min(29dvh,170px);
+ overflow:auto;
+ color:#14253b;
+ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+ font-size:12.5px;
+ font-weight:600;
+ line-height:1.65;
+ letter-spacing:0;
+ overflow-wrap:anywhere;
+ word-break:break-word;
+ user-select:text;
+ -webkit-user-select:text;
+ -webkit-overflow-scrolling:touch;
+}
+.pix-modal .pix-copy{
+ display:flex;align-items:center;justify-content:center;gap:10px;
+ width:100%;min-height:53px;margin:22px 0 0;
+ border:1px solid #0068d5;border-radius:12px;
+ background:linear-gradient(100deg,#0877ec,#0766db);
+ color:#fff;font-size:15px;line-height:1.3;font-weight:800;
+ box-shadow:0 5px 14px #0c71dd23;
+ cursor:pointer;transition:background .2s,transform .2s;
+}
+.pix-modal .pix-copy:hover{background:linear-gradient(100deg,#096edb,#0658bf)}
+.pix-modal .pix-copy:active{transform:scale(.99)}
+.pix-modal .pix-copy svg{flex:none}
+.pix-modal .pix-status{
+ display:flex;align-items:center;gap:10px;
+ padding:13px 0 0;min-height:44px;
+ color:#14613c;font-size:13px;line-height:1.5;font-weight:700;
+}
+.pix-modal .pix-status svg{flex:none;color:#119666}
+.pix-modal .pix-status[data-state="error"]{color:#a7353e}
+.pix-modal .pix-status[data-state="error"] svg{color:#a7353e}
+.pix-modal :is(.pix-close,.pix-copy,.pix-value):focus-visible{
+ outline:2px solid #1477e9;outline-offset:3px;
+}
+@keyframes pix-popup{
+ from{opacity:0;transform:translateY(9px) scale(.99)}
+ to{opacity:1;transform:translateY(0) scale(1)}
+}
+@media(max-width:430px){
+ .pix-modal{width:calc(100vw - 26px);max-width:calc(100vw - 26px);border-radius:20px}
+ .pix-modal .pix-inner{padding:21px 19px}
+ .pix-modal .pix-code-card{padding:12px}
+ .pix-modal #pixExplanation{font-size:13px;margin:18px 0}
+ .pix-modal .pix-value{font-size:12px}
+ .pix-modal .pix-copy{margin-top:19px}
+}
+@media(prefers-reduced-motion:reduce){
+ .pix-modal[open]{animation:none!important}
+ .pix-modal .pix-copy{transition:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -130,7 +245,27 @@ main#smartRoot>.shell{position:relative;z-index:1}
   <footer class="footer"><span class="brand">Criado por WillAI · by ELIX</span><button type="button" class="admin-link" id="smartLogin">Administrar minha plaquinha</button></footer>
  </div>
 </main>
-<dialog id="pixModal" class="pix-modal" aria-labelledby="pixTitle"><div class="pix-inner"><div class="pix-head"><strong id="pixTitle">Pagar com Pix</strong><button class="pix-close" id="pixClose" type="button" aria-label="Fechar">×</button></div><p id="pixExplanation">Copie os dados e abra o aplicativo do seu banco para pagar.</p><div class="pix-value" id="pixValue"></div><button type="button" class="pix-copy" id="pixCopy">Copiar Pix</button><div id="pixStatus" class="pix-status" role="status"></div></div></dialog>
+<dialog id="pixModal" class="pix-modal" aria-labelledby="pixTitle" aria-describedby="pixExplanation">
+ <div class="pix-inner">
+  <div class="pix-head">
+   <div class="pix-heading"><span class="pix-brand" aria-hidden="true"><img src="/assets/qr-icons/pix.svg?v=2" alt="" width="29" height="29"></span><strong id="pixTitle">Pagar com Pix</strong></div>
+   <button class="pix-close" id="pixClose" type="button" aria-label="Fechar pagamento Pix">×</button>
+  </div>
+  <p id="pixExplanation">Copie a chave Pix e faça a transferência pelo aplicativo do seu banco.</p>
+  <section class="pix-code-card" aria-labelledby="pixCodeLabel">
+   <div class="pix-code-label">
+    <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3.5h7l4 4V20H7a2 2 0 0 1-2-2V5.5a2 2 0 0 1 2-2Z"/><path d="M14 3.5V8h4"/></svg>
+    <span id="pixCodeLabel">Chave Pix</span>
+   </div>
+   <div class="pix-value" id="pixValue" tabindex="0"></div>
+  </section>
+  <button type="button" class="pix-copy" id="pixCopy"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Copiar Pix</span></button>
+  <div id="pixStatus" class="pix-status" role="status" aria-live="polite" hidden>
+   <svg viewBox="0 0 24 24" width="23" height="23" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m7.5 12 3 3 6-6"/></svg>
+   <span id="pixStatusText"></span>
+  </div>
+ </div>
+</dialog>
 <div id="toast" class="preview-toast" role="status" hidden></div>
 <script>
 (()=>{'use strict';
@@ -233,7 +368,11 @@ main#smartRoot>.shell{position:relative;z-index:1}
       pixToCopy=payload||key;$('pixValue').textContent=pixToCopy;
       $('pixTitle').textContent='Pagar com Pix';
       $('pixExplanation').textContent=payload?'Copie o código Pix Copia e Cola e finalize o pagamento no seu banco.':'Copie a chave Pix e faça a transferência no aplicativo do seu banco.';
-      $('pixStatus').textContent='';$('pixModal').showModal();
+      $('pixCodeLabel').textContent=payload?'Código Pix':'Chave Pix';
+      $('pixStatusText').textContent='';
+      $('pixStatus').hidden=true;
+      $('pixStatus').removeAttribute('data-state');
+      $('pixModal').showModal();
     });
    }else{
     const href=actionLink(type,item.value,links);
@@ -248,12 +387,35 @@ main#smartRoot>.shell{position:relative;z-index:1}
  $('smartLogin').addEventListener('click',()=>{if(preview){showToast('Acesso do proprietário');return}if(window.parent!==window)window.parent.postMessage({type:'WILLAI_QR_LOGIN'},location.origin)});
  $('pixClose').addEventListener('click',()=>$('pixModal').close());
  $('pixModal').addEventListener('click',e=>{if(e.target===$('pixModal'))$('pixModal').close()});
+ function showPixStatus(message,success){
+  const status=$('pixStatus');
+  $('pixStatusText').textContent=message;
+  status.dataset.state=success?'success':'error';
+  status.hidden=false;
+ }
  $('pixCopy').addEventListener('click',async()=>{
-  try{await navigator.clipboard.writeText(pixToCopy);$('pixStatus').textContent='Pix copiado. Abra seu aplicativo bancário.'}
-  catch{
-   const area=document.createElement('textarea');area.value=pixToCopy;area.style.position='fixed';area.style.opacity='0';document.body.append(area);area.select();
-   try{$('pixStatus').textContent=document.execCommand('copy')?'Pix copiado.':'Selecione o código para copiar.'}catch{$('pixStatus').textContent='Selecione o código para copiar.'}
+  if(!pixToCopy){showPixStatus('Nenhum dado Pix disponível para copiar.',false);return}
+  try{
+   if(!navigator.clipboard?.writeText)throw Error('Clipboard API indisponível');
+   await navigator.clipboard.writeText(pixToCopy);
+   showPixStatus('Pix copiado. Abra seu aplicativo bancário.',true);
+  }catch{
+   const area=document.createElement('textarea');
+   area.value=pixToCopy;
+   area.setAttribute('readonly','');
+   Object.assign(area.style,{position:'fixed',opacity:'0',left:'0',top:'0',pointerEvents:'none'});
+   document.body.append(area);
+   area.focus();area.select();
+   let copied=false;
+   try{copied=document.execCommand('copy')}catch{}
    area.remove();
+   if(copied)showPixStatus('Pix copiado. Abra seu aplicativo bancário.',true);
+   else{
+    const selection=window.getSelection(),range=document.createRange();
+    range.selectNodeContents($('pixValue'));
+    selection?.removeAllRanges();selection?.addRange(range);
+    showPixStatus('Selecione o código acima e copie manualmente.',false);
+   }
   }
  });
  window.addEventListener('message',e=>{if(e.source!==window.parent||e.origin!==location.origin||e.data?.type!=='WILLAI_REVIEW_PREVIEW')return;
