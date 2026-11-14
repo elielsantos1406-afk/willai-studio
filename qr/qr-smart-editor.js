@@ -81,7 +81,7 @@
   '<section class="sb-section" data-sb-step="plaques"><h3>Minhas plaquinhas</h3><p class="sb-hint">Abra outra plaquinha vinculada à sua conta sem precisar criar um novo login.</p>'+
   '<div id="sbOwnedList" class="sb-owned-list"></div><div class="sb-add-plate"><input id="sbNewCode" placeholder="W002" maxlength="9" aria-label="Código de outra plaquinha"><button type="button" id="sbAddPlate">Adicionar outra</button></div>'+
   '<p class="sb-hint" id="sbOwnedMessage" role="status">Carregando minhas plaquinhas…</p></section>'+
-  '<section class="sb-advanced"><span class="sb-hint">Os dados só mudam para os visitantes quando você clicar em Salvar e publicar.</span></section>'+
+  '<section class="sb-advanced"><span class="sb-hint">Os dados só mudam para os visitantes quando você clicar em Salvar e publicar.</span><button type="button" id="sbSignOut" class="sb-signout">Sair da conta</button></section>'+
   '<div class="sb-toolbar"><button type="button" id="sbPreview" class="sb-soft-button">Ver prévia</button><button type="button" id="sbPublish" class="sb-publish">Salvar e publicar</button></div><p id="sbStatus" role="status" class="sb-status"></p>';
  }
  function updateStatus(text,error=false){if(statusArea){statusArea.textContent=text;statusArea.style.color=error?'#a63855':'#297e70'}}
@@ -192,6 +192,7 @@
    box.addEventListener('click',async e=>{
     const target=e.target.closest('button');if(!target)return;
     if(target.dataset.sbTab){box.querySelectorAll('[data-sb-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.sbTab===target.dataset.sbTab?'step':'false'));box.querySelectorAll('[data-sb-step]').forEach(sec=>sec.classList.toggle('is-active',sec.dataset.sbStep===target.dataset.sbTab));return}
+    if(target.id==='sbSignOut'){document.getElementById('signOut')?.click();return}
     if(target.id==='sbPreview'){document.getElementById('v4Preview')?.scrollIntoView({behavior:'smooth',block:'center'});return}
     if(target.id==='sbPublish'){document.getElementById('save')?.click();return}
     if(target.id==='sbResetColors'){data.smart.style='clean';data.smart.color='#276c88';data.smart.secondary='#b2d8df';data.smart.background='#f7f9fb';data.smart.colorText='light';syncFields();refresh();updateStatus('Cores padrão restauradas na prévia. Clique em Salvar e publicar para aplicar.');return}
@@ -246,7 +247,7 @@
   const holder=document.getElementById('sbOwnedList'),notice=document.getElementById('sbOwnedMessage');
   if(!holder||!notice)return;
   if(!Array.isArray(rows)){holder.innerHTML='';notice.textContent='Você ainda pode adicionar uma plaquinha pelo código acima.';return}
-  holder.innerHTML=rows.map(x=>'<div class="sb-owned"><div><strong>'+esc(x.code)+'</strong><small>'+esc(x.name||'Minha plaquinha')+'</small></div><a href="/qr/'+encodeURIComponent(x.code)+'">Editar</a></div>').join('');
+  holder.innerHTML=rows.map(x=>'<div class="sb-owned"><div><strong>'+esc(x.code)+'</strong><small>'+esc(x.name||'Minha plaquinha')+'</small></div><a href="/qr/'+encodeURIComponent(x.code)+'?editar=1">Editar</a></div>').join('');
   notice.textContent=rows.length+' plaquinha(s) nesta conta.';
  }
  function validate(d){
