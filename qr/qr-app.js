@@ -45,7 +45,7 @@ function v4Config(d){
   theme:{...V4_DEFAULT.theme,...custom.theme},
   extraButtons:(d.buttons||[]).filter(x=>x&&x.title&&absoluteUrl(x.url)).slice(0,12).map(x=>({title:x.title,url:absoluteUrl(x.url)})),
   smart:d.smart?.enabled?d.smart:{
-    enabled:true,style:'clean',color:'#286a85',secondary:'#9bc7cd',background:'#f7f8fa',
+    enabled:true,style:'clean',color:'#276c88',secondary:'#b2d8df',background:'#f7f9fb',
     category:String(d.category||''),description:String(d.description||''),
     pixKey:'',pixPayload:'',
     buttons:[
@@ -80,7 +80,7 @@ function renderPublicV4Direct(){
  }
 }
 function smartPageSrc(preview=false){
- const src='/assets/qr-smart-page.html?v=6';
+ const src='/assets/qr-smart-page.html?v=7';
  return src+(preview?'&preview=1':'');
 }
 function refreshV4(){
