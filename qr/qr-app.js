@@ -355,7 +355,7 @@ function renderPublicV4Direct(){
  }
 }
 function smartPageSrc(preview=false){
- const src='/assets/qr-smart-page.html?v=7';
+ const src='/assets/qr-smart-page.html?v=8';
  return src+(preview?'&preview=1':'');
 }
 function refreshV4(){
