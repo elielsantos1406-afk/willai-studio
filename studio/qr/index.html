@@ -153,14 +153,43 @@ function reviewV4Config(d){
  links:{google:valid(d.google)?d.google:'',whatsapp:wa,instagram:valid(d.instagram)?d.instagram:'',site:valid(d.site)?d.site:'',login:''},
  visible:{whatsapp:!!digits,instagram:valid(d.instagram),site:valid(d.site)},
  theme:{...V4_THEME,...d.reviewV4?.theme},
- extraButtons:additions};
+ extraButtons:additions,
+ smart:{
+  enabled:true,style:'clean',
+  color:d.smart?.color||'#276c88',secondary:d.smart?.secondary||'#b2d8df',background:d.smart?.background||'#f7f9fb',
+  description:d.description||'',category:'',
+  pixKey:d.smart?.pixKey||'',pixPayload:d.smart?.pixPayload||'',
+  buttons:[
+   ...[['google','Avaliar no Google',d.google],['whatsapp','WhatsApp',wa],['instagram','Instagram',d.instagram],['site','Nosso site',d.site]]
+    .filter(x=>x[2]).map(x=>({type:x[0],label:x[1],value:x[2]})),
+   ...additions.map(b=>({type:'url',label:b.title,value:b.url}))
+  ].slice(0,24)
+ }};
 }
 function syncV4Frame(frameId,d=data){
  const frame=$(frameId);
  if(!frame||!frame.contentWindow)return;
  frame.contentWindow.postMessage({type:'WILLAI_REVIEW_PREVIEW',config:reviewV4Config(d)},location.origin);
 }
-function updatePreview(){syncV4Frame('v4StudioPreview');if($('v4FullPreview'))syncV4Frame('v4FullPreview',published||data);}
+function studioAuroraColors(){return {
+ color:/^#[0-9a-f]{6}$/i.test(data.smart?.color||'')?data.smart.color:'#276c88',
+ secondary:/^#[0-9a-f]{6}$/i.test(data.smart?.secondary||'')?data.smart.secondary:'#b2d8df',
+ background:/^#[0-9a-f]{6}$/i.test(data.smart?.background||'')?data.smart.background:'#f7f9fb'
+};}
+function syncAuroraPanel(){
+ const palette=studioAuroraColors(),sample=$('studioAuroraSample');
+ if(!sample)return;
+ sample.style.setProperty('--aurora-primary',palette.color);
+ sample.style.setProperty('--aurora-secondary',palette.secondary);
+ sample.style.setProperty('--aurora-bg',palette.background);
+ for(const [field,id,out] of [['color','studioAuroraPrimary','studioAuroraPrimaryHex'],['secondary','studioAuroraSecondary','studioAuroraSecondaryHex'],['background','studioAuroraBackground','studioAuroraBackgroundHex']]){
+  $(id).value=palette[field];$(out).textContent=palette[field].toUpperCase();
+ }
+ document.querySelectorAll('[data-aurora-preset]').forEach(b=>{
+  b.setAttribute('aria-pressed',String(b.dataset.primary===palette.color&&b.dataset.secondary===palette.secondary&&b.dataset.background===palette.background));
+ });
+}
+function updatePreview(){syncAuroraPanel();syncV4Frame('v4StudioPreview');if($('v4FullPreview'))syncV4Frame('v4FullPreview',published||data);}
 function renderLinks(){const root=$('linksList');root.innerHTML=(data.links||[]).map((b,i)=>`<div class="linkitem"><div class="field"><label>Nome do botão ${i+1}</label><input data-link-index="${i}" data-link-key="title" value="${esc(b.title)}" maxlength="50"></div><div class="field"><label>Endereço (https://...)</label><input data-link-index="${i}" data-link-key="url" value="${esc(b.url)}"></div><div class="controls"><button class="btn small" data-move="up" data-index="${i}" ${i===0?'disabled':''}>↑ Subir</button><button class="btn small" data-move="down" data-index="${i}" ${i===data.links.length-1?'disabled':''}>↓ Descer</button><button class="btn small ghost" data-remove="${i}">Remover</button></div></div>`).join('');}
 function switchTab(next){tab=next;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('on',x.dataset.tab===next));document.querySelectorAll('.tab-panel').forEach(x=>x.classList.toggle('hidden',x.id!=='tab-'+next));}
 function modal(content){$('dialog').innerHTML=content;$('overlay').classList.add('show')}
@@ -179,6 +208,17 @@ function publicView(){
 function publish(){if(!activated||!logged){modal(`<span class="badge">PUBLICAÇÃO SEGURA</span><h2>Ative W001 para publicar</h2><p>Você pode personalizar tudo antes, mas para salvar a página publicada precisa simular a ativação e o acesso do proprietário.</p><button class="btn primary" id="startActivation">Ativar W001</button><button class="btn" id="closeDialog">Continuar editando</button>`);return}published=clone(data);persist();$('savedPill').textContent='✓ Publicado no protótipo';$('saveStatus').textContent='✓ Página publicada localmente · '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});toast('Página W001 publicada nesta demonstração. O site oficial não mudou.')}
 function upload(file,key){if(!file)return;if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>8*1024*1024){toast('Use PNG, JPG ou WebP de até 8 MB.');return}let image=new Image(),reader=new FileReader();reader.onload=()=>{image.onload=()=>{let scale=Math.min(1,(key==='cover'?1300:650)/Math.max(image.width,image.height));let can=document.createElement('canvas');can.width=Math.max(1,Math.round(image.width*scale));can.height=Math.max(1,Math.round(image.height*scale));can.getContext('2d').drawImage(image,0,0,can.width,can.height);const result=can.toDataURL('image/webp',.8);setField(key,result);fillFields();toast('Imagem atualizada na prévia')};image.src=reader.result};reader.readAsDataURL(file)}
 read();fillFields();updatePreview();
+document.querySelectorAll('[data-aurora-color]').forEach(input=>input.addEventListener('input',()=>{
+ remember();data.smart??={};data.smart[input.dataset.auroraColor]=input.value;
+ updatePreview();persist();$('saveStatus').textContent='● Prévia alterada — abra o editor da plaquinha para publicar';
+}));
+document.querySelectorAll('[data-aurora-preset]').forEach(button=>button.addEventListener('click',()=>{
+ remember();data.smart??={};
+ data.smart.color=button.dataset.primary;
+ data.smart.secondary=button.dataset.secondary;
+ data.smart.background=button.dataset.background;
+ updatePreview();persist();$('saveStatus').textContent='● Paleta atualizada na prévia';
+}));
 $('v4StudioPreview').addEventListener('load',updatePreview);
 window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==$('v4StudioPreview').contentWindow||e.data?.type!=='WILLAI_QR_LOGIN')return;toast('Prévia de design: o Login real está disponível no QR Code da plaquinha.');});
 document.querySelectorAll('[data-v4-content]').forEach(el=>el.addEventListener('input',()=>{remember();data.reviewV4??={};data.reviewV4.content??={};data.reviewV4.content[el.dataset.v4Content]=el.value;updatePreview();persist();$('saveStatus').textContent='● Alterações não publicadas'}));
