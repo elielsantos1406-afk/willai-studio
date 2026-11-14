@@ -47,14 +47,14 @@
    for(const b of Array.isArray(data.buttons)?data.buttons:[]){
     if(b?.title&&b?.url)buttons.push({type:'url',label:String(b.title),value:String(b.url)});
    }
-   data.smart={enabled:true,style:'clean',color:'#286a85',secondary:'#9bc7cd',colorText:'light',background:'#f7f8fa',category:String(data.category||''),description:String(data.description||''),pixKey:'',pixPayload:'',buttons:buttons.slice(0,24)};
+   data.smart={enabled:true,style:'clean',color:'#276c88',secondary:'#b2d8df',colorText:'light',background:'#f7f9fb',category:String(data.category||''),description:String(data.description||''),pixKey:'',pixPayload:'',buttons:buttons.slice(0,24)};
   }else{
    data.smart.enabled=true;
    data.smart.buttons=Array.isArray(data.smart.buttons)?data.smart.buttons.slice(0,24):[];
    if(!['clean','glass','editorial'].includes(data.smart.style))data.smart.style='clean';
-   if(!validHex(data.smart.color))data.smart.color='#286a85';
-   if(!validHex(data.smart.secondary))data.smart.secondary='#9bc7cd';
-   if(!validHex(data.smart.background))data.smart.background='#f7f8fa';
+   if(!validHex(data.smart.color))data.smart.color='#276c88';
+   if(!validHex(data.smart.secondary))data.smart.secondary='#b2d8df';
+   if(!validHex(data.smart.background))data.smart.background='#f7f9fb';
   }
  }
  function html(){
@@ -70,9 +70,9 @@
   '<section class="sb-section" data-sb-step="design"><h3>2. Cores da sua empresa</h3>'+
   '<p class="sb-hint">Um único design para todos os negócios. Escolha uma combinação pronta ou personalize as três cores.</p>'+
   '<div class="sb-combos" role="group" aria-label="Combinações de cores">'+
-  [['azul','Azul','#286a85','#9bc7cd','#f7f8fa'],['verde','Verde','#2f7567','#a7d9c2','#f8faf8'],['terra','Terra','#996e57','#e1c8b3','#fcfaf7']].map(p=>'<button type="button" class="sb-combo" data-sb-combo="'+p[0]+'" data-primary="'+p[2]+'" data-secondary="'+p[3]+'" data-background="'+p[4]+'"><span class="sb-combo-colors"><i style="background:'+p[2]+'"></i><i style="background:'+p[3]+'"></i><i style="background:'+p[4]+'"></i></span><strong>'+p[1]+'</strong></button>').join('')+
+  [['azul','Aurora (padrão)','#276c88','#b2d8df','#f7f9fb'],['verde','Verde','#2f7567','#a7d9c2','#f8faf8'],['terra','Terra','#996e57','#e1c8b3','#fcfaf7']].map(p=>'<button type="button" class="sb-combo" data-sb-combo="'+p[0]+'" data-primary="'+p[2]+'" data-secondary="'+p[3]+'" data-background="'+p[4]+'"><span class="sb-combo-colors"><i style="background:'+p[2]+'"></i><i style="background:'+p[3]+'"></i><i style="background:'+p[4]+'"></i></span><strong>'+p[1]+'</strong></button>').join('')+
   '</div><div class="sb-three-colors"><label class="sb-color-custom">Cor principal<input type="color" id="sbAccentColor"></label><label class="sb-color-custom">Cor de destaque<input type="color" id="sbSecondaryColor"></label><label class="sb-color-custom">Cor do fundo<input type="color" id="sbBackgroundColor"></label></div>'+
-  '<p class="sb-hint">As letras e os botões ajustam o contraste automaticamente.</p></section>'+
+  '<div class="sb-aurora-preview" id="sbAuroraPreview" role="img" aria-label="Prévia do fundo Aurora Minimal com suas cores"><div class="sb-aurora-preview__content"><strong>Fundo Aurora Minimal</strong><span>Degradê suave com movimento discreto</span></div></div><p class="sb-hint">As três cores definem o fundo animado. Letras e botões mantêm o contraste automaticamente.</p></section>'+
   '<section class="sb-section" data-sb-step="buttons"><h3>3. Seus botões</h3><p class="sb-hint">Os ícones aparecem automaticamente. Você escolhe os nomes, links e a ordem.</p>'+
   '<div id="sbButtons"></div><div class="sb-add-row"><select id="sbAddType" aria-label="Tipo de botão">'+presets.map((v,i)=>'<option value="'+i+'">'+esc(v[1])+'</option>').join('')+'</select><button type="button" id="sbAddButton">Adicionar botão</button></div>'+
   '<div id="sbPixConfig" hidden><div class="sb-section"><h3>Dados do Pix</h3>'+
@@ -94,12 +94,19 @@
   get('category').value=smart.category||'';
   get('description').value=smart.description||'';
   const accent=document.getElementById('sbAccentColor'),secondary=document.getElementById('sbSecondaryColor'),bg=document.getElementById('sbBackgroundColor');
-  accent.value=validHex(smart.color)?smart.color:'#286a85';
-  secondary.value=validHex(smart.secondary)?smart.secondary:'#9bc7cd';
-  bg.value=validHex(smart.background)?smart.background:'#f7f8fa';
+  accent.value=validHex(smart.color)?smart.color:'#276c88';
+  secondary.value=validHex(smart.secondary)?smart.secondary:'#b2d8df';
+  bg.value=validHex(smart.background)?smart.background:'#f7f9fb';
   document.getElementById('sbPixKey').value=smart.pixKey||'';
   document.getElementById('sbPixPayload').value=smart.pixPayload||'';
+  updateAuroraPreview();
   renderButtons();
+ }
+ function updateAuroraPreview(){
+  const el=document.getElementById('sbAuroraPreview');if(!el||!data?.smart)return;
+  el.style.setProperty('--sb-aurora-primary',data.smart.color||'#276c88');
+  el.style.setProperty('--sb-aurora-secondary',data.smart.secondary||'#b2d8df');
+  el.style.setProperty('--sb-aurora-base',data.smart.background||'#f7f9fb');
  }
  function renderButtons(){
   if(!buttonsArea||!data?.smart)return;
@@ -133,9 +140,9 @@
     if(prop&&Number.isInteger(idx)&&data.smart.buttons[idx]){data.smart.buttons[idx][prop]=target.value;refresh();return}
     if(target.id==='sbPixKey'){data.smart.pixKey=target.value.trim();refresh()}
     if(target.id==='sbPixPayload'){data.smart.pixPayload=target.value.trim();refresh()}
-    if(target.id==='sbAccentColor'){data.smart.color=target.value;data.smart.colorText=contrast(target.value);refresh()}
-    if(target.id==='sbSecondaryColor'){data.smart.secondary=target.value;refresh()}
-    if(target.id==='sbBackgroundColor'){data.smart.background=target.value;refresh()}
+    if(target.id==='sbAccentColor'){data.smart.color=target.value;data.smart.colorText=contrast(target.value);updateAuroraPreview();refresh()}
+    if(target.id==='sbSecondaryColor'){data.smart.secondary=target.value;updateAuroraPreview();refresh()}
+    if(target.id==='sbBackgroundColor'){data.smart.background=target.value;updateAuroraPreview();refresh()}
    });
    box.addEventListener('click',async e=>{
     const target=e.target.closest('button');if(!target)return;
