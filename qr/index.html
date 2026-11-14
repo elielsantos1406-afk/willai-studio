@@ -27,7 +27,214 @@ html,body{min-height:100%;min-height:100dvh}
 #qrLaunch.qr-launch-complete{opacity:0;pointer-events:none;transition:opacity .22s ease}
 @keyframes qr-load-move{from{transform:translateX(-110%)}to{transform:translateX(210%)}}
 @media(prefers-reduced-motion:reduce){.qr-launch-track i,.qr-launch-brand{animation:none}#qrLaunch.qr-launch-complete{transition:none}}
-</style><link rel="stylesheet" href="/assets/qr-smart-editor.css?v=6"></head><body>
+</style><style data-willai-qr-editor-inline="20261114">
+/* WillAI QR Studio — editor inteligente mobile-first; preserva o editor clássico */
+#editor.qr-smart-active{--sb-blue:#102d4d;--sb-muted:#62758b;--sb-border:#e3eaf2;--sb-surface:#fff}
+#editor.qr-smart-active > div:first-child > section.panel:not(#smartBuilder){display:none}
+#editor.qr-smart-active.qr-smart-advanced > div:first-child > section.panel:not(#smartBuilder){display:block}
+#editor.qr-smart-active > div:first-child > .hint:not(#editorLink){font-size:12px}
+#smartBuilder{padding:clamp(18px,3vw,28px);border-radius:24px;background:#fff;border-color:#e4ebf2;box-shadow:0 16px 55px #1a3b5c0c}
+#smartBuilder h2{margin:0;font-size:25px;letter-spacing:-.05em;color:#183451}
+#smartBuilder h3{font-size:15px;margin:0 0 12px;letter-spacing:-.025em;color:#213b53}
+#smartBuilder .sb-lead{font-size:13px;line-height:1.55;color:#6a7e90;margin:9px 0 21px}
+.sb-section{padding:23px 0;border-top:1px solid #edf1f5}
+.sb-section:first-of-type{border-top:0}
+.sb-field{display:block;margin:0 0 12px;font-weight:750;font-size:12px;color:#38516a}
+.sb-field input:not([type=file]):not([type=color]),.sb-field select,.sb-field textarea{display:block;box-sizing:border-box;width:100%;margin-top:7px;border:1px solid #d9e3ee;border-radius:12px;padding:11px 12px;min-height:44px;background:#fbfdff;color:#143351;font:500 13px/1.5 Inter,system-ui,sans-serif;outline:0}
+.sb-field textarea{resize:vertical;min-height:69px}
+.sb-field input:focus,.sb-field select:focus,.sb-field textarea:focus{border-color:#0a9ecc;box-shadow:0 0 0 3px #21a7db1f}
+.sb-field small{display:block;color:#8494a6;margin-top:5px;line-height:1.4;font-size:10px;font-weight:450}
+.sb-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.sb-designs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.sb-design{position:relative;display:flex;flex-direction:column;gap:10px;min-width:0;border:1px solid #e0e8f0;background:#fff;border-radius:15px;text-align:left;padding:8px;cursor:pointer;color:#163752;transition:transform .15s,border-color .15s,box-shadow .15s}
+.sb-design:hover{transform:translateY(-2px)}
+.sb-design[aria-pressed=true]{border-color:#1b83b0;box-shadow:0 0 0 2px #1b83b023}
+.sb-design__mini{height:96px;border-radius:9px;display:flex;flex-direction:column;align-items:center;padding:12px;gap:6px}
+.sb-design__mini:before{content:"";width:27px;height:27px;background:#fff9;border:1px solid #ffffff78;border-radius:8px}
+.sb-design__mini i{display:block;height:9px;width:78%;border-radius:4px;background:#fff9}
+.sb-design__mini i:last-child{width:58%}
+.sb-design__mini--clean{background:#dce7ef}.sb-design__mini--clean i{background:#fff}
+.sb-design__mini--glass{background:linear-gradient(125deg,#0b1b30,#245176)}.sb-design__mini--editorial{background:#ebddcf}.sb-design__mini--editorial i{background:#fff}
+.sb-design strong{padding:0 4px 6px;font-size:11px}
+.sb-palette{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0 18px}
+.sb-color-choice{width:32px;height:32px;border:3px solid white;box-shadow:0 0 0 1px #dbe5ed;border-radius:50%;cursor:pointer}
+.sb-color-choice[aria-pressed=true]{box-shadow:0 0 0 2px #173d5f}
+.sb-color-custom{display:flex;align-items:center;gap:9px;font-size:11px;color:#52647a}
+.sb-color-custom input{width:36px;height:34px;border:0;background:transparent;padding:0;cursor:pointer}
+.sb-hint{color:#7f91a2;font-size:11px;line-height:1.6;margin:7px 0 12px}
+.sb-add-row{display:flex;gap:8px;margin-top:12px}
+.sb-add-row select{flex:1;min-width:0;background:#fbfdff;border:1px solid #d9e3ee;border-radius:12px;padding:11px;font-size:12px;color:#1b3b55}
+.sb-add-row button,.sb-button-control,.sb-soft-button{border:1px solid #c5e1ee;background:#edf9fd;color:#14658a;font-size:11px;font-weight:790;border-radius:11px;min-height:42px;padding:9px 11px;cursor:pointer}
+.sb-add-row button{white-space:nowrap}
+.sb-btn-card{border:1px solid #e0e8ef;border-radius:14px;padding:12px;margin:9px 0;box-shadow:0 5px 15px #153d5010}
+.sb-btn-title{font-size:11px;font-weight:800;color:#3a536c;margin:0 0 10px;display:flex;justify-content:space-between;gap:9px}
+.sb-btn-controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px}
+.sb-button-control{min-height:35px;background:#f4f8fb;border-color:#e0e8ef}
+.sb-button-control--remove{color:#a23f55;background:#fff3f5;border-color:#f1dce2}
+.sb-upload{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.sb-upload input{font-size:11px;max-width:100%}
+.sb-upload .sb-upload-info{font-size:10px;color:#7590a4}
+.sb-status{font-size:11px;color:#516a82;margin:10px 0 0;min-height:16px}
+.sb-preview-note{font-size:11px;line-height:1.4;color:#7c92a5}
+.sb-advanced{border-top:1px solid #e8edf3;padding-top:17px;margin-top:10px}
+.sb-advanced button{font-size:11px;border:0;background:none;color:#4d7896;text-decoration:underline;cursor:pointer}
+.sb-owned-list{display:grid;gap:9px;margin:12px 0}
+.sb-owned{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f8fbfe;border:1px solid #e5ecf3;border-radius:12px;padding:12px}
+.sb-owned strong{font-size:13px;color:#23465f}
+.sb-owned small{display:block;color:#74889a;font-size:10px;margin-top:3px}
+.sb-owned a{background:#fff;border:1px solid #d7e5ee;padding:9px 12px;border-radius:9px;font-size:11px;font-weight:750;text-decoration:none;white-space:nowrap}
+.sb-add-plate{display:flex;gap:9px;align-items:center}
+.sb-add-plate input{flex:1;min-width:0;text-transform:uppercase;max-width:180px;border-radius:11px;border:1px solid #dbe5ed;padding:12px;font-size:13px}
+.sb-add-plate button{min-height:43px;border:1px solid #d7e6f1;background:#edf8fc;color:#175e7e;border-radius:11px;padding:10px 12px;font-weight:750;font-size:11px}
+@media(max-width:730px){#editor.qr-smart-active{display:flex;flex-direction:column;gap:0}#editor.qr-smart-active > div:first-child{order:1}#editor.qr-smart-active > .panel{order:2;margin-top:9px}#editor.qr-smart-active .phone{max-width:360px}}
+@media(max-width:460px){#smartBuilder{padding:18px 15px}.sb-designs{gap:6px}.sb-design{padding:6px}.sb-design__mini{height:78px;padding:9px}.sb-design strong{font-size:10px}.sb-two{grid-template-columns:1fr}.sb-add-row{flex-direction:column}.sb-add-row button{width:100%}.sb-btn-controls{gap:4px}.sb-button-control{padding:8px}}
+@media(prefers-reduced-motion:reduce){.sb-design{transition:none}.sb-design:hover{transform:none}}
+
+/* Fluxo em etapas; mantem o preview e a publicacao acessiveis no celular */
+#smartBuilder .sb-section[data-sb-step]{display:none}
+#smartBuilder .sb-section[data-sb-step].is-active{display:block}
+.sb-tabs{position:sticky;top:8px;z-index:15;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;background:#fffefef7;border:1px solid #e4ebf2;border-radius:13px;padding:5px;box-shadow:0 8px 25px #17334d11;backdrop-filter:blur(18px);margin-bottom:12px}
+.sb-tabs button{border:0;border-radius:9px;background:transparent;min-height:38px;padding:7px 4px;font-size:11px;font-weight:750;color:#73879b;cursor:pointer}
+.sb-tabs button[aria-current="step"]{background:#133a59;color:#fff;box-shadow:0 6px 17px #183f5529}
+.sb-toolbar{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom,0px));z-index:16;display:flex;gap:9px;padding:11px;margin:14px -4px 0;background:#fffffff0;border:1px solid #e2eaf1;border-radius:15px;backdrop-filter:blur(20px);box-shadow:0 13px 30px #082d4833}
+.sb-toolbar button{flex:1;min-width:0;min-height:46px;padding:10px}
+.sb-publish{border:0;border-radius:11px;background:#104b74;color:#fff;font-size:12px;font-weight:850;cursor:pointer}
+.sb-publish:disabled{opacity:.6;cursor:wait}
+#editor.qr-smart-active #save{display:none}
+@media(max-width:390px){.sb-tabs button{font-size:10px;letter-spacing:-.02em}.sb-toolbar{padding:8px}}
+
+/* Seletor de tres cores no lugar dos modelos antigos */
+.sb-combos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 22px}
+.sb-combo{display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;min-width:0;min-height:88px;border:1px solid #dfe7ed;border-radius:13px;background:#fff;padding:11px 8px;cursor:pointer;transition:border-color .18s,transform .18s}
+.sb-combo:hover{transform:translateY(-2px);border-color:#7ba9bb}
+.sb-combo strong{color:#28475d;font-size:11px;font-weight:750}
+.sb-combo-colors{display:flex;justify-content:center;gap:0}
+.sb-combo-colors i{display:block;width:22px;height:28px;border:2px solid #fff;box-shadow:0 0 0 1px #dae5ec;border-radius:5px}
+.sb-combo-colors i+i{margin-left:-4px}
+.sb-three-colors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.sb-three-colors .sb-color-custom{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:9px;padding:13px 6px;border:1px solid #e1e9ef;border-radius:12px;text-align:center;font-size:11px;font-weight:720;color:#486276}
+.sb-three-colors input{width:100%;max-width:58px;height:39px;border:0;background:transparent;cursor:pointer}
+@media(max-width:420px){.sb-combos{gap:6px}.sb-three-colors{gap:5px}.sb-three-colors .sb-color-custom{font-size:10px;padding:11px 4px}}
+
+/* Prévia Aurora Minimal no editor: as mesmas três cores da plaquinha. */
+.sb-aurora-preview{
+ --sb-aurora-primary:#276c88;
+ --sb-aurora-secondary:#b2d8df;
+ --sb-aurora-base:#f7f9fb;
+ position:relative;isolation:isolate;overflow:hidden;
+ min-height:112px;margin:16px 0 12px;padding:21px 18px;
+ display:flex;align-items:center;justify-content:center;
+ border:1px solid #e2e9ef;border-radius:13px;
+ background:var(--sb-aurora-base);
+ background:linear-gradient(145deg,var(--sb-aurora-base),color-mix(in srgb,var(--sb-aurora-secondary) 9%,var(--sb-aurora-base)));
+}
+.sb-aurora-preview::before,.sb-aurora-preview::after{
+ content:"";position:absolute;z-index:0;pointer-events:none;
+ width:65%;height:170%;border-radius:50%;filter:blur(36px);
+}
+.sb-aurora-preview::before{left:-25%;top:-80%;opacity:.26;background:var(--sb-aurora-primary);animation:sb-aurora-drift 22s ease-in-out infinite alternate}
+.sb-aurora-preview::after{right:-25%;bottom:-90%;opacity:.34;background:var(--sb-aurora-secondary);animation:sb-aurora-drift 25s ease-in-out infinite alternate-reverse}
+.sb-aurora-preview__content{position:relative;z-index:1;display:grid;gap:5px;text-align:center;background:rgba(255,255,255,.65);padding:12px 18px;border-radius:10px;border:1px solid rgba(255,255,255,.7)}
+.sb-aurora-preview__content strong{color:#27394b;font-size:13px;font-weight:800}
+.sb-aurora-preview__content span{font-size:11px;color:#52687a}
+@keyframes sb-aurora-drift{to{transform:translate3d(22px,13px,0) scale(1.13)}}
+@media(prefers-reduced-motion:reduce){.sb-aurora-preview::before,.sb-aurora-preview::after{animation:none!important}}
+
+/* QR Studio: edição clara e direta das três cores Aurora Minimal */
+#smartBuilder .sb-topline{display:flex;align-items:center;gap:8px;color:#397191;font-size:10px;font-weight:800;letter-spacing:.13em;margin-bottom:10px}
+#smartBuilder .sb-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#1c92ae;box-shadow:0 0 0 4px #1c92ae1a}
+#smartBuilder .sb-tabs{position:sticky;top:8px}
+#smartBuilder .sb-tabs button{line-height:1.15;white-space:normal}
+#smartBuilder .sb-combo[aria-pressed="true"]{border:2px solid #286a85;box-shadow:0 0 0 3px #286a851b}
+#smartBuilder .sb-combo[aria-pressed="true"] strong{color:#174e68}
+#smartBuilder .sb-three-colors .sb-color-custom{gap:7px;cursor:default}
+#smartBuilder .sb-three-colors .sb-color-custom input{width:58px;height:39px;cursor:pointer}
+#smartBuilder .sb-three-colors .sb-color-custom output{font-size:10px;font-weight:680;letter-spacing:.015em;color:#667f91;font-variant-numeric:tabular-nums}
+#smartBuilder .sb-design-actions{margin:9px 0 13px}
+#smartBuilder .sb-design-actions .sb-soft-button{min-height:38px;background:#fff;color:#365772}
+#editor.qr-smart-active > div:first-child > .hint:not(#editorLink){display:none}
+#editor.qr-smart-active > div:first-child > .buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:6px 0}
+#editor.qr-smart-active > .panel{position:relative}
+#editor.qr-smart-active > .panel h2{font-size:18px;letter-spacing:-.025em}
+#editor.qr-smart-active .phone{background:#f7f9fb;border:7px solid #273d50;border-radius:26px;box-shadow:0 20px 55px #1d3e5926}
+#editor.qr-smart-active .v4-preview{display:block;background:#f7f9fb;border:0;width:100%;min-height:620px}
+#editor.qr-smart-active #editorLink{font-size:11px;overflow-wrap:anywhere}
+#editor.qr-smart-active #qrBackToEditor{display:inline-flex;align-items:center;justify-content:center;margin:12px 0 0;padding:10px 14px;min-height:39px;border-radius:10px;border:1px solid #d8e3ee;background:#fff;color:#23506e;font-size:12px;font-weight:750;cursor:pointer}
+#editor.qr-smart-active #qrBackToEditor:hover{background:#f0f7fb}
+@media(max-width:730px){
+ #editor.qr-smart-active{grid-template-columns:1fr;gap:8px}
+ #editor.qr-smart-active > .panel{margin-top:0}
+ #editor.qr-smart-active .v4-preview{height:590px;min-height:590px}
+}
+@media(max-width:390px){
+ #smartBuilder .sb-three-colors .sb-color-custom{font-size:10px}
+ #smartBuilder .sb-three-colors .sb-color-custom output{font-size:9px}
+}
+
+/* QR Studio — painel de links e Pix como tarefa principal */
+#smartBuilder{border-radius:18px;padding:clamp(16px,2.9vw,26px)}
+#smartBuilder .sb-tabs{grid-template-columns:1.3fr .9fr .8fr 1.15fr}
+#smartBuilder .sb-tabs button{font-size:clamp(10px,2.5vw,12px);font-weight:780}
+#smartBuilder .sb-quick-grid{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;
+ margin:18px 0 13px
+}
+#smartBuilder .sb-quick{
+ display:flex;align-items:center;justify-content:center;flex-direction:column;
+ gap:9px;min-height:92px;padding:11px 5px 10px;
+ border:1px solid #e0e8ef;border-radius:13px;background:#fff;
+ color:#38566a;font:720 11px/1.3 Inter,system-ui,sans-serif;
+ text-align:center;cursor:pointer;transition:border-color .18s,background .18s,transform .18s;
+}
+#smartBuilder .sb-quick:hover{border-color:#73b0c3;background:#f5fbfd;transform:translateY(-2px)}
+#smartBuilder .sb-quick[aria-pressed=true]{border-color:#55a1af;background:#effaf9}
+#smartBuilder .sb-quick[aria-pressed=true]::after{content:"Ativo";font-size:9px;font-weight:800;color:#227b6d}
+#smartBuilder .sb-quick-mark{width:28px;height:28px;display:block;background-repeat:no-repeat;background-position:center;background-size:contain}
+#smartBuilder [data-sb-quick="google"] .sb-quick-mark{background-image:url('/assets/qr-icons/google.svg?v=2')}
+#smartBuilder [data-sb-quick="whatsapp"] .sb-quick-mark{background-image:url('/assets/qr-icons/whatsapp.svg?v=2')}
+#smartBuilder [data-sb-quick="instagram"] .sb-quick-mark{background-image:url('/assets/qr-icons/instagram.svg?v=2')}
+#smartBuilder [data-sb-quick="pix"] .sb-quick-mark{background-image:url('/assets/qr-icons/pix.svg?v=2')}
+#smartBuilder [data-sb-quick="calendar"] .sb-quick-mark{background-image:url('/assets/qr-icons/calendario.svg?v=2')}
+#smartBuilder [data-sb-quick="site"] .sb-quick-mark{background-image:url('/assets/qr-icons/site.svg?v=2')}
+#smartBuilder [data-sb-quick="menu"] .sb-quick-mark,#smartBuilder [data-sb-quick="location"] .sb-quick-mark{
+ border:2px solid #2f758b;border-radius:7px;width:27px;height:27px;position:relative
+}
+#smartBuilder [data-sb-quick="menu"] .sb-quick-mark::before{content:"";position:absolute;left:6px;right:6px;top:8px;height:2px;background:#2f758b;box-shadow:0 6px #2f758b}
+#smartBuilder [data-sb-quick="location"] .sb-quick-mark::before{content:"";position:absolute;left:8px;top:5px;width:7px;height:7px;border-radius:50%;border:2px solid #2f758b}
+#smartBuilder .sb-buttons-list{display:grid;gap:10px;margin:10px 0 18px}
+#smartBuilder .sb-btn-card{margin:0;border:1px solid #dce7ed;border-radius:13px;box-shadow:none}
+#smartBuilder .sb-btn-card:focus-within{border-color:#6da8b9;background:#fcfeff}
+#smartBuilder .sb-btn-title{font-size:12px;color:#2a4b63}
+#smartBuilder #sbPixConfig:not([hidden]){padding:16px 15px 4px;margin:16px 0;background:#f3fbf9;border:1px solid #bfddd5;border-radius:13px}
+#smartBuilder #sbPixConfig .sb-section{padding:0;border:0}
+#smartBuilder #sbPixConfig h3{color:#176b5d;font-size:16px}
+#smartBuilder .sb-add-row{border-top:1px solid #edf1f5;padding-top:16px}
+#smartBuilder .sb-toolbar{z-index:20}
+#smartBuilder .sb-publish{background:#115e73}
+#smartBuilder .sb-publish:hover{background:#0c4c63}
+#smartBuilder .sb-status{line-height:1.6}
+@media(max-width:520px){
+ #smartBuilder .sb-quick-grid{gap:7px}
+ #smartBuilder .sb-quick{font-size:10px;min-height:84px;padding:9px 3px}
+ #smartBuilder .sb-quick-mark{width:26px;height:26px}
+}
+@media(max-width:355px){
+ #smartBuilder .sb-quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #smartBuilder .sb-tabs{padding:4px;gap:2px}
+ #smartBuilder .sb-tabs button{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+ #smartBuilder .sb-quick{transition:none!important}
+ #smartBuilder .sb-quick:hover{transform:none}
+}
+
+/* Nunca mostrar editor Premium V4 ao proprietário: controles antigos continuam no DOM apenas para compatibilidade com o salvamento. */
+#editor > div:first-child > :not(#smartBuilder){display:none!important}
+#editor.qr-smart-active > div:first-child > #smartBuilder{display:block!important}
+#editor > div:first-child{min-width:0}
+#smartBuilder .sb-signout{display:inline-block;border:0;background:none;color:#587083;font-size:11px;text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-left:12px;padding:9px}
+#editor:not(.qr-smart-active)>div:first-child::before{content:'O editor não conseguiu carregar. Atualize esta página.';display:block;border:1px solid #e0bb8d;border-radius:11px;background:#fff7e8;color:#684d23;padding:17px;font-size:13px}
+</style></head><body>
 <div id="qrLaunch" role="status" aria-live="polite" aria-label="Abrindo sua página">
  <div class="qr-launch-center">
   <div class="qr-launch-brand"><img src="/assets/willai-loader-logo.webp" alt="WillAI — By ELIX SOLUTIONS" width="230" height="178" decoding="async" fetchpriority="high"></div>
@@ -105,7 +312,279 @@ html,body{min-height:100%;min-height:100dvh}
  retry.addEventListener('click',function(){location.reload()});
 })();
 </script><script src="/config.js"></script>
-<script src="/qr/qr-smart-editor.js?v=7"></script><script src="/qr/qr-app.js?v=20261114-smart-qr-9" onerror="window.WILLAI_QR_BOOT_FAIL?.('Falha ao carregar a página. Tente novamente.')"></script>
+<script data-willai-qr-editor-inline="20261114">
+/* WillAI QR Smart Editor. A interface não altera o login, o código ou a página publicada até o salvamento. */
+(()=>{'use strict';
+ const presets=[
+ ['google','Avaliar no Google','Link de avaliação do Google'],
+ ['whatsapp','WhatsApp','Número com DDD ou link do WhatsApp'],
+ ['instagram','Instagram','Endereço do perfil no Instagram'],
+ ['site','Meu site','Endereço do site'],
+ ['pix','Pagar com Pix','Configure a chave Pix abaixo'],
+ ['url','Agendar horário','Link do agendamento'],
+ ['url','Ver cardápio','Link do cardápio'],
+ ['url','Ver catálogo','Link do catálogo'],
+ ['url','Pedir pelo delivery','Link do delivery'],
+ ['url','Localização','Link do Google Maps'],
+ ['url','Facebook','Link do Facebook'],
+ ['url','TikTok','Link do TikTok'],
+ ['url','YouTube','Link do canal'],
+ ['url','Telegram','Link do Telegram'],
+ ['url','Threads','Link do Threads'],
+ ['url','LinkedIn','Link do LinkedIn'],
+ ['url','iFood','Link do iFood'],
+ ['url','Shopee','Link da loja'],
+ ['url','Mercado Livre','Link da loja'],
+ ['url','Conhecer serviços','Link da lista de serviços'],
+ ['url','Solicitar orçamento','Link do formulário'],
+ ['url','Portfólio','Link do portfólio'],
+ ['url','Ver preços','Link da tabela de preços'],
+ ['url','Outro botão','Endereço do link personalizado'],
+ ['phone','Ligar','Número para ligações'],
+ ['email','Enviar e-mail','Endereço de e-mail']
+ ];
+ const defaultName=key=>presets.find(x=>x[0]===key)?.[1]||'Novo botão';
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ let data=null,host=null,mounted=false,buttonsArea=null,statusArea=null;
+ const validHex=v=>/^#[0-9a-f]{6}$/i.test(String(v||''));
+ const isSafeLink=v=>{try{const u=new URL(String(v||''));return ['https:','http:'].includes(u.protocol)}catch{return false}};
+ function contrast(hex){
+  const rgb=[1,3,5].map(x=>parseInt(hex.slice(x,x+2),16)/255).map(x=>x<=.04045?x/12.92:Math.pow((x+.055)/1.055,2.4));
+  return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2]>.46?'dark':'light';
+ }
+ function initialize(d){
+  data=d;
+  if(!data.smart||typeof data.smart!=='object'){
+   const buttons=[];
+   for(const [type,label,key] of [['google','Avaliar no Google','google'],['whatsapp','WhatsApp','whatsapp'],['instagram','Instagram','instagram'],['site','Meu site','site']]){
+    if(data[key])buttons.push({type,label,value:String(data[key])});
+   }
+   for(const b of Array.isArray(data.buttons)?data.buttons:[]){
+    if(b?.title&&b?.url)buttons.push({type:'url',label:String(b.title),value:String(b.url)});
+   }
+   data.smart={enabled:true,style:'clean',color:'#276c88',secondary:'#b2d8df',colorText:'light',background:'#f7f9fb',category:String(data.category||''),description:String(data.description||''),pixKey:'',pixPayload:'',buttons:buttons.slice(0,24)};
+  }else{
+   data.smart.enabled=true;
+   data.smart.buttons=Array.isArray(data.smart.buttons)?data.smart.buttons.slice(0,24):[];
+   if(!['clean','glass','editorial'].includes(data.smart.style))data.smart.style='clean';
+   if(!validHex(data.smart.color))data.smart.color='#276c88';
+   if(!validHex(data.smart.secondary))data.smart.secondary='#b2d8df';
+   if(!validHex(data.smart.background))data.smart.background='#f7f9fb';
+  }
+ }
+ function html(){
+  return '<div class="sb-topline"><span class="sb-dot" aria-hidden="true"></span><span>WILLAI QR STUDIO</span></div><h2>Edite sua plaquinha</h2><p class="sb-lead">Altere o nome, as cores e os botões. Veja tudo na prévia e publique quando estiver pronto. Seu QR Code continua igual.</p>'+
+  '<nav class="sb-tabs" aria-label="Etapas de personalização">'+[['buttons','Links e Pix'],['business','Negócio'],['design','Cores'],['plaques','Plaquinhas']].map(([k,t])=>'<button type="button" data-sb-tab="'+k+'" aria-current="'+(k==='buttons'?'step':'false')+'">'+t+'</button>').join('')+'</nav>'+ 
+  '<section class="sb-section" data-sb-step="business"><h3>Dados do negócio</h3>'+
+  '<label class="sb-field">Nome do estabelecimento<input data-sb-key="name" maxlength="95" placeholder="Como seu negócio se chama?" required></label>'+
+  '<label class="sb-field">O que você faz?<input data-sb-key="category" maxlength="75" placeholder="Ex.: Estética, Restaurante, Loja"></label>'+
+  '<label class="sb-field">Descrição curta<textarea data-sb-key="description" maxlength="360" rows="2" placeholder="Uma frase sobre seu negócio"></textarea></label>'+
+  '<div class="sb-two"><label class="sb-field">Seu logotipo<input id="sbLogoUpload" type="file" accept="image/png,image/jpeg,image/webp"><small>PNG, JPG ou WebP até 5MB</small></label>'+
+  '<label class="sb-field">Foto opcional<input id="sbCoverUpload" type="file" accept="image/png,image/jpeg,image/webp"><small>Foto do estabelecimento</small></label></div>'+
+  '<div class="sb-upload"><button type="button" class="sb-soft-button" data-sb-clear="logo">Remover logo</button><button type="button" class="sb-soft-button" data-sb-clear="cover">Remover foto</button></div></section>'+
+  '<section class="sb-section" data-sb-step="design"><h3>Cores e fundo</h3>'+
+  '<p class="sb-hint">Escolha uma paleta pronta ou ajuste as três cores do fundo Aurora Minimal. As mudanças aparecem na prévia automaticamente.</p>'+
+  '<div class="sb-combos" role="group" aria-label="Combinações de cores">'+
+  [['azul','Aurora padrão','#276c88','#b2d8df','#f7f9fb'],['verde','Verde','#2f7567','#a7d9c2','#f8faf8'],['terra','Terra','#996e57','#e1c8b3','#fcfaf7']].map(p=>'<button type="button" class="sb-combo" data-sb-combo="'+p[0]+'" data-primary="'+p[2]+'" data-secondary="'+p[3]+'" data-background="'+p[4]+'"><span class="sb-combo-colors"><i style="background:'+p[2]+'"></i><i style="background:'+p[3]+'"></i><i style="background:'+p[4]+'"></i></span><strong>'+p[1]+'</strong></button>').join('')+
+  '</div><div class="sb-three-colors"><label class="sb-color-custom">Principal<input type="color" id="sbAccentColor"><output id="sbAccentHex" for="sbAccentColor">#276C88</output></label><label class="sb-color-custom">Secundária<input type="color" id="sbSecondaryColor"><output id="sbSecondaryHex" for="sbSecondaryColor">#B2D8DF</output></label><label class="sb-color-custom">Fundo<input type="color" id="sbBackgroundColor"><output id="sbBackgroundHex" for="sbBackgroundColor">#F7F9FB</output></label></div>'+
+  '<div class="sb-aurora-preview" id="sbAuroraPreview" role="img" aria-label="Prévia do fundo Aurora Minimal com suas cores"><div class="sb-aurora-preview__content"><strong>Fundo Aurora Minimal</strong><span>Degradê suave com movimento discreto</span></div></div><div class="sb-design-actions"><button type="button" id="sbResetColors" class="sb-soft-button">Restaurar cores padrão</button></div><p class="sb-hint">O degradê é automático e a animação é suave. As cores escolhidas ficam salvas quando você publica.</p></section>'+
+  '<section class="sb-section is-active" data-sb-step="buttons"><h3>Links e pagamentos</h3><p class="sb-hint">Escolha o serviço, configure o link ou o Pix e publique. Você pode alterar a ordem a qualquer momento.</p>'+   '<div class="sb-quick-grid" aria-label="Botões mais usados">'+[['google','Avaliar'],['whatsapp','WhatsApp'],['instagram','Instagram'],['pix','Pix'],['calendar','Agendar'],['site','Site'],['menu','Cardápio'],['location','Localização']].map(([type,label])=>'<button type="button" class="sb-quick" data-sb-quick="'+type+'"><span class="sb-quick-mark" aria-hidden="true"></span>'+label+'</button>').join('')+'</div>'+   '<p class="sb-hint" id="sbQuickHint">Toque em uma opção para adicionar o botão ou editar o que já existe.</p>'+
+  '<div id="sbButtons" class="sb-buttons-list"></div><div class="sb-add-row"><select id="sbAddType" aria-label="Mais opções de botões">'+presets.map((v,i)=>'<option value="'+i+'">'+esc(v[1])+'</option>').join('')+'</select><button type="button" id="sbAddButton">Adicionar outro botão</button></div>'+
+  '<div id="sbPixConfig" hidden><div class="sb-section"><h3>Dados do Pix</h3>'+
+  '<label class="sb-field">Chave Pix<input id="sbPixKey" maxlength="180" placeholder="CPF, CNPJ, e-mail, telefone ou chave aleatória"></label>'+
+  '<label class="sb-field">Pix Copia e Cola (opcional)<textarea id="sbPixPayload" maxlength="800" rows="3" placeholder="Cole aqui o código Pix completo, se tiver"><\/textarea><small>Com um código completo, o botão copia o Pix Copia e Cola. Sem ele, copia a chave cadastrada. A WillAI não confirma pagamentos automaticamente.</small></label></div></div></section>'+
+  '<section class="sb-section" data-sb-step="plaques"><h3>Minhas plaquinhas</h3><p class="sb-hint">Abra outra plaquinha vinculada à sua conta sem precisar criar um novo login.</p>'+
+  '<div id="sbOwnedList" class="sb-owned-list"></div><div class="sb-add-plate"><input id="sbNewCode" placeholder="W002" maxlength="9" aria-label="Código de outra plaquinha"><button type="button" id="sbAddPlate">Adicionar outra</button></div>'+
+  '<p class="sb-hint" id="sbOwnedMessage" role="status">Carregando minhas plaquinhas…</p></section>'+
+  '<section class="sb-advanced"><span class="sb-hint">Os dados só mudam para os visitantes quando você clicar em Salvar e publicar.</span><button type="button" id="sbSignOut" class="sb-signout">Sair da conta</button></section>'+
+  '<div class="sb-toolbar"><button type="button" id="sbPreview" class="sb-soft-button">Ver prévia</button><button type="button" id="sbPublish" class="sb-publish">Salvar e publicar</button></div><p id="sbStatus" role="status" class="sb-status"></p>';
+ }
+ function updateStatus(text,error=false){if(statusArea){statusArea.textContent=text;statusArea.style.color=error?'#a63855':'#297e70'}}
+ function refresh(){host?.preview?.()}
+ function syncFields(){
+  if(!mounted||!data)return;
+  const smart=data.smart;
+  const get=(name)=>document.querySelector('#smartBuilder [data-sb-key="'+name+'"]');
+  get('name').value=data.name||'';
+  get('category').value=smart.category||'';
+  get('description').value=smart.description||'';
+  const accent=document.getElementById('sbAccentColor'),secondary=document.getElementById('sbSecondaryColor'),bg=document.getElementById('sbBackgroundColor');
+  accent.value=validHex(smart.color)?smart.color:'#276c88';
+  secondary.value=validHex(smart.secondary)?smart.secondary:'#b2d8df';
+  bg.value=validHex(smart.background)?smart.background:'#f7f9fb';
+  document.getElementById('sbAccentHex').textContent=accent.value.toUpperCase();
+  document.getElementById('sbSecondaryHex').textContent=secondary.value.toUpperCase();
+  document.getElementById('sbBackgroundHex').textContent=bg.value.toUpperCase();
+  boxUpdatePresets(smart);
+  document.getElementById('sbPixKey').value=smart.pixKey||'';
+  document.getElementById('sbPixPayload').value=smart.pixPayload||'';
+  updateAuroraPreview();
+  renderButtons();
+ }
+ function boxUpdatePresets(smart){
+  document.querySelectorAll('#smartBuilder [data-sb-combo]').forEach(button=>{
+   const matched=String(button.dataset.primary).toLowerCase()===String(smart.color).toLowerCase()
+     && String(button.dataset.secondary).toLowerCase()===String(smart.secondary).toLowerCase()
+     && String(button.dataset.background).toLowerCase()===String(smart.background).toLowerCase();
+   button.setAttribute('aria-pressed',matched?'true':'false');
+  });
+ }
+ function updateAuroraPreview(){
+  const el=document.getElementById('sbAuroraPreview');if(!el||!data?.smart)return;
+  el.style.setProperty('--sb-aurora-primary',data.smart.color||'#276c88');
+  el.style.setProperty('--sb-aurora-secondary',data.smart.secondary||'#b2d8df');
+  el.style.setProperty('--sb-aurora-base',data.smart.background||'#f7f9fb');
+  for(const [field,output] of [['sbAccentColor','sbAccentHex'],['sbSecondaryColor','sbSecondaryHex'],['sbBackgroundColor','sbBackgroundHex']]){const color=document.getElementById(field);const text=document.getElementById(output);if(color&&text)text.textContent=color.value.toUpperCase()}
+  boxUpdatePresets(data.smart);
+ }
+ function quickConfig(type){
+  if(type==='calendar')return {type:'url',label:'Agendar horário',value:''};
+  if(type==='menu')return {type:'url',label:'Ver cardápio',value:''};
+  if(type==='location')return {type:'url',label:'Localização',value:''};
+  const p=presets.find(x=>x[0]===type);
+  return p?{type,label:p[1],value:['google','whatsapp','instagram','site'].includes(type)?String(data[type]||''):''}:null;
+ }
+ function matchQuick(button,type){
+  if(type==='calendar')return button.type==='url'&&/agend|horário|horario|reserva/i.test(button.label||'');
+  if(type==='menu')return button.type==='url'&&/cardápio|cardapio|menu/i.test(button.label||'');
+  if(type==='location')return button.type==='url'&&/localiza|endereço|endereco|mapa/i.test(button.label||'');
+  return button.type===type;
+ }
+ function gotoButton(type){
+  const index=data.smart.buttons.findIndex(b=>matchQuick(b,type));
+  if(index<0)return;
+  const target=buttonsArea?.querySelector('[data-sb-row="'+index+'"]');
+  if(type==='pix')document.getElementById('sbPixKey')?.focus();
+  else{
+   target?.scrollIntoView({behavior:'smooth',block:'nearest'});
+   target?.querySelector('input[data-sb-prop="value"]')?.focus();
+  }
+ }
+ function updateQuickButtons(){
+  document.querySelectorAll('#smartBuilder [data-sb-quick]').forEach(btn=>{
+   const exists=data.smart.buttons.some(b=>matchQuick(b,btn.dataset.sbQuick));
+   btn.setAttribute('aria-pressed',exists?'true':'false');
+   btn.title=exists?'Editar este botão':'Adicionar este botão';
+  });
+ }
+ function renderButtons(){
+  if(!buttonsArea||!data?.smart)return;
+  const smart=data.smart;
+  buttonsArea.innerHTML=smart.buttons.map((b,i)=>{
+   const type=b.type||'url',isPix=type==='pix';
+   const description=isPix?'O valor será copiado dos dados Pix abaixo.':type==='google'?'Insira o link de avaliação do Google.':type==='whatsapp'?'Número com DDD':type==='phone'?'Número para ligar':type==='email'?'Endereço de e-mail':'Link completo começando com https://';
+   return '<article class="sb-btn-card" data-sb-row="'+i+'"><div class="sb-btn-title"><span>Botão '+(i+1)+'</span><span>'+esc(isPix?'Pix':type==='url'?'Link':'Contato')+'</span></div>'+
+   '<div class="sb-two"><label class="sb-field">Texto do botão<input data-sb-button="'+i+'" data-sb-prop="label" maxlength="70" value="'+esc(b.label||'')+'" placeholder="Nome do botão"></label>'+
+   (isPix?'<div class="sb-field"><span>Copiar Pix</span><p class="sb-hint">Use os dados Pix abaixo.</p></div>':
+   '<label class="sb-field">Destino<input data-sb-button="'+i+'" data-sb-prop="value" maxlength="1200" value="'+esc(b.value||'')+'" placeholder="'+esc(description)+'"></label>')+
+   '</div><div class="sb-btn-controls"><button type="button" class="sb-button-control" data-sb-move="-1" data-sb-index="'+i+'" '+(i===0?'disabled':'')+'>Subir</button>'+
+   '<button type="button" class="sb-button-control" data-sb-move="1" data-sb-index="'+i+'" '+(i===smart.buttons.length-1?'disabled':'')+'>Descer</button>'+
+   '<button type="button" class="sb-button-control sb-button-control--remove" data-sb-remove="'+i+'">Remover</button></div></article>'
+  }).join('')||'<p class="sb-hint">Nenhum botão adicionado ainda.</p>';
+  document.getElementById('sbPixConfig').hidden=!smart.buttons.some(x=>x.type==='pix');
+  updateQuickButtons();
+ }
+ function update(newData){data=newData;syncFields()}
+ function mount(d,callbacks){
+  data=d;host=callbacks;
+  initialize(data);
+  const ed=document.getElementById('editor');if(!ed)return;
+  ed.classList.add('qr-smart-active');
+  let box=document.getElementById('smartBuilder');
+  if(!box){box=document.createElement('section');box.id='smartBuilder';box.className='panel';ed.querySelector(':scope > div:first-child')?.prepend(box);box.innerHTML=html();}
+  if(!mounted){
+   buttonsArea=document.getElementById('sbButtons');statusArea=document.getElementById('sbStatus');
+   box.addEventListener('input',e=>{
+    const target=e.target,key=target.dataset.sbKey,prop=target.dataset.sbProp,idx=Number(target.dataset.sbButton);
+    if(key){if(key==='name')data.name=target.value;else data.smart[key]=target.value;refresh();return}
+    if(prop&&Number.isInteger(idx)&&data.smart.buttons[idx]){data.smart.buttons[idx][prop]=target.value;refresh();return}
+    if(target.id==='sbPixKey'){data.smart.pixKey=target.value.trim();refresh()}
+    if(target.id==='sbPixPayload'){data.smart.pixPayload=target.value.trim();refresh()}
+    if(target.id==='sbAccentColor'){data.smart.color=target.value;data.smart.colorText=contrast(target.value);updateAuroraPreview();refresh()}
+    if(target.id==='sbSecondaryColor'){data.smart.secondary=target.value;updateAuroraPreview();refresh()}
+    if(target.id==='sbBackgroundColor'){data.smart.background=target.value;updateAuroraPreview();refresh()}
+   });
+   box.addEventListener('click',async e=>{
+    const target=e.target.closest('button');if(!target)return;
+    if(target.dataset.sbTab){box.querySelectorAll('[data-sb-tab]').forEach(b=>b.setAttribute('aria-current',b.dataset.sbTab===target.dataset.sbTab?'step':'false'));box.querySelectorAll('[data-sb-step]').forEach(sec=>sec.classList.toggle('is-active',sec.dataset.sbStep===target.dataset.sbTab));return}
+    if(target.id==='sbSignOut'){document.getElementById('signOut')?.click();return}
+    if(target.id==='sbPreview'){document.getElementById('v4Preview')?.scrollIntoView({behavior:'smooth',block:'center'});return}
+    if(target.id==='sbPublish'){document.getElementById('save')?.click();return}
+    if(target.id==='sbResetColors'){data.smart.style='clean';data.smart.color='#276c88';data.smart.secondary='#b2d8df';data.smart.background='#f7f9fb';data.smart.colorText='light';syncFields();refresh();updateStatus('Cores padrão restauradas na prévia. Clique em Salvar e publicar para aplicar.');return}
+    if(target.dataset.sbCombo){data.smart.style='clean';data.smart.color=target.dataset.primary;data.smart.secondary=target.dataset.secondary;data.smart.background=target.dataset.background;data.smart.colorText=contrast(data.smart.color);syncFields();refresh();return}
+    if(target.dataset.sbQuick){
+     const type=target.dataset.sbQuick,existing=data.smart.buttons.findIndex(b=>matchQuick(b,type));
+     if(existing>=0){gotoButton(type);updateStatus('Botão já adicionado. Você pode editar o destino abaixo.');return}
+     if(data.smart.buttons.length>=24){updateStatus('Sua página já tem 24 botões. Remova um antes de adicionar outro.',true);return}
+     const item=quickConfig(type);if(!item)return;
+     data.smart.buttons.push(item);renderButtons();refresh();
+     updateStatus(type==='pix'?'Pix adicionado. Informe a chave Pix abaixo e depois publique.':'Botão adicionado. Preencha o endereço e publique.');
+     if(type==='pix'){document.getElementById('sbPixKey')?.focus()}else gotoButton(type);
+     return;
+    }
+    if(target.id==='sbAddButton'){
+     if(data.smart.buttons.length>=24)return updateStatus('Limite de 24 botões por página.',true);
+     const i=Number(document.getElementById('sbAddType').value),p=presets[i];if(!p)return;
+     const type=p[0],value=['google','whatsapp','instagram','site'].includes(type)?String(data[type]||''):'';
+     data.smart.buttons.push({type,label:p[1],value});
+     renderButtons();refresh();updateStatus(type==='pix'?'Pix adicionado. Informe a chave ou código Copia e Cola.':'Botão adicionado. Preencha o destino, se necessário.');
+     if(type==='pix')document.getElementById('sbPixKey')?.focus();return;
+    }
+    if(target.dataset.sbRemove!==undefined){data.smart.buttons.splice(Number(target.dataset.sbRemove),1);renderButtons();refresh();return}
+    if(target.dataset.sbMove!==undefined){
+     const i=Number(target.dataset.sbIndex),j=i+Number(target.dataset.sbMove);
+     if(i>=0&&j>=0&&j<data.smart.buttons.length){const b=data.smart.buttons.splice(i,1)[0];data.smart.buttons.splice(j,0,b);renderButtons();refresh()}return
+    }
+    if(target.dataset.sbClear){const kind=target.dataset.sbClear;data[kind]='';refresh();updateStatus('Imagem removida da prévia. Publique para atualizar.');return}
+    if(target.id==='sbAddPlate'){
+     const value=String(document.getElementById('sbNewCode').value||'').trim().toUpperCase();
+     if(!/^W[0-9]{3,8}$/.test(value))return updateStatus('Informe um código no formato W002.',true);
+     if(!window.confirm('Abrir a plaquinha '+value+'? Salve sua edição atual antes de sair.'))return;
+     location.assign('/qr/'+encodeURIComponent(value));return;
+    }
+   });
+   for(const [inputId,kind] of [['sbLogoUpload','logo'],['sbCoverUpload','cover']]){
+    document.getElementById(inputId).addEventListener('change',async e=>{
+     const file=e.target.files?.[0];if(!file)return;
+     e.target.disabled=true;updateStatus('Enviando imagem…');
+     try{data[kind]=await host.upload(file,kind);refresh();updateStatus('Imagem pronta. Salve a página para publicar.')}
+     catch(err){updateStatus(err?.message||'Não foi possível enviar a imagem.',true)}
+     finally{e.target.disabled=false;e.target.value=''}
+    });
+   }
+   mounted=true;
+  }
+  syncFields();
+  updateStatus('Seus links anteriores foram carregados. Adicione Pix ou outros botões e toque em Salvar e publicar para atualizar a página.');
+  Promise.resolve(host.owned()).then(rows=>renderOwned(rows)).catch(()=>renderOwned(null));
+ }
+ function renderOwned(rows){
+  const holder=document.getElementById('sbOwnedList'),notice=document.getElementById('sbOwnedMessage');
+  if(!holder||!notice)return;
+  if(!Array.isArray(rows)){holder.innerHTML='';notice.textContent='Você ainda pode adicionar uma plaquinha pelo código acima.';return}
+  holder.innerHTML=rows.map(x=>'<div class="sb-owned"><div><strong>'+esc(x.code)+'</strong><small>'+esc(x.name||'Minha plaquinha')+'</small></div><a href="/qr/'+encodeURIComponent(x.code)+'?editar=1">Editar</a></div>').join('');
+  notice.textContent=rows.length+' plaquinha(s) nesta conta.';
+ }
+ function validate(d){
+  const smart=d.smart;
+  if(!smart?.enabled)return null;
+  if(!Array.isArray(smart.buttons))return 'A lista de botões está inválida.';
+  if(smart.buttons.length>24)return 'A página aceita no máximo 24 botões.';
+  for(const b of smart.buttons){
+   if(!b||!String(b.label||'').trim())return 'Preencha o nome de todos os botões.';
+   const type=String(b.type||'url');
+   if(type==='pix'){if(!String(smart.pixKey||'').trim()&&!String(smart.pixPayload||'').trim())return 'Preencha sua chave Pix ou código Pix Copia e Cola.';continue}
+   const v=String(b.value||'').trim();
+   if(type==='phone'){if(v.replace(/\D/g,'').length<10)return 'Informe um telefone com DDD.';continue}
+   if(type==='email'){if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))return 'Informe um e-mail válido para o botão.';continue}
+   if(type==='whatsapp'){if(v.replace(/\D/g,'').length<10)return 'Informe um WhatsApp válido com DDD.';continue}
+   if(!isSafeLink(v))return 'Configure um link válido (https://) no botão '+b.label+'.';
+  }
+  return null;
+ }
+ window.WILLAI_SMART_EDITOR=Object.freeze({mount,update,initialize,validate});
+})();
+</script><script src="/qr/qr-app.js?v=20261114-smart-qr-9" onerror="window.WILLAI_QR_BOOT_FAIL?.('Falha ao carregar a página. Tente novamente.')"></script>
 <script>
 window.addEventListener('load',()=>{
  setTimeout(()=>{
