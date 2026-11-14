@@ -1,4 +1,5 @@
 (()=>{'use strict';const cfg=window.WILLAI_CONFIG||{},code=(location.pathname.split('/').filter(Boolean).pop()||'').toUpperCase();const base=cfg.url,key=cfg.publishableKey;const $=id=>document.getElementById(id),pages=['unavailable','loadError','start','account','claim','editor','public','pending','approval','v4Public'];let jwt=null,owner=false,mode='register',active=false,record=null;const activationToken=/^[a-f0-9]{48}$/.test(new URLSearchParams(location.hash.slice(1)).get('ativar')||'')?new URLSearchParams(location.hash.slice(1)).get('ativar'):null;
+const editIntent=new URLSearchParams(location.search).get('editar')==='1';
 let data={name:'Meu estabelecimento',category:'',description:'Conheça nossos serviços.',address:'',hours:'',google:'',whatsapp:'',instagram:'',site:'',primary:'#14559e',background:'#eff8ff',ink:'#163c61',font:'system-ui',layout:'rounded',logo:'',cover:'',buttons:[]};
 const smartEditor=window.WILLAI_SMART_EDITOR||null;
 const esc=x=>String(x??'').replace(/[&<>"']/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[a]));
@@ -249,11 +250,13 @@ async function boot(){
   }
   if(res.status==='active'){
    data={...data,...res.page};active=true;
+   if(editIntent){await requestLogin();return}
    show('public');return;
   }
   if(res.status==='pending'){
    active=true;
    message('Página em preparação. Somente o proprietário pode entrar e publicar.');
+   if(editIntent){await requestLogin();return}
    return show('pending');
   }
   if(res.status==='available'){
@@ -270,6 +273,7 @@ async function boot(){
  }
 }
 $('retryLoad').onclick=()=>location.reload();
+$('qrBackToEditor').onclick=()=>{$('smartBuilder')?.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})};
 $('v4Frame').addEventListener('load',()=>{
  if(!renderPublicV4Direct())postV4('v4Frame');
 });
