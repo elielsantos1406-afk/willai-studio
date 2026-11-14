@@ -80,7 +80,7 @@ function renderPublicV4Direct(){
  }
 }
 function smartPageSrc(preview=false){
- const src='/assets/qr-smart-page.html?v=4';
+ const src='/assets/qr-smart-page.html?v=5';
  return src+(preview?'&preview=1':'');
 }
 function refreshV4(){
