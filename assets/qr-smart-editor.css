@@ -109,3 +109,34 @@
 .sb-aurora-preview__content span{font-size:11px;color:#52687a}
 @keyframes sb-aurora-drift{to{transform:translate3d(22px,13px,0) scale(1.13)}}
 @media(prefers-reduced-motion:reduce){.sb-aurora-preview::before,.sb-aurora-preview::after{animation:none!important}}
+
+/* QR Studio: edição clara e direta das três cores Aurora Minimal */
+#smartBuilder .sb-topline{display:flex;align-items:center;gap:8px;color:#397191;font-size:10px;font-weight:800;letter-spacing:.13em;margin-bottom:10px}
+#smartBuilder .sb-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#1c92ae;box-shadow:0 0 0 4px #1c92ae1a}
+#smartBuilder .sb-tabs{position:sticky;top:8px}
+#smartBuilder .sb-tabs button{line-height:1.15;white-space:normal}
+#smartBuilder .sb-combo[aria-pressed="true"]{border:2px solid #286a85;box-shadow:0 0 0 3px #286a851b}
+#smartBuilder .sb-combo[aria-pressed="true"] strong{color:#174e68}
+#smartBuilder .sb-three-colors .sb-color-custom{gap:7px;cursor:default}
+#smartBuilder .sb-three-colors .sb-color-custom input{width:58px;height:39px;cursor:pointer}
+#smartBuilder .sb-three-colors .sb-color-custom output{font-size:10px;font-weight:680;letter-spacing:.015em;color:#667f91;font-variant-numeric:tabular-nums}
+#smartBuilder .sb-design-actions{margin:9px 0 13px}
+#smartBuilder .sb-design-actions .sb-soft-button{min-height:38px;background:#fff;color:#365772}
+#editor.qr-smart-active > div:first-child > .hint:not(#editorLink){display:none}
+#editor.qr-smart-active > div:first-child > .buttons{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:6px 0}
+#editor.qr-smart-active > .panel{position:relative}
+#editor.qr-smart-active > .panel h2{font-size:18px;letter-spacing:-.025em}
+#editor.qr-smart-active .phone{background:#f7f9fb;border:7px solid #273d50;border-radius:26px;box-shadow:0 20px 55px #1d3e5926}
+#editor.qr-smart-active .v4-preview{display:block;background:#f7f9fb;border:0;width:100%;min-height:620px}
+#editor.qr-smart-active #editorLink{font-size:11px;overflow-wrap:anywhere}
+#editor.qr-smart-active #qrBackToEditor{display:inline-flex;align-items:center;justify-content:center;margin:12px 0 0;padding:10px 14px;min-height:39px;border-radius:10px;border:1px solid #d8e3ee;background:#fff;color:#23506e;font-size:12px;font-weight:750;cursor:pointer}
+#editor.qr-smart-active #qrBackToEditor:hover{background:#f0f7fb}
+@media(max-width:730px){
+ #editor.qr-smart-active{grid-template-columns:1fr;gap:8px}
+ #editor.qr-smart-active > .panel{margin-top:0}
+ #editor.qr-smart-active .v4-preview{height:590px;min-height:590px}
+}
+@media(max-width:390px){
+ #smartBuilder .sb-three-colors .sb-color-custom{font-size:10px}
+ #smartBuilder .sb-three-colors .sb-color-custom output{font-size:9px}
+}
