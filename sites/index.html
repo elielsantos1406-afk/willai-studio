@@ -9,7 +9,7 @@
   <meta property="og:title" content="Your business, beautifully online. | WILLAI">
   <meta property="og:description" content="Professional websites for small businesses, with a clear one-time price.">
   <meta property="og:type" content="website">
-  <link rel="icon" type="image/svg+xml" href="/assets/willai-favicon.svg">
+  <link rel="icon" type="image/png" href="/sites/willai-mark.png">
   <link rel="stylesheet" href="/sites/styles.css">
   <script src="/sites/app.js" defer></script>
 </head>
@@ -17,7 +17,7 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="shell header-inner">
-      <a href="/" class="brand" aria-label="WILLAI by ELIX home"><span class="brand-symbol">W</span><span class="brand-name">WILLAI<small>BY ELIX</small></span></a>
+      <a href="/" class="brand" aria-label="WILLAI by ELIX home"><img class="brand-mark" src="/sites/willai-mark.png" width="77" height="32" alt=""><span class="brand-name">WILLAI<small>BY ELIX</small></span></a>
       <nav class="desktop-nav" aria-label="Primary navigation">
         <a href="#plans" data-t="navPlans">Plans</a>
         <a href="#how" data-t="navHow">How it works</a>
@@ -43,10 +43,11 @@
         <div class="hero-meta"><span data-t="heroPoint1">Made for mobile</span><span data-t="heroPoint2">Clear one-time pricing</span><span data-t="heroPoint3">Personalized for your brand</span></div>
       </div>
       <div class="hero-visual" aria-label="Website examples">
-        <div class="hero-preview">
-          <div class="preview-top"><span class="preview-caption" data-t="previewCaption">A LOOK AT WHAT'S POSSIBLE</span><div class="preview-dots" aria-hidden="true"><i></i><i></i><i></i></div></div>
-          <div class="preview-picture"><img id="hero-image" src="/sites/business.webp" alt="Business Site example for a flower studio" width="780" height="830" fetchpriority="high"></div>
-          <div class="preview-controls" role="group" aria-label="Preview a website type"><button type="button" data-preview="smart" data-t="planSmart">Smart Link</button><button type="button" data-preview="business" class="active" data-t="planBusiness">Business Site</button><button type="button" data-preview="pro" data-t="planPro">Business Pro</button></div>
+        <div class="hero-preview" id="hero-carousel" aria-label="Website model slideshow" aria-roledescription="carousel">
+          <div class="preview-top"><span class="preview-caption" data-t="previewCaption">A LOOK AT WHAT'S POSSIBLE</span><div class="preview-top-actions"><div class="preview-dots" aria-hidden="true"><i></i><i class="active"></i><i></i></div><button type="button" class="carousel-toggle" id="carousel-toggle" aria-label="Pause slideshow" title="Pause slideshow"><span aria-hidden="true">Ⅱ</span></button></div></div>
+          <div class="preview-picture"><img id="hero-image" class="is-active" src="/sites/business.webp" alt="Business Site example for a flower studio" width="780" height="830" fetchpriority="high"><img id="hero-next-image" src="/sites/pro.webp" alt="" aria-hidden="true" width="780" height="830" decoding="async"><div class="preview-current"><span class="preview-current-indicator" aria-hidden="true"></span><span id="preview-current-name">Business Site</span></div></div>
+          <div class="preview-progress" aria-hidden="true"><span id="preview-progress-fill"></span></div>
+          <div class="preview-controls" role="group" aria-label="Preview a website type"><button type="button" data-preview="smart" aria-pressed="false" data-t="planSmart">Smart Link</button><button type="button" data-preview="business" class="active" aria-pressed="true" data-t="planBusiness">Business Site</button><button type="button" data-preview="pro" aria-pressed="false" data-t="planPro">Business Pro</button></div>
         </div>
         <div class="hero-visual-note"><span class="tiny-star" aria-hidden="true">✳</span><span data-t="heroNote">Simple to launch. Designed to stand out.</span></div>
       </div>
@@ -71,8 +72,9 @@
 
     <section class="end-cta shell"><div><div class="eyebrow light" data-t="endEyebrow">LET'S GET STARTED</div><h2 data-t="endTitle">Your next client might be one click away.</h2><p data-t="endText">Tell us a little about your business. We'll help you choose the right website.</p></div><button class="button button-light" type="button" id="end-contact" data-t="endButton">Request a website</button></section>
   </main>
-  <footer class="footer shell"><div><strong>WILLAI</strong><small>BY ELIX</small></div><p data-t="footerText">Digital presence, made simple.</p><span>© <span id="year"></span> WILLAI</span></footer>
+  <footer class="footer shell"><div class="footer-brand"><img src="/sites/willai-mark.png" width="62" height="26" alt=""><span><strong>WILLAI</strong><small>BY ELIX</small></span></div><p data-t="footerText">Digital presence, made simple.</p><span>© <span id="year"></span> WILLAI</span></footer>
 
   <dialog class="contact-dialog" id="contact-dialog" aria-labelledby="dialog-title"><form id="request-form" class="contact-panel"><div class="dialog-head"><div><div class="eyebrow" data-t="dialogEyebrow">LET'S TALK ABOUT YOUR PROJECT</div><h2 id="dialog-title" data-t="dialogTitle">Tell us about your business.</h2></div><button type="button" class="close-dialog" id="dialog-close" aria-label="Close">×</button></div><p class="dialog-description" data-t="dialogDescription">We'll prepare a WhatsApp message with your details. You review and send it yourself.</p><div class="selected-plan"><span data-t="dialogSelected">Selected plan</span><strong id="selected-plan-name">Business Site</strong><b id="selected-plan-price">$100.00</b></div><label><span data-t="fieldName">Your name</span><input name="name" type="text" autocomplete="name" maxlength="80" required placeholder="Your name"></label><label><span data-t="fieldBusiness">Business name</span><input name="business" type="text" maxlength="120" required placeholder="Business name"></label><label><span data-t="fieldProfile">Instagram or website (optional)</span><input name="profile" type="text" maxlength="250" placeholder="@yourbusiness"></label><button type="submit" class="button button-primary button-full" data-t="dialogSubmit">Continue to WhatsApp</button><p class="dialog-disclaimer" data-t="dialogNote">Your request is not a payment. You'll confirm the project scope before ordering.</p></form></dialog>
 </body>
 </html>
+
