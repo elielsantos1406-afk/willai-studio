@@ -9,7 +9,7 @@
   ];
   const content = {
     en: {
-      navPlans: 'Plans', navHow: 'How it works', navFaq: 'FAQ', headerCta: 'Get a website',
+      navPlans: 'Plans', navHow: 'How it works', navFaq: 'FAQ', headerCta: 'Get a website', pauseSlides: 'Pause slideshow', playSlides: 'Play slideshow',
       eyebrow: 'MADE FOR SMALL BUSINESSES', heroTitle: 'A better website.<br>A simpler price.',
       heroText: 'Beautiful, mobile-ready websites designed around your business. Pick what you need and pay once for the design.',
       heroBrowse: 'Explore websites', heroHow: 'See how it works', heroPoint1: 'Made for mobile', heroPoint2: 'Clear one-time pricing', heroPoint3: 'Personalized for your brand',
@@ -49,7 +49,7 @@
       waText: (plan, price, name, business, profile) => `Hello WILLAI! I'm interested in the ${plan} website (${price}, one-time).\nName: ${name}\nBusiness: ${business}\nInstagram / website: ${profile || 'Not provided'}\nI'd like to discuss the project details.`
     },
     es: {
-      navPlans: 'Planes', navHow: 'Cómo funciona', navFaq: 'Preguntas', headerCta: 'Solicitar sitio web',
+      navPlans: 'Planes', navHow: 'Cómo funciona', navFaq: 'Preguntas', headerCta: 'Solicitar sitio web', pauseSlides: 'Pausar presentación', playSlides: 'Reproducir presentación',
       eyebrow: 'PARA PEQUEÑOS NEGOCIOS', heroTitle: 'Una mejor web.<br>Un precio más simple.',
       heroText: 'Páginas hermosas y adaptadas a celulares, diseñadas para tu negocio. Elige lo que necesitas y paga una sola vez por el diseño.',
       heroBrowse: 'Explorar sitios', heroHow: 'Cómo funciona', heroPoint1: 'Diseñado para móviles', heroPoint2: 'Pago único y claro', heroPoint3: 'Adaptado a tu marca',
@@ -89,7 +89,7 @@
       waText: (plan, price, name, business, profile) => `¡Hola, WILLAI! Me interesa el sitio ${plan} (${price}, pago único).\nNombre: ${name}\nNegocio: ${business}\nInstagram / web: ${profile || 'No indicado'}\nQuisiera conversar sobre el proyecto.`
     },
     pt: {
-      navPlans: 'Planos', navHow: 'Como funciona', navFaq: 'Dúvidas', headerCta: 'Solicitar site',
+      navPlans: 'Planos', navHow: 'Como funciona', navFaq: 'Dúvidas', headerCta: 'Solicitar site', pauseSlides: 'Pausar apresentação', playSlides: 'Reproduzir apresentação',
       eyebrow: 'PARA PEQUENOS NEGÓCIOS', heroTitle: 'Um site melhor.<br>Um preço mais simples.',
       heroText: 'Sites bonitos, adaptados para celular e pensados para sua empresa. Escolha o que precisa e pague uma única vez pela criação.',
       heroBrowse: 'Conhecer os modelos', heroHow: 'Como funciona', heroPoint1: 'Pensado para celular', heroPoint2: 'Pagamento único', heroPoint3: 'A identidade do seu negócio',
@@ -137,6 +137,18 @@
   let currentPlan = 'business';
   const dialog = $('#contact-dialog');
   const form = $('#request-form');
+  const carousel = $('#hero-carousel');
+  const carouselToggle = $('#carousel-toggle');
+  const layers = [$('#hero-image'), $('#hero-next-image')];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const slideDuration = 5200;
+  let currentPreview = 'business';
+  let activeLayer = 0;
+  let carouselTimer = null;
+  let manuallyPaused = false;
+  let carouselHovered = false;
+  let carouselFocused = false;
+  let revealObserver;
 
   function translate() {
     const t = content[lang];
@@ -166,6 +178,8 @@
     form.elements.business.placeholder = t.placeholders[1];
     form.elements.profile.placeholder = t.placeholders[2];
     updateSelectedPlan();
+    updatePreviewControls();
+    observeMotion();
   }
 
   function updateSelectedPlan() {
@@ -181,13 +195,84 @@
     form.elements.name.focus();
   }
 
+  function updatePreviewControls() {
+    document.querySelectorAll('[data-preview]').forEach((button) => {
+      const selected = button.dataset.preview === currentPreview;
+      button.classList.toggle('active', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    document.querySelectorAll('.preview-dots i').forEach((dot, index) => {
+      dot.classList.toggle('active', plans[index].id === currentPreview);
+    });
+    $('#preview-current-name').textContent = content[lang].planInfo[currentPreview].name;
+    layers[activeLayer].alt = `${content[lang].planInfo[currentPreview].name} website example`;
+    const label = content[lang][manuallyPaused ? 'playSlides' : 'pauseSlides'];
+    carouselToggle.setAttribute('aria-label', label);
+    carouselToggle.title = label;
+    carouselToggle.classList.toggle('is-paused', manuallyPaused);
+    carouselToggle.querySelector('span').textContent = manuallyPaused ? '▶' : 'Ⅱ';
+  }
+
   function setPreview(plan) {
     const p = plans.find((item) => item.id === plan);
-    if (!p) return;
-    const image = $('#hero-image');
-    image.src = p.image;
-    image.alt = `${content[lang].planInfo[p.id].name} website example`;
-    document.querySelectorAll('[data-preview]').forEach((button) => button.classList.toggle('active', button.dataset.preview === plan));
+    if (!p || p.id === currentPreview) return;
+    const previous = layers[activeLayer];
+    const incoming = layers[1 - activeLayer];
+    incoming.classList.remove('is-active', 'is-leaving');
+    incoming.src = p.image;
+    incoming.alt = `${content[lang].planInfo[p.id].name} website example`;
+    incoming.removeAttribute('aria-hidden');
+    void incoming.offsetWidth;
+    requestAnimationFrame(() => {
+      previous.classList.remove('is-active');
+      previous.classList.add('is-leaving');
+      previous.setAttribute('aria-hidden', 'true');
+      incoming.classList.add('is-active');
+    });
+    activeLayer = 1 - activeLayer;
+    currentPreview = p.id;
+    updatePreviewControls();
+  }
+
+  function stopAutoplay() {
+    window.clearTimeout(carouselTimer);
+    carouselTimer = null;
+    $('#preview-progress-fill').style.animationPlayState = 'paused';
+  }
+
+  function startAutoplay() {
+    stopAutoplay();
+    if (reduceMotion.matches || manuallyPaused || carouselHovered || carouselFocused || document.hidden) return;
+    const progress = $('#preview-progress-fill');
+    progress.style.animation = 'none';
+    void progress.offsetWidth;
+    progress.style.animation = `preview-timer ${slideDuration}ms linear both`;
+    progress.style.animationPlayState = 'running';
+    carouselTimer = window.setTimeout(() => {
+      const index = plans.findIndex((item) => item.id === currentPreview);
+      setPreview(plans[(index + 1) % plans.length].id);
+      startAutoplay();
+    }, slideDuration);
+  }
+
+  function observeMotion() {
+    if (reduceMotion.matches || !('IntersectionObserver' in window)) return;
+    if (!revealObserver) {
+      revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        });
+      }, { threshold: .08, rootMargin: '0px 0px -30px 0px' });
+    }
+    document.querySelectorAll('.hero-copy > *, .hero-visual, .section-intro, .plan-card, .step, .example-inner > *, .faq-list, .end-cta').forEach((el, index) => {
+      if (el.dataset.revealObserved) return;
+      el.dataset.revealObserved = 'true';
+      el.classList.add('motion-reveal');
+      el.style.setProperty('--reveal-delay', `${Math.min(index % 3 * 85, 170)}ms`);
+      revealObserver.observe(el);
+    });
   }
 
   $('#language').addEventListener('change', (event) => {
@@ -202,7 +287,28 @@
     const purchase = event.target.closest('[data-purchase]');
     const preview = event.target.closest('[data-preview]');
     if (purchase) openContact(purchase.dataset.purchase);
-    if (preview) setPreview(preview.dataset.preview);
+    if (preview) { setPreview(preview.dataset.preview); startAutoplay(); }
+  });
+  carouselToggle.addEventListener('click', () => {
+    manuallyPaused = !manuallyPaused;
+    updatePreviewControls();
+    if (manuallyPaused) stopAutoplay();
+    else startAutoplay();
+  });
+  carousel.addEventListener('mouseenter', () => { carouselHovered = true; stopAutoplay(); });
+  carousel.addEventListener('mouseleave', () => { carouselHovered = false; startAutoplay(); });
+  carousel.addEventListener('focusin', () => { carouselFocused = true; stopAutoplay(); });
+  carousel.addEventListener('focusout', (event) => {
+    if (carousel.contains(event.relatedTarget)) return;
+    carouselFocused = false;
+    startAutoplay();
+  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopAutoplay(); else startAutoplay(); });
+  reduceMotion.addEventListener('change', () => {
+    if (reduceMotion.matches) {
+      stopAutoplay();
+      document.querySelectorAll('.motion-reveal').forEach((el) => el.classList.add('is-visible'));
+    } else { observeMotion(); startAutoplay(); }
   });
   $('#header-contact').addEventListener('click', () => openContact());
   $('#end-contact').addEventListener('click', () => openContact());
@@ -219,4 +325,7 @@
   });
   $('#year').textContent = String(new Date().getFullYear());
   translate();
+  plans.forEach((plan) => { const preload = new Image(); preload.src = plan.image; });
+  startAutoplay();
 })();
+
