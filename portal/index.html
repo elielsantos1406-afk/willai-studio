@@ -1359,8 +1359,8 @@ html{scroll-padding-top:90px}
 }
 
 .wh-driving-offer{position:relative;isolation:isolate;overflow:hidden;background:#071d38;color:white;padding:20px 0 22px}
-.wh-driving-offer::before{content:"";position:absolute;z-index:-2;inset:-15px;background:url('/assets/autoescola-banner.webp') center 53%/cover no-repeat;filter:blur(8px);opacity:.5}
-.wh-driving-offer::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(100deg,#061b36f2 0%,#092944dc 58%,#051a32dc 100%)}
+.wh-driving-offer::before{content:"";position:absolute;z-index:-2;inset:-15px;background:url('/assets/autoescola-banner.webp') center 53%/cover no-repeat;filter:blur(7px);opacity:.85}
+.wh-driving-offer::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(100deg,#061b36ed 0%,#092944c6 55%,#051a3299 100%)}
 .wh-driving-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:12px}
 .wh-driving-heading span:first-child,.wh-driving-card small{font-size:11px;font-weight:850;letter-spacing:.09em;color:#8fe9f8}
 .wh-driving-heading h2{font-size:clamp(20px,2.4vw,28px);letter-spacing:-.035em;margin:4px 0}
@@ -1377,6 +1377,21 @@ html{scroll-padding-top:90px}
 .wh-driving-actions a.wh-driving-primary{background:#92e4f1;border-color:#92e4f1;color:#062743}
 .wh-driving-note{font-size:12px;color:#b9cdda;margin:10px 0 0}
 @media(max-width:720px){.wh-driving-offer{padding:14px 0 17px}.wh-driving-heading{align-items:flex-start;flex-direction:column;gap:5px}.wh-driving-heading p{font-size:13px}.wh-driving-grid{grid-template-columns:1fr;gap:8px}.wh-driving-card{padding:12px 14px;gap:8px}.wh-driving-card p{font-size:13px}.wh-driving-actions a{flex:1}.wh-driving-tag{display:none}}
+/* Ajuste editorial da home: apresentação objetiva, próxima seção visível no notebook. */
+.home-rework .wh-hero{min-height:0}
+.home-rework .wh-hero-grid{min-height:0;grid-template-columns:minmax(0,1fr);padding-top:clamp(46px,6vh,76px);padding-bottom:clamp(45px,6vh,72px)}
+.home-rework .wh-hero-title{font-size:clamp(39px,5.1vw,68px);max-width:840px;line-height:1.1;margin:15px 0 17px}
+.home-rework .wh-hero-lead{margin:0 0 22px}
+.home-rework .wh-scroll-cue{margin-top:26px}
+.home-rework .wh-hero-orb{top:15%;right:7%;opacity:.32}
+.home-rework .wh-section{padding-top:56px;padding-bottom:61px}
+.home-rework .wh-services .wh-heading{margin-bottom:25px}
+.home-rework .wh-motion-band{min-height:48px}
+.home-rework .wh-process{padding-block:58px}
+.home-rework .wh-final{padding-block:65px}
+@media(max-width:900px){.home-rework .wh-hero-grid{padding-top:47px;padding-bottom:49px}.home-rework .wh-hero-title{font-size:clamp(37px,6vw,55px)}}
+@media(max-width:760px){.home-rework .wh-hero-grid{min-height:0!important;padding:48px 0 50px!important}.home-rework .wh-hero-title{font-size:clamp(34px,8.5vw,48px);margin:12px 0 15px}.home-rework .wh-scroll-cue{margin-top:25px}.home-rework .wh-section{padding-block:44px}.home-rework .wh-hero-orb{right:-35px;opacity:.23}}
+@media(max-width:390px){.home-rework .wh-hero-grid{padding:38px 0 43px!important}.home-rework .wh-hero-title{font-size:34px}}
 </style>
 </head>
 <body>
