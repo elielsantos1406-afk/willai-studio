@@ -1358,6 +1358,23 @@ html{scroll-padding-top:90px}
  .home-rework .wh-hero-orb{animation:none!important;will-change:auto!important}
 }
 
+.wh-driving-offer{padding:34px 0 44px;background:#eef5fb;color:#0c2b4d}
+.wh-driving-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:19px}
+.wh-driving-heading span:first-child,.wh-driving-card small{font-size:12px;font-weight:850;letter-spacing:.08em;color:#087da2}
+.wh-driving-heading h2{font-size:clamp(24px,3vw,34px);letter-spacing:-.04em;margin:7px 0}
+.wh-driving-heading p{margin:0;color:#57708b;font-size:16px}
+.wh-driving-tag{white-space:nowrap;border:1px solid #a9d7e5;border-radius:50px;padding:9px 14px;color:#095c79;font-size:13px;font-weight:800}
+.wh-driving-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.wh-driving-card{border-radius:20px;background:white;border:1px solid #d4e4f0;padding:23px;display:flex;flex-direction:column;justify-content:space-between;gap:22px;box-shadow:0 8px 25px #173b5d0b}
+.wh-driving-card h3{font-size:clamp(21px,2.4vw,27px);margin:8px 0;letter-spacing:-.035em}
+.wh-driving-card p{font-size:16px;line-height:1.55;color:#506983;margin:0 0 15px}
+.wh-driving-card strong{display:block;font-size:clamp(28px,3vw,36px);color:#063b6b;letter-spacing:-.045em}
+.wh-driving-card strong span{font-size:13px;letter-spacing:0;font-weight:600;color:#63809a}
+.wh-driving-actions{display:flex;flex-wrap:wrap;gap:9px}
+.wh-driving-actions a{min-height:43px;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;box-sizing:border-box;border-radius:10px;border:1px solid #b9d5e7;text-decoration:none;color:#154c71;font-size:14px;font-weight:800}
+.wh-driving-actions a.wh-driving-primary{background:#073c70;border-color:#073c70;color:white}
+.wh-driving-note{font-size:13px;color:#637f98;margin:13px 0 0}
+@media(max-width:720px){.wh-driving-offer{padding:27px 0 35px}.wh-driving-heading{align-items:flex-start;flex-direction:column}.wh-driving-grid{grid-template-columns:1fr}.wh-driving-card{padding:20px}.wh-driving-actions a{flex:1}}
 </style>
 </head>
 <body>
@@ -1462,6 +1479,15 @@ function teamSection(about=false){
  const more='<a class="wh-team-more" href="'+(adminMode?'#/sobre':'/sobre')+'">Conheça mais sobre a WillAI <span aria-hidden="true">↗</span></a>';
  return html.replace('TEAM_CLASS',about?'wh-team wh-team--about':'wh-team').replace('TEAM_MORE',about?'':more);
 }
+function drivingSchoolOffer(){
+ const wa=(message)=>'https://wa.me/5522997332202?text='+encodeURIComponent(message);
+ return `<section class="wh-driving-offer" id="oferta-autoescola" aria-labelledby="wh-driving-title" data-driving-offer><div class="container">
+ <div class="wh-driving-heading"><div><span>CONDIÇÃO ESPECIAL · SOMENTE 26/11</span><h2 id="wh-driving-title">Sua presença digital começa aqui.</h2><p>Ofertas exclusivas para instrutores de direção e autoescolas.</p></div><span class="wh-driving-tag">Pagamento único</span></div>
+ <div class="wh-driving-grid">
+  <article class="wh-driving-card"><div><small>PARA INSTRUTORES</small><h3>Seu site profissional</h3><p>Apresente sua trajetória, aulas e serviços. Receba solicitações de agendamento dos alunos em uma página personalizada.</p><strong>R$ 89,90 <span>uma única vez</span></strong></div><div class="wh-driving-actions"><a href="https://fabi.willai.workers.dev/" target="_blank" rel="noopener noreferrer">Ver demonstração</a><a class="wh-driving-primary" href="${wa('Olá! Quero aproveitar a oferta de R$ 89,90 para o site de instrutor de direção da WillAI.') }" target="_blank" rel="noopener noreferrer">Quero meu site</a></div></article>
+  <article class="wh-driving-card"><div><small>PARA AUTOESCOLAS</small><h3>Site + sistema de gestão</h3><p>Site institucional, cadastro de alunos, PDV para registrar vendas e recebimentos e organização comercial em um só sistema.</p><strong>R$ 999,90 <span>uma única vez</span></strong></div><div class="wh-driving-actions"><a href="https://infinity.willai.workers.dev/" target="_blank" rel="noopener noreferrer">Ver projeto de referência</a><a class="wh-driving-primary" href="${wa('Olá! Quero saber mais sobre a oferta de R$ 999,90 para site e sistema de gestão de autoescola da WillAI.') }" target="_blank" rel="noopener noreferrer">Solicitar proposta</a></div></article>
+ </div><p class="wh-driving-note">Oferta válida em 26/11/2026. Desenvolvimento e configuração conforme escopo acordado. Os links apresentam referências de projetos.</p></div></section>`;
+}
 function home(){
  const heroWords=value=>String(value||'').trim().split(/\s+/).filter(Boolean).map(word=>'<span class="wh-title-word">'+esc(word)+'</span>').join(' ');
  const p=state.home||{},goto=path=>adminMode?'#/'+path:'/'+path;
@@ -1477,40 +1503,6 @@ function home(){
  const shot=p.photo||portfolio[0]?.image||'',shotTitle=p.photo?'Projeto digital WillAI':(portfolio[0]?.title||'Projeto WillAI');
  const shotHref=portfolio[0]?.url&&/^https:\/\//i.test(portfolio[0].url)?link(portfolio[0].url):goto('portfolio');
  return `<div class="home-rework">
- <section class="wl-beauty" id="promo-beleza" aria-labelledby="wl-beauty-title">
-  <div class="wl-beauty__wrap">
-    <div class="wl-beauty__copy">
-      <span class="wl-beauty__eyebrow">OFERTA ESPECIAL PARA PROFISSIONAIS DA BELEZA</span>
-      <h2 id="wl-beauty-title">Seu site.<br><em>Sua agenda.</em><br>Do seu jeito.</h2>
-      <p class="wl-beauty__lead">Seus clientes escolhem o horário pelo celular. Você organiza tudo em um só lugar, com um site personalizado para seu negócio.</p>
-      <div class="wl-beauty__prices" aria-label="Implantação R$ 89,90 e mensalidade R$ 14,90">
-        <div class="wl-beauty__price"><small>Implantação</small><strong>R$ 89,90</strong></div>
-        <div class="wl-beauty__price-divider" aria-hidden="true"></div>
-        <div class="wl-beauty__price wl-beauty__price--pink"><small>Mensalidade</small><strong>R$ 14,90</strong></div>
-      </div>
-      <div class="wl-beauty__actions">
-        <button type="button" class="wl-beauty__cta" data-wl-open>Quero meu site com agenda <span aria-hidden="true">↗</span></button>
-        <a class="wl-beauty__wa" href="https://wa.me/5522997332202?text=Ol%C3%A1%21%20Vi%20a%20promo%C3%A7%C3%A3o%20de%20Site%20%2B%20Agenda%20da%20WillAI.%20Quero%20saber%20mais." target="_blank" rel="noopener noreferrer">Falar pelo WhatsApp <span aria-hidden="true">↗</span></a>
-      </div>
-      <p class="wl-beauty__footnote">Condição promocional para negócios da área da beleza.</p>
-    </div>
-    <div class="wl-beauty__preview" aria-label="Exemplo ilustrativo da agenda online">
-      <div class="wl-beauty__app">
-        <div class="wl-beauty__appbar"><strong>Studio Beauty</strong><span>AGENDA ONLINE</span></div>
-        <div class="wl-beauty__appbody">
-          <h3>Reserve seu horário.</h3><p>Seu próximo atendimento começa aqui.</p>
-          <div class="wl-beauty__day"><span>Selecione uma data</span><span aria-hidden="true">▾</span></div>
-          <div class="wl-beauty__slots">
-            <span class="wl-beauty__slot">09:00</span><span class="wl-beauty__slot wl-beauty__slot--active">10:30</span><span class="wl-beauty__slot">14:00</span>
-            <span class="wl-beauty__slot">15:30</span><span class="wl-beauty__slot">16:00</span><span class="wl-beauty__slot">17:00</span>
-          </div>
-          <div class="wl-beauty__fakebtn">Agendar horário →</div>
-        </div>
-      </div>
-      <span class="wl-beauty__preview-tag">Sua marca. Sua agenda.</span>
-    </div>
-  </div>
-</section>
  <section class="wh-hero">
  <div class="wh-hero-motion" aria-hidden="true">
   <div class="wh-hero-wave wh-hero-wave--one"></div>
@@ -1534,30 +1526,7 @@ function home(){
   <div class="wh-services-grid">${highlights.map((item,i)=>`<article class="wh-service"><span class="wh-service-index">${String(i+1).padStart(2,'0')}</span><h3>${esc(item.title)}</h3><p>${esc(item.desc||'')}</p><div class="wh-service-bottom"><strong>${esc(item.price)}</strong><a href="${serviceQuoteUrl(item)}">Solicitar orçamento ${icon('arrow',15)}</a></div></article>`).join('')}</div>
  </div></section>
 
- <section class="wh-offer-section" aria-label="Oferta de Site One Page"><div class="container">
- <div class="wh-deal" data-onepage-offer>
-  <div class="wh-deal-top"><span class="wh-deal-eyebrow">OFERTA ESPECIAL · ESTÉTICA E BARBEARIA</span><span class="wh-deal-badge">PAGAMENTO ÚNICO</span></div>
-  <div class="wh-deal-layout"><div class="wh-deal-main">
-   <h2>Site <em>One Page</em></h2><p>Seu negócio profissional em um só link.</p>
-   <div class="wh-deal-value"><s>R$ 499,90</s><strong>R$ 99,90</strong></div>
-   <a class="wh-deal-button" href="${serviceQuoteUrl({id:'onepage'})}">Quero meu site ${icon('arrow',19)}</a>
-  </div>
-  <div class="wh-deal-time" role="timer" data-promo-countdown aria-label="Contagem regressiva da oferta">
-   <span class="wh-deal-time-label">OFERTA TERMINA EM</span>
-   <div class="wh-deal-clock" aria-hidden="true">
-    <span><strong data-promo-days>00</strong><small>DIAS</small></span>
-    <span><strong data-promo-hours>00</strong><small>HORAS</small></span>
-    <span><strong data-promo-minutes>00</strong><small>MIN</small></span>
-    <span><strong data-promo-seconds>00</strong><small>SEG</small></span>
-   </div><small class="wh-deal-expires">Até 10/11 · Para estética e barbearia</small>
-  </div></div>
- </div>
- <div class="wh-offer-fallback"><div class="wh-promo-after" data-onepage-after hidden>${shot?`<a class="wh-showcase-frame" href="${shotHref}" ${shotHref.startsWith('https://')?'target="_blank" rel="noopener noreferrer"':''} aria-label="Conhecer projeto ${esc(shotTitle)}">
-   <div class="wh-window-top"><span class="wh-window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>Prévia de projeto</span></div>
-   <img src="${esc(shot)}" alt="Prévia do projeto ${esc(shotTitle)}" loading="eager" decoding="async" fetchpriority="high">
-   <div class="wh-showcase-caption"><span>PROJETO EM DESTAQUE</span><strong>${esc(shotTitle)}</strong></div></a>`:
-   `<div class="wh-showcase-fallback"><img src="${esc(state.brand.logo||A+'willai-logo-original.png')}" alt="WillAI"><span>Projetos desenvolvidos sob medida</span></div>`}</div></div>
- </div></section>
+ ${drivingSchoolOffer()}
  <section class="wh-process wh-section" aria-labelledby="wh-process-title"><div class="container">
   <div class="wh-process-head"><span class="wh-eyebrow">COMO TRABALHAMOS</span><h2 id="wh-process-title">Da sua ideia à <span class="wh-glass-highlight">solução pronta.</span></h2></div>
   <div class="wh-process-steps">
@@ -2127,18 +2096,12 @@ function pagesFields(){return `<h4>Suas páginas personalizadas</h4><div class="
 function backupFields(){return `<h4>Salvar e transportar seu trabalho</h4><div class="mini-note"><strong>Como salvar:</strong> os campos mudam na prévia. Para disponibilizar suas alterações no site, clique em <strong>Salvar e publicar</strong>. Os dados são gravados no Supabase após confirmação. Você também pode exportar um backup JSON.</div><div class="minor-actions" style="margin-top:20px"><button data-action="export">${icon('download',16)} Baixar backup JSON</button><button data-action="import">Importar backup JSON</button></div><input type="file" accept="application/json,.json" id="backup-input" hidden><div class="minor-actions"><button data-action="reset">Restaurar protótipo original</button></div><p class="small-helper">A publicação exige seu login administrativo e uma conexão válida com o Supabase. Se ocorrer erro, leia a mensagem exibida no editor.</p>`}
 function editor(){if(!ui.editor||!adminMode||!isAdmin)return '';const tabs=[['page','Página'],['brand','Identidade'],['services','Serviços'],['portfolio','Portfólio'],['cities','Cidades'],['companies','Empresas'],['pages','Novas páginas'],['backup','Backup']];const bodies={page:pageFields,brand:brandFields,services:servicesFields,portfolio:portfolioFields,cities:citiesFields,companies:companiesFields,pages:pagesFields,backup:backupFields};return `<div class="editor-shade" data-action="close-editor"></div><aside class="editor" aria-label="Editor de conteúdo" role="dialog"><div class="editor-top"><div class="editor-topline"><div><small style="color:#9cdbea">WILLAI STUDIO • EDIÇÃO</small><h3>Editor visual</h3></div><button data-action="close-editor" class="icon-btn" title="Fechar editor">${icon('close',19)}</button></div><p style="font-size:12px;color:#c5deef;margin:8px 0 0">Personalize a página sem editar códigos.</p></div><div class="editor-tabs">${tabs.map(([k,v])=>`<button data-tab="${k}" class="${ui.tab===k?'sel':''}">${v}</button>`).join('')}</div><div class="editor-body">${(bodies[ui.tab]||pageFields)()}</div><div class="editor-footer"><div class="editor-quick"><button type="button" data-action="open-home-edit">Início / Capa</button><button type="button" data-action="open-project-edit">Projeto</button><button type="button" data-action="open-portfolio-edit">Portfólio</button><button type="button" data-action="open-cities-edit">Cidades</button></div><div id="editorSaveStatus" role="status" aria-live="polite" class="editor-save-status">${ui.dirty?'● Há alterações não publicadas. Clique em Salvar e publicar.':'Tudo pronto para editar. Clique em Salvar e publicar ao concluir.'}</div><button type="button" data-action="publish-portal" class="strong editor-save">Salvar e publicar ✓</button><a class="editor-visit-site" href="/" target="_blank" rel="noopener noreferrer">Visualizar site público</a><button type="button" data-action="export">Backup JSON</button><button type="button" data-action="close-editor">Fechar</button></div></aside>`}
 
-const ONEPAGE_END=Date.parse('2026-11-10T23:59:59-03:00');
 function syncOnepageOffer(){
- const block=document.querySelector('[data-onepage-offer]');if(!block)return;
- const ms=Math.max(0,ONEPAGE_END-Date.now()),other=document.querySelector('[data-onepage-after]');
- const fallback=document.querySelector('.wh-offer-fallback');if(fallback)fallback.hidden=Boolean(ms);
- if(!ms){block.hidden=true;if(other)other.hidden=false;return}
- block.hidden=false;if(other)other.hidden=true;
- const s=Math.floor(ms/1000),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];
- ['days','hours','minutes','seconds'].forEach((key,i)=>{const el=block.querySelector('[data-promo-'+key+']');if(el)el.textContent=String(v[i]).padStart(2,'0')});
- const timer=block.querySelector('[data-promo-countdown]');if(timer)timer.setAttribute('aria-label','Restam '+v[0]+' dias, '+v[1]+' horas, '+v[2]+' minutos e '+v[3]+' segundos para terminar a promoção');
+ const block=document.querySelector('[data-driving-offer]');if(!block)return;
+ const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ block.hidden=today!=='2026-11-26';
 }
-setInterval(syncOnepageOffer,1000);
+setInterval(syncOnepageOffer,60000);
 
 
 // Movimentos de ponteiro: efeito apenas em desktop com mouse e sem preferência por movimento reduzido.
