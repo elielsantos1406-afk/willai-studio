@@ -1358,23 +1358,25 @@ html{scroll-padding-top:90px}
  .home-rework .wh-hero-orb{animation:none!important;will-change:auto!important}
 }
 
-.wh-driving-offer{padding:34px 0 44px;background:#eef5fb;color:#0c2b4d}
-.wh-driving-heading{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:19px}
-.wh-driving-heading span:first-child,.wh-driving-card small{font-size:12px;font-weight:850;letter-spacing:.08em;color:#087da2}
-.wh-driving-heading h2{font-size:clamp(24px,3vw,34px);letter-spacing:-.04em;margin:7px 0}
-.wh-driving-heading p{margin:0;color:#57708b;font-size:16px}
-.wh-driving-tag{white-space:nowrap;border:1px solid #a9d7e5;border-radius:50px;padding:9px 14px;color:#095c79;font-size:13px;font-weight:800}
-.wh-driving-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.wh-driving-card{border-radius:20px;background:white;border:1px solid #d4e4f0;padding:23px;display:flex;flex-direction:column;justify-content:space-between;gap:22px;box-shadow:0 8px 25px #173b5d0b}
-.wh-driving-card h3{font-size:clamp(21px,2.4vw,27px);margin:8px 0;letter-spacing:-.035em}
-.wh-driving-card p{font-size:16px;line-height:1.55;color:#506983;margin:0 0 15px}
-.wh-driving-card strong{display:block;font-size:clamp(28px,3vw,36px);color:#063b6b;letter-spacing:-.045em}
-.wh-driving-card strong span{font-size:13px;letter-spacing:0;font-weight:600;color:#63809a}
-.wh-driving-actions{display:flex;flex-wrap:wrap;gap:9px}
-.wh-driving-actions a{min-height:43px;display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;box-sizing:border-box;border-radius:10px;border:1px solid #b9d5e7;text-decoration:none;color:#154c71;font-size:14px;font-weight:800}
-.wh-driving-actions a.wh-driving-primary{background:#073c70;border-color:#073c70;color:white}
-.wh-driving-note{font-size:13px;color:#637f98;margin:13px 0 0}
-@media(max-width:720px){.wh-driving-offer{padding:27px 0 35px}.wh-driving-heading{align-items:flex-start;flex-direction:column}.wh-driving-grid{grid-template-columns:1fr}.wh-driving-card{padding:20px}.wh-driving-actions a{flex:1}}
+.wh-driving-offer{position:relative;isolation:isolate;overflow:hidden;background:#071d38;color:white;padding:20px 0 22px}
+.wh-driving-offer::before{content:"";position:absolute;z-index:-2;inset:-15px;background:url('/assets/autoescola-banner.webp') center 53%/cover no-repeat;filter:blur(8px);opacity:.5}
+.wh-driving-offer::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(100deg,#061b36f2 0%,#092944dc 58%,#051a32dc 100%)}
+.wh-driving-heading{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:12px}
+.wh-driving-heading span:first-child,.wh-driving-card small{font-size:11px;font-weight:850;letter-spacing:.09em;color:#8fe9f8}
+.wh-driving-heading h2{font-size:clamp(20px,2.4vw,28px);letter-spacing:-.035em;margin:4px 0}
+.wh-driving-heading p{margin:0;color:#c6dce8;font-size:14px}
+.wh-driving-tag{white-space:nowrap;border:1px solid #80d4eb80;border-radius:50px;padding:8px 13px;color:#b6f3ff;font-size:12px;font-weight:800}
+.wh-driving-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.wh-driving-card{border-radius:14px;background:#ffffff12;border:1px solid #a8e1f23d;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;gap:13px;backdrop-filter:blur(12px)}
+.wh-driving-card h3{font-size:clamp(17px,1.8vw,21px);margin:4px 0;letter-spacing:-.025em;color:white}
+.wh-driving-card p{font-size:14px;line-height:1.4;color:#d3e0ea;margin:0 0 8px}
+.wh-driving-card strong{display:block;font-size:clamp(25px,2.5vw,31px);color:#9ce9f7;letter-spacing:-.035em}
+.wh-driving-card strong span{font-size:12px;letter-spacing:0;font-weight:600;color:#c4dae8}
+.wh-driving-actions{display:flex;flex-wrap:wrap;gap:8px}
+.wh-driving-actions a{min-height:37px;display:inline-flex;align-items:center;justify-content:center;padding:7px 12px;box-sizing:border-box;border-radius:9px;border:1px solid #aad4e87d;text-decoration:none;color:white;font-size:13px;font-weight:800}
+.wh-driving-actions a.wh-driving-primary{background:#92e4f1;border-color:#92e4f1;color:#062743}
+.wh-driving-note{font-size:12px;color:#b9cdda;margin:10px 0 0}
+@media(max-width:720px){.wh-driving-offer{padding:14px 0 17px}.wh-driving-heading{align-items:flex-start;flex-direction:column;gap:5px}.wh-driving-heading p{font-size:13px}.wh-driving-grid{grid-template-columns:1fr;gap:8px}.wh-driving-card{padding:12px 14px;gap:8px}.wh-driving-card p{font-size:13px}.wh-driving-actions a{flex:1}.wh-driving-tag{display:none}}
 </style>
 </head>
 <body>
@@ -1482,11 +1484,11 @@ function teamSection(about=false){
 function drivingSchoolOffer(){
  const wa=(message)=>'https://wa.me/5522997332202?text='+encodeURIComponent(message);
  return `<section class="wh-driving-offer" id="oferta-autoescola" aria-labelledby="wh-driving-title" data-driving-offer><div class="container">
- <div class="wh-driving-heading"><div><span>CONDIÇÃO ESPECIAL · SOMENTE 26/11</span><h2 id="wh-driving-title">Sua presença digital começa aqui.</h2><p>Ofertas exclusivas para instrutores de direção e autoescolas.</p></div><span class="wh-driving-tag">Pagamento único</span></div>
+ <div class="wh-driving-heading"><div><span>OFERTA ESPECIAL · WILLAI</span><h2 id="wh-driving-title">Soluções para autoescolas e instrutores.</h2><p>Do site profissional ao sistema de gestão, com investimento único.</p></div><span class="wh-driving-tag">Pagamento único</span></div>
  <div class="wh-driving-grid">
   <article class="wh-driving-card"><div><small>PARA INSTRUTORES</small><h3>Seu site profissional</h3><p>Apresente sua trajetória, aulas e serviços. Receba solicitações de agendamento dos alunos em uma página personalizada.</p><strong>R$ 89,90 <span>uma única vez</span></strong></div><div class="wh-driving-actions"><a href="https://fabi.willai.workers.dev/" target="_blank" rel="noopener noreferrer">Ver demonstração</a><a class="wh-driving-primary" href="${wa('Olá! Quero aproveitar a oferta de R$ 89,90 para o site de instrutor de direção da WillAI.') }" target="_blank" rel="noopener noreferrer">Quero meu site</a></div></article>
   <article class="wh-driving-card"><div><small>PARA AUTOESCOLAS</small><h3>Site + sistema de gestão</h3><p>Site institucional, cadastro de alunos, PDV para registrar vendas e recebimentos e organização comercial em um só sistema.</p><strong>R$ 999,90 <span>uma única vez</span></strong></div><div class="wh-driving-actions"><a href="https://infinity.willai.workers.dev/" target="_blank" rel="noopener noreferrer">Ver projeto de referência</a><a class="wh-driving-primary" href="${wa('Olá! Quero saber mais sobre a oferta de R$ 999,90 para site e sistema de gestão de autoescola da WillAI.') }" target="_blank" rel="noopener noreferrer">Solicitar proposta</a></div></article>
- </div><p class="wh-driving-note">Oferta válida em 26/11/2026. Desenvolvimento e configuração conforme escopo acordado. Os links apresentam referências de projetos.</p></div></section>`;
+ </div><p class="wh-driving-note">Desenvolvimento e configuração conforme escopo acordado. Os links apresentam referências de projetos.</p></div></section>`;
 }
 function home(){
  const heroWords=value=>String(value||'').trim().split(/\s+/).filter(Boolean).map(word=>'<span class="wh-title-word">'+esc(word)+'</span>').join(' ');
@@ -1503,6 +1505,7 @@ function home(){
  const shot=p.photo||portfolio[0]?.image||'',shotTitle=p.photo?'Projeto digital WillAI':(portfolio[0]?.title||'Projeto WillAI');
  const shotHref=portfolio[0]?.url&&/^https:\/\//i.test(portfolio[0].url)?link(portfolio[0].url):goto('portfolio');
  return `<div class="home-rework">
+ ${drivingSchoolOffer()}
  <section class="wh-hero">
  <div class="wh-hero-motion" aria-hidden="true">
   <div class="wh-hero-wave wh-hero-wave--one"></div>
@@ -1526,7 +1529,6 @@ function home(){
   <div class="wh-services-grid">${highlights.map((item,i)=>`<article class="wh-service"><span class="wh-service-index">${String(i+1).padStart(2,'0')}</span><h3>${esc(item.title)}</h3><p>${esc(item.desc||'')}</p><div class="wh-service-bottom"><strong>${esc(item.price)}</strong><a href="${serviceQuoteUrl(item)}">Solicitar orçamento ${icon('arrow',15)}</a></div></article>`).join('')}</div>
  </div></section>
 
- ${drivingSchoolOffer()}
  <section class="wh-process wh-section" aria-labelledby="wh-process-title"><div class="container">
   <div class="wh-process-head"><span class="wh-eyebrow">COMO TRABALHAMOS</span><h2 id="wh-process-title">Da sua ideia à <span class="wh-glass-highlight">solução pronta.</span></h2></div>
   <div class="wh-process-steps">
@@ -2097,11 +2099,8 @@ function backupFields(){return `<h4>Salvar e transportar seu trabalho</h4><div c
 function editor(){if(!ui.editor||!adminMode||!isAdmin)return '';const tabs=[['page','Página'],['brand','Identidade'],['services','Serviços'],['portfolio','Portfólio'],['cities','Cidades'],['companies','Empresas'],['pages','Novas páginas'],['backup','Backup']];const bodies={page:pageFields,brand:brandFields,services:servicesFields,portfolio:portfolioFields,cities:citiesFields,companies:companiesFields,pages:pagesFields,backup:backupFields};return `<div class="editor-shade" data-action="close-editor"></div><aside class="editor" aria-label="Editor de conteúdo" role="dialog"><div class="editor-top"><div class="editor-topline"><div><small style="color:#9cdbea">WILLAI STUDIO • EDIÇÃO</small><h3>Editor visual</h3></div><button data-action="close-editor" class="icon-btn" title="Fechar editor">${icon('close',19)}</button></div><p style="font-size:12px;color:#c5deef;margin:8px 0 0">Personalize a página sem editar códigos.</p></div><div class="editor-tabs">${tabs.map(([k,v])=>`<button data-tab="${k}" class="${ui.tab===k?'sel':''}">${v}</button>`).join('')}</div><div class="editor-body">${(bodies[ui.tab]||pageFields)()}</div><div class="editor-footer"><div class="editor-quick"><button type="button" data-action="open-home-edit">Início / Capa</button><button type="button" data-action="open-project-edit">Projeto</button><button type="button" data-action="open-portfolio-edit">Portfólio</button><button type="button" data-action="open-cities-edit">Cidades</button></div><div id="editorSaveStatus" role="status" aria-live="polite" class="editor-save-status">${ui.dirty?'● Há alterações não publicadas. Clique em Salvar e publicar.':'Tudo pronto para editar. Clique em Salvar e publicar ao concluir.'}</div><button type="button" data-action="publish-portal" class="strong editor-save">Salvar e publicar ✓</button><a class="editor-visit-site" href="/" target="_blank" rel="noopener noreferrer">Visualizar site público</a><button type="button" data-action="export">Backup JSON</button><button type="button" data-action="close-editor">Fechar</button></div></aside>`}
 
 function syncOnepageOffer(){
- const block=document.querySelector('[data-driving-offer]');if(!block)return;
- const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
- block.hidden=today!=='2026-11-26';
+ // Campanha contínua, sem data de expiração automática.
 }
-setInterval(syncOnepageOffer,60000);
 
 
 // Movimentos de ponteiro: efeito apenas em desktop com mouse e sem preferência por movimento reduzido.
