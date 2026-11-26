@@ -83,8 +83,8 @@ html,body{margin:0;min-height:100%;background:#071b34}
 
 /* Primeira pintura mantém a mesma barra de vidro escuro do site carregado. */
 .wh-first-offer{position:relative;isolation:isolate;overflow:hidden;color:white;background:#071d38;padding:16px max(22px,calc((100vw - 1144px)/2));font-family:Inter,system-ui,sans-serif}
-.wh-first-offer:before{content:"";position:absolute;z-index:-2;inset:-15px;background:url('/assets/autoescola-banner.webp') center/cover;filter:blur(8px);opacity:.5}
-.wh-first-offer:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(100deg,#061b36ee,#092944d9,#051a32e8)}
+.wh-first-offer:before{content:"";position:absolute;z-index:-2;inset:-15px;background:url('/assets/autoescola-banner.webp') center/cover;filter:blur(7px);opacity:.85}
+.wh-first-offer:after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(100deg,#061b36ed,#092944c6,#051a3299)}
 .wh-first-offer small{font-size:11px;font-weight:800;letter-spacing:.09em;color:#9ce9f7}
 .wh-first-offer h2{font-size:clamp(20px,2.4vw,27px);letter-spacing:-.035em;margin:5px 0 12px}
 .wh-first-offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -139,6 +139,14 @@ html[data-wl-subpage] .wh-first-offer{display:none}
 @keyframes wh-first-wave-drift{from{transform:scale(1.05) translateX(-1%)}to{transform:scale(1.09) translateX(1%)}}
 @media(max-width:760px){.wh-immediate-orb{right:-36px;top:30%;width:145px;opacity:.25}.wh-immediate-wave{opacity:.08}}
 @media(prefers-reduced-motion:reduce){.wh-immediate-wave,.wh-immediate-orb{animation:none!important}}
+.wh-immediate-hero{min-height:0}
+.wh-immediate-inner{min-height:0;padding:clamp(46px,6vh,76px) 0 clamp(45px,6vh,72px)}
+.wh-immediate-inner h1{font-size:clamp(39px,5.1vw,68px);line-height:1.1;margin:15px 0 17px}
+.wh-immediate-inner p{margin-bottom:22px}
+.wh-immediate-bottom{margin-top:26px}
+@media(max-width:900px){.wh-immediate-inner{min-height:0;padding:47px 0 49px}.wh-immediate-inner h1{font-size:clamp(37px,6vw,55px)}}
+@media(max-width:760px){.wh-immediate-inner{min-height:0;padding:48px 0 50px}.wh-immediate-inner h1{font-size:clamp(34px,8.5vw,48px)}}
+@media(max-width:390px){.wh-immediate-inner{padding:38px 0 43px}.wh-immediate-inner h1{font-size:34px}}
 
 </style></head>
 <body><header id="site-header"><div class="wh-immediate-site-header"><div class="wh-immediate-nav">
