@@ -41,6 +41,9 @@
       $('hero-logo').src = defaultBrandLogo ? base + 'assets/logo-dark.webp' : restaurant.logo_url;
       document.querySelector('footer img').src = restaurant.logo_url;
     }
+    const methods = $('fulfillment');
+    methods.innerHTML = [restaurant.pickup_enabled !== false ? '<option value="Retirada">Retirar no local</option>' : '', restaurant.delivery_enabled !== false ? '<option value="Entrega">Receber por entrega</option>' : ''].join('');
+    updateFulfillment();
     drawCategories(); drawFeatured(); drawProducts(); reveal();
   }
   function imageOf(product) { return product.image_url || fallbackPhoto; }
@@ -110,12 +113,38 @@
   }
   function openCart(){ $('scrim').hidden=false; $('cart-drawer').classList.add('open'); $('cart-drawer').setAttribute('aria-hidden','false'); }
   function closeCart(){ $('scrim').hidden=true; $('cart-drawer').classList.remove('open'); $('cart-drawer').setAttribute('aria-hidden','true'); }
+  function updateFulfillment(){ $('delivery-fields').hidden = $('fulfillment').value !== 'Entrega'; }
+  async function lookupCep(){
+    const cep=$('delivery-cep').value.replace(/\D/g,'');
+    const status=$('cep-feedback');
+    if (!cep) {status.textContent='';return;}
+    if (cep.length!==8) {status.textContent='Informe 8 números ou deixe o CEP vazio.';return;}
+    status.textContent='Buscando endereço...';
+    try {
+      const response=await fetch(`https://viacep.com.br/ws/${cep}/json/`,{signal:AbortSignal.timeout(7000)});
+      if (!response.ok) throw new Error();
+      const address=await response.json();
+      if(address.erro)throw new Error();
+      if($('delivery-cep').value.replace(/\D/g,'')!==cep)return;
+      $('delivery-street').value=address.logradouro||'';
+      $('delivery-neighborhood').value=address.bairro||'';
+      $('delivery-city').value=address.localidade||'';
+      $('delivery-state').value=address.uf||'';
+      status.textContent='Endereço preenchido. Confira o número.';
+      $('delivery-number').focus();
+    }catch {status.textContent='Não foi possível consultar o CEP. Preencha manualmente.';}
+  }
   function checkout(){
     if (!cart.length) return alert('Adicione um produto.');
+    if (!$('fulfillment').value) return alert('O restaurante ainda não configurou uma forma de recebimento.');
+    const isDelivery=$('fulfillment').value==='Entrega';
+    const addr=id=>$(id).value.trim();
+    if(isDelivery && !['delivery-street','delivery-number','delivery-neighborhood','delivery-city','delivery-state'].every(id=>addr(id)))return alert('Para entrega, preencha rua, número, bairro, cidade e UF. O CEP é opcional.');
+    const address=isDelivery?`${addr('delivery-street')}, ${addr('delivery-number')}${addr('delivery-complement')?', '+addr('delivery-complement'):''} — ${addr('delivery-neighborhood')} — ${addr('delivery-city')}/${addr('delivery-state').toUpperCase()}${addr('delivery-cep')?' — CEP '+addr('delivery-cep'):''}`:'';
     const phone=String(restaurant.whatsapp||'').replace(/\D/g,'');
     if (!/^\d{12,13}$/.test(phone)) return alert('O restaurante ainda não configurou o WhatsApp para pedidos.');
     const parts=cart.map((x,i)=>`${i+1}. ${x.product.name} — ${money(x.price)}${x.extras.length?'\n   + '+x.extras.map(e=>e.name).join(', '):''}${x.note?'\n   Obs.: '+x.note:''}`).join('\n');
-    const message=`Olá! Meu pedido:\n\n${parts}\n\n*Total: ${money(sum())}*\nNome: ${$('customer-name').value.trim() || 'Não informado'}\nRecebimento: ${$('fulfillment').value}\nEndereço/obs.: ${$('delivery-address').value.trim() || '-'}\nPagamento: ${$('payment').value}`;
+    const message=`Olá! Meu pedido:\n\n${parts}\n\n*Total: ${money(sum())}*\nNome: ${$('customer-name').value.trim() || 'Não informado'}\nRecebimento: ${$('fulfillment').value}${isDelivery?'\nEndereço: '+address:''}\nObservações: ${$('delivery-address').value.trim() || '-'}\nPagamento: ${$('payment').value}`;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`,'_blank','noopener,noreferrer');
   }
   function reveal() {
@@ -160,5 +189,8 @@
   $('scrim').addEventListener('click',closeCart);
   $('close-product').addEventListener('click',()=> $('product-dialog').close());
   $('checkout-button').addEventListener('click',checkout);
+  $('fulfillment').addEventListener('change',updateFulfillment);
+  $('delivery-cep').addEventListener('blur',lookupCep);
+  $('delivery-cep').addEventListener('input',()=>{const input=$('delivery-cep');const digits=input.value.replace(/\D/g,'').slice(0,8);input.value=digits.length>5?digits.slice(0,5)+'-'+digits.slice(5):digits;if(digits.length===8)lookupCep();});
   load();
 })();

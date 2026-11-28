@@ -35,6 +35,7 @@
     if (!own.length) throw new Error('Esta conta não tem acesso ao cardápio.');
     const rows=await rest('willai_menu_restaurants?select=*&id=eq.'+own[0].restaurant_id);
     if (!rows.length) throw new Error('Restaurante não encontrado.');
+    if (rows[0].slug !== 'willaiburger') throw new Error('Esta conta não tem acesso ao WillAI Burger.');
     restaurant=rows[0];
     $('login-screen').hidden=true;
     $('admin-screen').hidden=false;
@@ -133,7 +134,9 @@
     e.preventDefault();const form=e.currentTarget,btn=form.querySelector('button');btn.disabled=true;
     $('login-message').textContent='Verificando acesso...';
     try{
-      const data=await authRequest('token?grant_type=password',{email:$('email').value.trim(),password:$('password').value});
+      const identifier=$('email').value.trim();
+      const email=identifier.toLocaleLowerCase('pt-BR').replace(/\s+/g,' ')==='teste eliel'?'teste-eliel-cardapio@willai.com.br':identifier;
+      const data=await authRequest('token?grant_type=password',{email,password:$('password').value});
       session={...data,expires_at:Math.floor(Date.now()/1000)+data.expires_in};
       sessionStorage.setItem(authKey,JSON.stringify(session));
       await afterLogin();$('password').value='';

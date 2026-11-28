@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/willaiburger/styles.css?v=9">
+<link rel="stylesheet" href="/willaiburger/styles.css?v=10">
   <script src="/config.js"></script>
-  <script src="/willaiburger/app.js?v=9" defer></script>
+<script src="/willaiburger/app.js?v=10" defer></script>
 </head>
 <body>
   <main>
@@ -50,7 +50,15 @@
     <div class="checkout-form">
       <label>Seu nome<input id="customer-name" placeholder="Nome para o pedido" autocomplete="name"></label>
       <label>Como deseja receber?<select id="fulfillment"><option value="Retirada">Retirar no local</option><option value="Entrega">Receber por entrega</option></select></label>
-      <label>Endereço / observação<textarea id="delivery-address" rows="2" placeholder="Endereço, referência ou observações"></textarea></label>
+      <div id="delivery-fields" hidden>
+        <label>CEP <span class="optional">(opcional)</span><input id="delivery-cep" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000"></label>
+        <div id="cep-feedback" class="cep-feedback" role="status" aria-live="polite"></div>
+        <label>Rua / avenida<input id="delivery-street" autocomplete="address-line1" placeholder="Nome da rua"></label>
+        <div class="address-grid"><label>Número<input id="delivery-number" placeholder="Número" inputmode="numeric"></label><label>Complemento<input id="delivery-complement" placeholder="Apto, casa..."></label></div>
+        <label>Bairro<input id="delivery-neighborhood" placeholder="Bairro"></label>
+        <div class="address-grid"><label>Cidade<input id="delivery-city" autocomplete="address-level2" placeholder="Cidade"></label><label>UF<input id="delivery-state" maxlength="2" placeholder="UF"></label></div>
+      </div>
+      <label>Observações do pedido<textarea id="delivery-address" rows="2" placeholder="Referência, troco, instruções..."></textarea></label>
       <label>Pagamento<select id="payment"><option>Pix</option><option>Dinheiro</option><option>Cartão</option></select></label>
       <div class="total-row"><span>Total dos produtos</span><strong id="cart-total">R$ 0,00</strong></div>
       <button id="checkout-button" class="checkout-button" type="button">Continuar no WhatsApp</button>
