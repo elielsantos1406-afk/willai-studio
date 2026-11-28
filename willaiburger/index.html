@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/willaiburger/styles.css?v=6">
+  <link rel="stylesheet" href="/willaiburger/styles.css?v=7">
   <script src="/config.js"></script>
-  <script src="/willaiburger/app.js?v=6" defer></script>
+  <script src="/willaiburger/app.js?v=7" defer></script>
 </head>
 <body>
   <main>
@@ -30,12 +30,12 @@
     </section>
     <section class="menu-section" id="cardapio">
       <div class="content">
-        <div class="section-heading reveal"><span>MENU</span><h1>O que vai ser hoje?</h1></div>
+        <div class="section-heading reveal"><span>WILLAI BURGER</span><h1>O que vai ser hoje?</h1></div>
         <div class="category-strip reveal" id="categories" aria-label="Categorias de produtos"></div>
-        <div class="highlight-title reveal"><h2>Em destaque</h2><span>Os favoritos</span></div>
+        <div class="highlight-title reveal" id="featured-title"><div><small>ESCOLHAS DA CASA</small><h2>Mais pedidos</h2></div><span>Os favoritos</span></div>
         <div id="featured" class="featured reveal"></div>
-        <div class="product-header reveal"><h2 id="category-heading">Todos os produtos</h2><button id="search-toggle" class="search-toggle" type="button" aria-label="Buscar produtos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg></button></div>
-        <input id="search" class="search-field" type="search" placeholder="Buscar no cardápio" aria-label="Buscar produtos">
+        <div class="product-header reveal"><div><small>ESCOLHA O SEU</small><h2 id="category-heading">Cardápio completo</h2></div></div>
+        <label class="menu-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg><input id="search" class="search-field" type="search" placeholder="Buscar um produto" aria-label="Buscar produtos"></label>
         <div id="products" class="products"></div>
       </div>
     </section>

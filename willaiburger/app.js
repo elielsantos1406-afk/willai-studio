@@ -59,15 +59,26 @@
   }
   function drawFeatured() {
     const promoted = products.filter(p => p.featured).slice(0,2);
-    $('featured').innerHTML = promoted.map(p => `<button class="feature" data-product="${p.id}"><img data-fallback src="${safe(imageOf(p))}" alt="${safe(p.name)}"><div class="feature-text"><small>DESTAQUE</small><h3>${safe(p.name)}</h3><strong>${money(p.price)}</strong></div></button>`).join('');
+    const visible = category === 'Todos' && !$('search').value.trim() && promoted.length > 0;
+    $('featured').hidden = !visible;
+    $('featured-title').hidden = !visible;
+    $('featured').innerHTML = promoted.map(p => `<button class="feature" data-product="${p.id}" aria-label="Escolher ${safe(p.name)}"><img data-fallback src="${safe(imageOf(p))}" alt="${safe(p.name)}"><div class="feature-text"><small>MAIS PEDIDO</small><h3>${safe(p.name)}</h3><div class="feature-bottom"><strong>${money(p.price)}</strong><span class="feature-cta">Escolher</span></div></div></button>`).join('');
     $('featured').querySelectorAll('button').forEach(el => el.addEventListener('click', () => choose(Number(el.dataset.product))));
     watchImages($('featured'));
   }
   function drawProducts() {
     const query = $('search').value.trim().toLowerCase();
     const visible = products.filter(p => (category === 'Todos' || p.category === category) && `${p.name} ${p.description}`.toLowerCase().includes(query));
-    $('category-heading').textContent = category === 'Todos' ? 'Todos os produtos' : category;
-    $('products').innerHTML = visible.map(p => `<article class="item"><div class="photo-wrap"><img class="item-photo" data-fallback loading="lazy" src="${safe(imageOf(p))}" alt="${safe(p.name)}">${p.old_price > p.price ? '<span class="item-label">OFERTA</span>' : ''}</div><div class="item-body"><h3>${safe(p.name)}</h3><p>${safe(p.description)}</p><div class="item-bottom"><div><strong class="item-price">${money(p.price)}</strong>${p.old_price > p.price ? `<span class="old-price">${money(p.old_price)}</span>` : ''}</div><button class="add-button" type="button" data-product="${p.id}" aria-label="Adicionar ${safe(p.name)}">+</button></div></div></article>`).join('') || '<div class="empty">Nenhum produto encontrado.</div>';
+    $('category-heading').textContent = query ? 'Resultados' : category === 'Todos' ? 'Cardápio completo' : category;
+    const ordered = groups().filter(c => c !== 'Todos');
+    const categories = category === 'Todos' ? ordered : [category];
+    const itemCard = p => `<article class="item"><button class="photo-wrap" type="button" data-product="${p.id}" aria-label="Ver ${safe(p.name)}"><img class="item-photo" data-fallback loading="lazy" src="${safe(imageOf(p))}" alt="${safe(p.name)}">${p.old_price > p.price ? '<span class="item-label">OFERTA</span>' : ''}</button><div class="item-body"><h3>${safe(p.name)}</h3><p>${safe(p.description)}</p><div class="item-bottom"><div class="price-wrap"><strong class="item-price">${money(p.price)}</strong>${p.old_price > p.price ? `<span class="old-price">${money(p.old_price)}</span>` : ''}</div><button class="add-button" type="button" data-product="${p.id}" aria-label="Adicionar ${safe(p.name)}">+</button></div></div></article>`;
+    $('products').innerHTML = categories.map(c => {
+      const items = visible.filter(p => p.category === c);
+      if (!items.length) return '';
+      return `<section class="product-group" aria-label="${safe(c)}"><div class="group-heading"><h3>${safe(c)}</h3><span>${items.length} ${items.length === 1 ? 'opção' : 'opções'}</span></div><div class="product-cards">${items.map(itemCard).join('')}</div></section>`;
+    }).join('') || '<div class="empty">Nenhum produto encontrado.</div>';
+    drawFeatured();
     $('products').querySelectorAll('button[data-product]').forEach(el => el.addEventListener('click', () => choose(Number(el.dataset.product))));
     watchImages($('products'));
   }
@@ -142,8 +153,7 @@
     };
     requestAnimationFrame(frame);
   });
-  $('search-toggle').addEventListener('click', () => {$('search').classList.toggle('visible');$('search').focus();});
-  $('search').addEventListener('input',drawProducts);
+  $('search').addEventListener('input',() => {if($('search').value.trim() && category !== 'Todos'){category='Todos';drawCategories();}drawProducts();});
   $('floating-cart').addEventListener('click',openCart);
   $('close-cart').addEventListener('click',closeCart);
   $('scrim').addEventListener('click',closeCart);
