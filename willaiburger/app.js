@@ -70,6 +70,7 @@
     const query = $('search').value.trim().toLowerCase();
     const visible = products.filter(p => (category === 'Todos' || p.category === category) && `${p.name} ${p.description}`.toLowerCase().includes(query));
     $('category-heading').textContent = query ? 'Resultados' : category === 'Todos' ? 'Cardápio completo' : category;
+    document.querySelector('.product-header').hidden = category !== 'Todos' && !query;
     const ordered = groups().filter(c => c !== 'Todos');
     const categories = category === 'Todos' ? ordered : [category];
     const itemCard = p => `<article class="item"><button class="photo-wrap" type="button" data-product="${p.id}" aria-label="Ver ${safe(p.name)}"><img class="item-photo" data-fallback loading="lazy" src="${safe(imageOf(p))}" alt="${safe(p.name)}">${p.old_price > p.price ? '<span class="item-label">OFERTA</span>' : ''}</button><div class="item-body"><h3>${safe(p.name)}</h3><p>${safe(p.description)}</p><div class="item-bottom"><div class="price-wrap"><strong class="item-price">${money(p.price)}</strong>${p.old_price > p.price ? `<span class="old-price">${money(p.old_price)}</span>` : ''}</div><button class="add-button" type="button" data-product="${p.id}" aria-label="Adicionar ${safe(p.name)}">+</button></div></div></article>`;
@@ -99,7 +100,7 @@
   }
   function sum() { return cart.reduce((total,item) => total + item.price,0); }
   function updateCart() {
-    $('cart-number').textContent = cart.length;
+    if ($('cart-number')) $('cart-number').textContent = cart.length;
     $('floating-total').textContent = money(sum());
     $('floating-cart').classList.toggle('shown', cart.length > 0);
     $('cart-total').textContent = money(sum());

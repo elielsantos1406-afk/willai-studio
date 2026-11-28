@@ -103,3 +103,4 @@ html.manual-scrolling{scroll-behavior:auto!important}
 .photo-wrap{height:100%}
 .item-photo{height:100%;min-height:0}
 @media(max-width:760px){.item{height:146px;min-height:146px}.item-photo{min-height:0}}
+.product-header[hidden]{display:none!important}
