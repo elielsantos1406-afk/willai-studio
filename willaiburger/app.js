@@ -108,21 +108,37 @@
     const watcher = new IntersectionObserver(entries => entries.forEach(entry => {if(entry.isIntersecting){entry.target.classList.add('visible');watcher.unobserve(entry.target);}}),{threshold:.07});
     document.querySelectorAll('.reveal').forEach(el=>watcher.observe(el));
   }
+  let enteringMenu = false;
   $('hero-trigger').addEventListener('click', event => {
     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
+    if (enteringMenu) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) {
-      $('cardapio').scrollIntoView();
+      $('cardapio').scrollIntoView({behavior: 'auto'});
       history.replaceState(null, '', '#cardapio');
       return;
     }
+    enteringMenu = true;
     $('inicio').classList.add('is-entering');
-    window.setTimeout(() => {
-      $('cardapio').scrollIntoView({behavior: 'smooth', block: 'start'});
-      history.replaceState(null, '', '#cardapio');
-      window.setTimeout(() => $('inicio').classList.remove('is-entering'), 680);
-    }, 340);
+    document.documentElement.classList.add('manual-scrolling');
+    const from = window.scrollY;
+    const to = $('cardapio').getBoundingClientRect().top + from;
+    const start = performance.now();
+    const duration = 1100;
+    const frame = now => {
+      const progress = Math.min(1, (now - start) / duration);
+      const easing = .5 - Math.cos(Math.PI * progress) / 2;
+      window.scrollTo(0, from + (to - from) * easing);
+      if (progress < 1) requestAnimationFrame(frame);
+      else {
+        history.replaceState(null, '', '#cardapio');
+        document.documentElement.classList.remove('manual-scrolling');
+        $('inicio').classList.remove('is-entering');
+        enteringMenu = false;
+      }
+    };
+    requestAnimationFrame(frame);
   });
   $('search-toggle').addEventListener('click', () => {$('search').classList.toggle('visible');$('search').focus();});
   $('search').addEventListener('input',drawProducts);
