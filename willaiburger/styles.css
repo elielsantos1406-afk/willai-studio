@@ -45,3 +45,6 @@ html{scroll-padding-top:0}
 .hero.is-entering .hero-photo{transform:scale(1.035)}
 html.manual-scrolling{scroll-behavior:auto!important}
 @media(max-width:620px){.hero-copy h1{font-size:clamp(41px,11.3vw,53px);line-height:1;max-width:350px}.hero-hint{bottom:max(21px,calc(17px + env(safe-area-inset-bottom)))}}
+
+/* A marca na abertura é transparente e não tem placa branca. */
+.hero-copy img{background:transparent;padding:0;border:0;border-radius:0;filter:drop-shadow(0 5px 15px #0005)}

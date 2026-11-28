@@ -37,7 +37,9 @@
       $('hero-product').onerror = () => { $('hero-product').hidden = true; };
     }
     if (restaurant.logo_url) {
-      document.querySelectorAll('#hero-logo, footer img').forEach(img => img.src = restaurant.logo_url);
+      const defaultBrandLogo = /\/willaiburger\/assets\/logo\.webp(?:\?.*)?$/.test(restaurant.logo_url);
+      $('hero-logo').src = defaultBrandLogo ? base + 'assets/logo-dark.webp' : restaurant.logo_url;
+      document.querySelector('footer img').src = restaurant.logo_url;
     }
     drawCategories(); drawFeatured(); drawProducts(); reveal();
   }
