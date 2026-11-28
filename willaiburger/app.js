@@ -7,6 +7,22 @@
   const safe = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch]));
   const fallbackPhoto = base + 'assets/hero.webp';
   const defaultCover = base + 'assets/cover-premium.webp';
+  const heroVideo = $('hero-video');
+  if (heroVideo) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = navigator.connection && navigator.connection.saveData;
+    if (reducedMotion || saveData) {
+      heroVideo.remove();
+    } else {
+      heroVideo.addEventListener('playing', () => heroVideo.classList.add('is-playing'));
+      heroVideo.addEventListener('error', () => heroVideo.classList.remove('is-playing'));
+      heroVideo.play().catch(() => {});
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) heroVideo.pause();
+        else heroVideo.play().catch(() => {});
+      });
+    }
+  }
   let restaurant = {name: 'WillAI Burger', whatsapp: '', hero_url: defaultCover};
   let products = [], category = 'Todos', cart = [], active = null;
 
@@ -29,7 +45,8 @@
     }
     $('hero-photo').src = restaurant.hero_url || defaultCover;
     $('hero-eyebrow').textContent = restaurant.hero_eyebrow || 'BEM-VINDO';
-    $('hero-headline').textContent = restaurant.hero_headline || 'Seu próximo favorito está aqui.';
+    const headline = restaurant.hero_headline || '';
+    $('hero-headline').textContent = !headline || headline === 'Seu próximo favorito está aqui.' ? 'Bateu a fome?' : headline;
     $('hero-caption').textContent = restaurant.hero_caption || 'Toque na tela para começar';
     if (restaurant.hero_product_url) {
       $('hero-product').src = restaurant.hero_product_url;
