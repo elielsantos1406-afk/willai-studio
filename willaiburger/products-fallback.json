@@ -1,0 +1,310 @@
+[
+  {
+    "name": "Classic Burger",
+    "category": "Hambúrgueres",
+    "price": 19.9,
+    "old_price": null,
+    "description": "Carne, cheddar, alface e tomate.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1568901346375-23c9450c58cd.jpg",
+    "sort_order": 1,
+    "featured": false,
+    "extras": [
+      {
+        "name": "Queijo extra",
+        "price": 3
+      },
+      {
+        "name": "Bacon extra",
+        "price": 5
+      },
+      {
+        "name": "Molho da casa",
+        "price": 2
+      }
+    ],
+    "id": 1
+  },
+  {
+    "name": "Double Smash",
+    "category": "Hambúrgueres",
+    "price": 29.9,
+    "old_price": 34.9,
+    "description": "Dois smash, cheddar duplo e molho.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1550547660-d9450f859349.jpg",
+    "sort_order": 2,
+    "featured": true,
+    "extras": [
+      {
+        "name": "Queijo extra",
+        "price": 3
+      },
+      {
+        "name": "Bacon extra",
+        "price": 5
+      },
+      {
+        "name": "Molho da casa",
+        "price": 2
+      }
+    ],
+    "id": 2
+  },
+  {
+    "name": "Bacon Supreme",
+    "category": "Hambúrgueres",
+    "price": 32.9,
+    "old_price": null,
+    "description": "Bacon crocante e cheddar.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1550547660-d9450f859349.jpg",
+    "sort_order": 3,
+    "featured": false,
+    "extras": [
+      {
+        "name": "Queijo extra",
+        "price": 3
+      },
+      {
+        "name": "Bacon extra",
+        "price": 5
+      },
+      {
+        "name": "Molho da casa",
+        "price": 2
+      }
+    ],
+    "id": 3
+  },
+  {
+    "name": "Chicken Crispy",
+    "category": "Hambúrgueres",
+    "price": 25.9,
+    "old_price": null,
+    "description": "Frango crocante, queijo e molho.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1606755962773-d324e0a13086.jpg",
+    "sort_order": 4,
+    "featured": false,
+    "extras": [
+      {
+        "name": "Queijo extra",
+        "price": 3
+      },
+      {
+        "name": "Bacon extra",
+        "price": 5
+      },
+      {
+        "name": "Molho da casa",
+        "price": 2
+      }
+    ],
+    "id": 4
+  },
+  {
+    "name": "Combo Classic",
+    "category": "Combos",
+    "price": 29.9,
+    "old_price": 35.7,
+    "description": "Classic + fritas P + refrigerante.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1571091718767-18b5b1457add.jpg",
+    "sort_order": 5,
+    "featured": true,
+    "extras": [
+      {
+        "name": "Queijo extra",
+        "price": 3
+      },
+      {
+        "name": "Bacon extra",
+        "price": 5
+      },
+      {
+        "name": "Molho da casa",
+        "price": 2
+      }
+    ],
+    "id": 5
+  },
+  {
+    "name": "Combo Double",
+    "category": "Combos",
+    "price": 39.9,
+    "old_price": null,
+    "description": "Double Smash + fritas M + refrigerante.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1561758033-d89a9ad46330.jpg",
+    "sort_order": 6,
+    "featured": false,
+    "extras": [
+      {
+        "name": "Queijo extra",
+        "price": 3
+      },
+      {
+        "name": "Bacon extra",
+        "price": 5
+      },
+      {
+        "name": "Molho da casa",
+        "price": 2
+      }
+    ],
+    "id": 6
+  },
+  {
+    "name": "Combo Bacon",
+    "category": "Combos",
+    "price": 42.9,
+    "old_price": null,
+    "description": "Bacon Supreme + fritas M + refrigerante.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1568901346375-23c9450c58cd.jpg",
+    "sort_order": 7,
+    "featured": false,
+    "extras": [
+      {
+        "name": "Queijo extra",
+        "price": 3
+      },
+      {
+        "name": "Bacon extra",
+        "price": 5
+      },
+      {
+        "name": "Molho da casa",
+        "price": 2
+      }
+    ],
+    "id": 7
+  },
+  {
+    "name": "Combo Casal",
+    "category": "Combos",
+    "price": 59.9,
+    "old_price": null,
+    "description": "2 Classics + fritas G + 2 bebidas.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1528605248644-14dd04022da1.jpg",
+    "sort_order": 8,
+    "featured": false,
+    "extras": [
+      {
+        "name": "Queijo extra",
+        "price": 3
+      },
+      {
+        "name": "Bacon extra",
+        "price": 5
+      },
+      {
+        "name": "Molho da casa",
+        "price": 2
+      }
+    ],
+    "id": 8
+  },
+  {
+    "name": "Batata Frita",
+    "category": "Acompanhamentos",
+    "price": 9.9,
+    "old_price": null,
+    "description": "Porção crocante.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1573080496219-bb080dd4f877.jpg",
+    "sort_order": 9,
+    "featured": false,
+    "extras": [],
+    "id": 9
+  },
+  {
+    "name": "Batata Cheddar e Bacon",
+    "category": "Acompanhamentos",
+    "price": 22.9,
+    "old_price": null,
+    "description": "Cheddar cremoso e bacon.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1573080496219-bb080dd4f877.jpg",
+    "sort_order": 10,
+    "featured": false,
+    "extras": [],
+    "id": 10
+  },
+  {
+    "name": "Chicken Nuggets",
+    "category": "Acompanhamentos",
+    "price": 12.9,
+    "old_price": null,
+    "description": "6 unidades.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1562967914-608f82629710.jpg",
+    "sort_order": 11,
+    "featured": false,
+    "extras": [],
+    "id": 11
+  },
+  {
+    "name": "Coca-Cola 350 ml",
+    "category": "Bebidas",
+    "price": 6.9,
+    "old_price": null,
+    "description": "Lata gelada.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1554866585-cd94860890b7.jpg",
+    "sort_order": 12,
+    "featured": false,
+    "extras": [],
+    "id": 12
+  },
+  {
+    "name": "Coca-Cola Zero 350 ml",
+    "category": "Bebidas",
+    "price": 6.9,
+    "old_price": null,
+    "description": "Sem açúcar.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1554866585-cd94860890b7.jpg",
+    "sort_order": 13,
+    "featured": false,
+    "extras": [],
+    "id": 13
+  },
+  {
+    "name": "Guaraná 350 ml",
+    "category": "Bebidas",
+    "price": 6.9,
+    "old_price": null,
+    "description": "Lata gelada.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1544145945-f90425340c7e.jpg",
+    "sort_order": 14,
+    "featured": false,
+    "extras": [],
+    "id": 14
+  },
+  {
+    "name": "Fanta Laranja 350 ml",
+    "category": "Bebidas",
+    "price": 6.9,
+    "old_price": null,
+    "description": "Lata gelada.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1544145945-f90425340c7e.jpg",
+    "sort_order": 15,
+    "featured": false,
+    "extras": [],
+    "id": 15
+  },
+  {
+    "name": "Sprite 350 ml",
+    "category": "Bebidas",
+    "price": 6.9,
+    "old_price": null,
+    "description": "Lata gelada.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1544145945-f90425340c7e.jpg",
+    "sort_order": 16,
+    "featured": false,
+    "extras": [],
+    "id": 16
+  },
+  {
+    "name": "Água Mineral 500 ml",
+    "category": "Bebidas",
+    "price": 4,
+    "old_price": null,
+    "description": "Sem gás.",
+    "image_url": "https://willai.com.br/willaiburger/assets/photo-1564419320461-6870880221ad.jpg",
+    "sort_order": 17,
+    "featured": false,
+    "extras": [],
+    "id": 17
+  }
+]
