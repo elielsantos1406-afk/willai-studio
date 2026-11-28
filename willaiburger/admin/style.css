@@ -4,3 +4,11 @@
 .editor-card .check-row input{width:18px;height:18px;flex:0 0 18px;margin:0;accent-color:#ef6523}
 .editor-card h3{margin-top:25px;margin-bottom:9px}
 .editor-card p{line-height:1.5;color:#77736e}
+
+/* Controles >=16px impedem zoom ao focar campos no Safari do iPhone. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{max-width:100%;overflow-x:clip}
+input,select,textarea,.login-card input,.editor-card input,.editor-card textarea,#product-form input,#product-form select,#product-form textarea{font-size:16px!important;line-height:1.4}
+input[type="checkbox"],input[type="radio"]{font-size:inherit!important}
+dialog{max-height:90dvh;overscroll-behavior:contain}
+@media(max-width:560px){.dashboard,.login-shell{min-width:0}.editor-card,.login-card{max-width:100%}}

@@ -189,3 +189,15 @@ footer a:hover{color:white}
  .floating-cart{bottom:calc(14px + env(safe-area-inset-bottom));left:14px;right:14px}
 }
 @media(max-width:380px){.item{height:158px;min-height:158px}.photo-wrap{flex-basis:40%}.item h3{font-size:17px}.item p{font-size:12px}.item-body{padding:12px 11px}.item-price{font-size:17px}}
+
+/* Evita o zoom automático de foco no iPhone sem bloquear o zoom manual. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:clip}
+body{max-width:100%;overflow-x:clip}
+input,select,textarea,.checkout-form input,.checkout-form select,.checkout-form textarea,.menu-search .search-field,.dialog-content textarea{font-size:16px!important;line-height:1.4}
+input[type="checkbox"],input[type="radio"]{font-size:inherit!important}
+.drawer{height:100dvh;max-height:100dvh;bottom:auto}
+.cart-items{min-height:0}
+.checkout-form{min-height:0;max-height:min(66dvh,630px);overflow-y:auto;overscroll-behavior:contain;scroll-padding-bottom:24px}
+.product-dialog{max-height:90dvh;overscroll-behavior:contain}
+@supports not (height:100dvh){.drawer{height:100vh;max-height:100vh}.checkout-form{max-height:66vh}}
+@media(max-width:760px){.drawer{width:100vw;max-width:100vw}.checkout-form{padding-bottom:calc(24px + env(safe-area-inset-bottom))}}
