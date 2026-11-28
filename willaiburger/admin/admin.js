@@ -50,8 +50,14 @@
     const f=$('settings-form');
     f.elements.name.value=restaurant.name;
     f.elements.whatsapp.value=restaurant.whatsapp||'';
-    $('cover-preview').src=restaurant.hero_url||photoFallback;
+    f.elements.hero_eyebrow.value=restaurant.hero_eyebrow||'BEM-VINDO';
+    f.elements.hero_headline.value=restaurant.hero_headline||'BATEU A FOME?';
+    f.elements.hero_caption.value=restaurant.hero_caption||'Toque para fazer seu pedido';
+    f.elements.remove_hero_product.checked=false;
+    $('cover-preview').src=restaurant.hero_url||'/willaiburger/assets/cover-default.webp';
     $('logo-preview').src=restaurant.logo_url||'/willaiburger/assets/logo.webp';
+    $('hero-product-preview').src=restaurant.hero_product_url||'';
+    $('hero-product-preview').hidden=!restaurant.hero_product_url;
   }
   function openProduct(id=0) {
     const p=products.find(x=>x.id===id);
@@ -117,7 +123,8 @@
       if(whatsapp&&!/^\d{12,13}$/.test(whatsapp))throw new Error('WhatsApp: informe DDI 55, DDD e número.');
       const hero=await upload(f.elements.cover.files[0]);
       const logo=await upload(f.elements.logo.files[0]);
-      const updates={name:f.elements.name.value.trim(),whatsapp,hero_url:hero||restaurant.hero_url,logo_url:logo||restaurant.logo_url};
+      const heroProduct=await upload(f.elements.hero_product.files[0]);
+      const updates={name:f.elements.name.value.trim(),whatsapp,hero_url:hero||restaurant.hero_url,logo_url:logo||restaurant.logo_url,hero_eyebrow:f.elements.hero_eyebrow.value.trim().slice(0,45),hero_headline:f.elements.hero_headline.value.trim().slice(0,70),hero_caption:f.elements.hero_caption.value.trim().slice(0,90),hero_product_url:f.elements.remove_hero_product.checked?'':heroProduct||restaurant.hero_product_url||''};
       const response=await rest('willai_menu_restaurants?id=eq.'+restaurant.id,{method:'PATCH',body:updates,headers:{Prefer:'return=representation'}});
       restaurant=response[0]||{...restaurant,...updates};populateSettings();toast('Restaurante atualizado no Supabase.');
     }catch(error){alert(error.message);}finally{btn.disabled=false;}

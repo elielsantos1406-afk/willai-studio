@@ -9,23 +9,25 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/willaiburger/styles.css?v=2">
+  <link rel="stylesheet" href="/willaiburger/styles.css?v=3">
   <script src="/config.js"></script>
-  <script src="/willaiburger/app.js?v=2" defer></script>
+  <script src="/willaiburger/app.js?v=3" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <a href="#inicio" class="brand" aria-label="WillAI Burger início"><img src="/willaiburger/assets/logo.webp" alt="WillAI Burger"></a>
-    <button id="cart-top" class="cart-top" type="button" aria-label="Abrir sacola"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h16l-1.2 12H5.2L4 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span id="cart-number">0</span></button>
-  </header>
   <main>
     <section class="hero" id="inicio" aria-label="WillAI Burger">
-      <img id="hero-photo" class="hero-photo" src="/willaiburger/assets/hero.webp" alt="Hambúrguer artesanal com batatas e refrigerante">
+      <img id="hero-photo" class="hero-photo" src="/willaiburger/assets/cover-default.webp" alt="Hambúrguer artesanal em destaque">
       <div class="hero-shade"></div>
-      <div class="hero-content">
-        <a class="hero-action" href="#cardapio">Ver cardápio</a>
-      </div>
-      <div class="hero-bottom"></div>
+      <a id="hero-trigger" class="hero-trigger" href="#cardapio" aria-label="Toque para abrir o cardápio">
+        <div class="hero-copy">
+          <img id="hero-logo" src="/willaiburger/assets/logo.webp" alt="Logo do restaurante">
+          <span id="hero-eyebrow" class="hero-eyebrow">BEM-VINDO</span>
+          <h1 id="hero-headline">BATEU A FOME?</h1>
+          <span id="hero-caption" class="hero-caption">Toque para fazer seu pedido</span>
+        </div>
+        <img id="hero-product" class="hero-product" alt="Produto em destaque" hidden>
+        <span class="hero-tap">TOQUE PARA PEDIR <span aria-hidden="true">↗</span></span>
+      </a>
     </section>
     <section class="menu-section" id="cardapio">
       <div class="content">

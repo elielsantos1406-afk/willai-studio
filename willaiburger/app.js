@@ -6,7 +6,8 @@
   const money = n => Number(n).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
   const safe = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch]));
   const fallbackPhoto = base + 'assets/hero.webp';
-  let restaurant = {name: 'WillAI Burger', whatsapp: '', hero_url: fallbackPhoto};
+  const defaultCover = base + 'assets/cover-default.webp';
+  let restaurant = {name: 'WillAI Burger', whatsapp: '', hero_url: defaultCover};
   let products = [], category = 'Todos', cart = [], active = null;
 
   async function get(path) {
@@ -26,9 +27,17 @@
       try { products = await (await fetch(base + 'products-fallback.json')).json(); }
       catch { products = []; }
     }
-    if (restaurant.hero_url) $('hero-photo').src = restaurant.hero_url;
+    $('hero-photo').src = restaurant.hero_url || defaultCover;
+    $('hero-eyebrow').textContent = restaurant.hero_eyebrow || 'BEM-VINDO';
+    $('hero-headline').textContent = restaurant.hero_headline || 'BATEU A FOME?';
+    $('hero-caption').textContent = restaurant.hero_caption || 'Toque para fazer seu pedido';
+    if (restaurant.hero_product_url) {
+      $('hero-product').src = restaurant.hero_product_url;
+      $('hero-product').hidden = false;
+      $('hero-product').onerror = () => { $('hero-product').hidden = true; };
+    }
     if (restaurant.logo_url) {
-      document.querySelectorAll('.brand img, footer img').forEach(img => img.src = restaurant.logo_url);
+      document.querySelectorAll('#hero-logo, footer img').forEach(img => img.src = restaurant.logo_url);
     }
     drawCategories(); drawFeatured(); drawProducts(); reveal();
   }
@@ -101,7 +110,6 @@
   }
   $('search-toggle').addEventListener('click', () => {$('search').classList.toggle('visible');$('search').focus();});
   $('search').addEventListener('input',drawProducts);
-  $('cart-top').addEventListener('click',openCart);
   $('floating-cart').addEventListener('click',openCart);
   $('close-cart').addEventListener('click',closeCart);
   $('scrim').addEventListener('click',closeCart);
