@@ -9,24 +9,23 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/willaiburger/styles.css?v=3">
+  <link rel="stylesheet" href="/willaiburger/styles.css?v=4">
   <script src="/config.js"></script>
-  <script src="/willaiburger/app.js?v=3" defer></script>
+  <script src="/willaiburger/app.js?v=4" defer></script>
 </head>
 <body>
   <main>
     <section class="hero" id="inicio" aria-label="WillAI Burger">
-      <img id="hero-photo" class="hero-photo" src="/willaiburger/assets/cover-default.webp" alt="Hambúrguer artesanal em destaque">
+      <img id="hero-photo" class="hero-photo" src="/willaiburger/assets/cover-premium.webp" alt="Hambúrguer artesanal em destaque">
       <div class="hero-shade"></div>
       <a id="hero-trigger" class="hero-trigger" href="#cardapio" aria-label="Toque para abrir o cardápio">
         <div class="hero-copy">
           <img id="hero-logo" src="/willaiburger/assets/logo.webp" alt="Logo do restaurante">
           <span id="hero-eyebrow" class="hero-eyebrow">BEM-VINDO</span>
-          <h1 id="hero-headline">BATEU A FOME?</h1>
-          <span id="hero-caption" class="hero-caption">Toque para fazer seu pedido</span>
+          <h1 id="hero-headline">Seu próximo favorito está aqui.</h1>
         </div>
         <img id="hero-product" class="hero-product" alt="Produto em destaque" hidden>
-        <span class="hero-tap">TOQUE PARA PEDIR <span aria-hidden="true">↗</span></span>
+        <span id="hero-caption" class="hero-caption hero-hint">Toque na tela para começar</span>
       </a>
     </section>
     <section class="menu-section" id="cardapio">

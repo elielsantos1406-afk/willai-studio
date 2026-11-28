@@ -20,3 +20,19 @@ html{scroll-padding-top:0}
 .hero-product[hidden]{display:none}
 .hero-product:not([hidden])~.hero-tap{z-index:4}
 @media(max-width:620px){.hero{height:100svh;min-height:0}.hero-photo{object-position:center center}.hero-copy{top:max(26px,calc(env(safe-area-inset-top) + 28px))}.hero-copy h1{max-width:350px}.hero-product{bottom:10%;height:43%}}
+
+/* Entrada premium sem botão, seta ou elemento com aparência de emoji. */
+.hero{background:#170c07;transition:opacity .42s ease}
+.hero-photo{object-position:center center;transition:transform .58s cubic-bezier(.22,.8,.2,1)}
+.hero-shade{background:linear-gradient(180deg,#150b0899 0%,#150b0822 38%,transparent 68%,#10090773 100%)}
+.hero-trigger{color:#fff}
+.hero-copy{text-shadow:0 2px 16px #0008;top:clamp(27px,5svh,58px);gap:13px}
+.hero-copy img{background:#fffc;border-radius:12px;padding:7px 13px;width:min(210px,55vw);height:clamp(51px,9svh,75px);filter:drop-shadow(0 6px 14px #0004)}
+.hero-eyebrow{color:#ffbd77;font-size:13px;letter-spacing:.2em}
+.hero-copy h1{font-size:clamp(34px,7vw,62px);line-height:1.02;letter-spacing:-.045em;font-weight:800;text-transform:none;max-width:690px}
+.hero-hint{position:absolute;bottom:max(37px,calc(28px + env(safe-area-inset-bottom)));left:16px;right:16px;z-index:3;text-align:center;font-size:14px;letter-spacing:.03em;font-weight:600;color:#f7eee7;animation:hint-breathe 3.2s ease-in-out infinite;text-shadow:0 2px 12px #000}
+.hero.is-entering .hero-photo{transform:scale(1.095)}
+.hero.is-entering{opacity:0}
+@keyframes hint-breathe{0%,100%{opacity:.58}50%{opacity:1}}
+@media(max-width:620px){.hero-copy{top:max(32px,calc(env(safe-area-inset-top) + 30px))}.hero-copy h1{font-size:clamp(31px,8vw,42px);max-width:340px}.hero-hint{bottom:max(35px,calc(28px + env(safe-area-inset-bottom)))}}
+@media(prefers-reduced-motion:reduce){.hero-hint{animation:none;opacity:1}}

@@ -6,7 +6,7 @@
   const money = n => Number(n).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
   const safe = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[ch]));
   const fallbackPhoto = base + 'assets/hero.webp';
-  const defaultCover = base + 'assets/cover-default.webp';
+  const defaultCover = base + 'assets/cover-premium.webp';
   let restaurant = {name: 'WillAI Burger', whatsapp: '', hero_url: defaultCover};
   let products = [], category = 'Todos', cart = [], active = null;
 
@@ -29,8 +29,8 @@
     }
     $('hero-photo').src = restaurant.hero_url || defaultCover;
     $('hero-eyebrow').textContent = restaurant.hero_eyebrow || 'BEM-VINDO';
-    $('hero-headline').textContent = restaurant.hero_headline || 'BATEU A FOME?';
-    $('hero-caption').textContent = restaurant.hero_caption || 'Toque para fazer seu pedido';
+    $('hero-headline').textContent = restaurant.hero_headline || 'Seu próximo favorito está aqui.';
+    $('hero-caption').textContent = restaurant.hero_caption || 'Toque na tela para começar';
     if (restaurant.hero_product_url) {
       $('hero-product').src = restaurant.hero_product_url;
       $('hero-product').hidden = false;
@@ -108,6 +108,22 @@
     const watcher = new IntersectionObserver(entries => entries.forEach(entry => {if(entry.isIntersecting){entry.target.classList.add('visible');watcher.unobserve(entry.target);}}),{threshold:.07});
     document.querySelectorAll('.reveal').forEach(el=>watcher.observe(el));
   }
+  $('hero-trigger').addEventListener('click', event => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) {
+      $('cardapio').scrollIntoView();
+      history.replaceState(null, '', '#cardapio');
+      return;
+    }
+    $('inicio').classList.add('is-entering');
+    window.setTimeout(() => {
+      $('cardapio').scrollIntoView({behavior: 'smooth', block: 'start'});
+      history.replaceState(null, '', '#cardapio');
+      window.setTimeout(() => $('inicio').classList.remove('is-entering'), 680);
+    }, 340);
+  });
   $('search-toggle').addEventListener('click', () => {$('search').classList.toggle('visible');$('search').focus();});
   $('search').addEventListener('input',drawProducts);
   $('floating-cart').addEventListener('click',openCart);

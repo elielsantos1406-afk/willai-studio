@@ -51,10 +51,10 @@
     f.elements.name.value=restaurant.name;
     f.elements.whatsapp.value=restaurant.whatsapp||'';
     f.elements.hero_eyebrow.value=restaurant.hero_eyebrow||'BEM-VINDO';
-    f.elements.hero_headline.value=restaurant.hero_headline||'BATEU A FOME?';
-    f.elements.hero_caption.value=restaurant.hero_caption||'Toque para fazer seu pedido';
+    f.elements.hero_headline.value=restaurant.hero_headline||'Seu próximo favorito está aqui.';
+    f.elements.hero_caption.value=restaurant.hero_caption||'Toque na tela para começar';
     f.elements.remove_hero_product.checked=false;
-    $('cover-preview').src=restaurant.hero_url||'/willaiburger/assets/cover-default.webp';
+    $('cover-preview').src=restaurant.hero_url||'/willaiburger/assets/cover-premium.webp';
     $('logo-preview').src=restaurant.logo_url||'/willaiburger/assets/logo.webp';
     $('hero-product-preview').src=restaurant.hero_product_url||'';
     $('hero-product-preview').hidden=!restaurant.hero_product_url;
