@@ -12,3 +12,7 @@ input,select,textarea,.login-card input,.editor-card input,.editor-card textarea
 input[type="checkbox"],input[type="radio"]{font-size:inherit!important}
 dialog{max-height:90dvh;overscroll-behavior:contain}
 @media(max-width:560px){.dashboard,.login-shell{min-width:0}.editor-card,.login-card{max-width:100%}}
+
+/* Prévia da mídia escolhida sem estourar o painel no celular. */
+.image-upload video{width:110px;height:150px;object-fit:contain;background:#17120f;border-radius:10px;flex:none}
+@media(max-width:560px){.image-upload video{width:86px;height:138px}.image-upload label{min-width:0}.image-upload input[type=file]{max-width:100%}}

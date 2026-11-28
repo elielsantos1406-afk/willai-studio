@@ -52,15 +52,26 @@
     f.elements.name.value=restaurant.name;
     f.elements.whatsapp.value=restaurant.whatsapp||'';
     f.elements.show_featured.checked=restaurant.show_featured!==false;
+    f.elements.hero_media_type.value=restaurant.hero_media_type||'image';
+    toggleCoverMode();
 
     f.elements.hero_eyebrow.value=restaurant.hero_eyebrow||'BEM-VINDO';
     f.elements.hero_headline.value=restaurant.hero_headline||'Seu próximo favorito está aqui.';
     f.elements.hero_caption.value=restaurant.hero_caption||'Toque na tela para começar';
     f.elements.remove_hero_product.checked=false;
     $('cover-preview').src=restaurant.hero_url||'/willaiburger/assets/cover-premium.webp';
+    $('cover-video-preview').src=restaurant.hero_video_url||'';
     $('logo-preview').src=restaurant.logo_url||'/willaiburger/assets/logo.webp';
     $('hero-product-preview').src=restaurant.hero_product_url||'';
     $('hero-product-preview').hidden=!restaurant.hero_product_url;
+    document.querySelectorAll('.admin-top img,.login-card img').forEach(img=>{img.src=restaurant.logo_url||'/willaiburger/assets/logo.webp';});
+  }
+  function toggleCoverMode() {
+    const video=$('settings-form').elements.hero_media_type.value==='video';
+    $('cover-image-field').hidden=video;
+    $('cover-video-field').hidden=!video;
+    if(video) $('cover-video-preview').load();
+    else $('cover-video-preview').pause();
   }
   function openProduct(id=0) {
     const p=products.find(x=>x.id===id);
@@ -102,6 +113,17 @@
     if(!res.ok)throw new Error('Não foi possível enviar a foto: '+(await res.text()).slice(0,140));
     return cfg.url+'/storage/v1/object/public/willai-menu-images/'+path;
   }
+  async function uploadVideo(file) {
+    if(!file)return '';
+    if(!['video/mp4','video/webm'].includes(file.type))throw new Error('Escolha um vídeo MP4 ou WebM.');
+    if(file.size>15728640)throw new Error('O vídeo deve ter no máximo 15 MB. Comprima antes de enviar.');
+    const token=await ensureToken();
+    const ext=file.type==='video/mp4'?'mp4':'webm';
+    const path=`${restaurant.slug}/${crypto.randomUUID()}.${ext}`;
+    const res=await fetch(cfg.url+'/storage/v1/object/willai-menu-videos/'+path,{method:'POST',headers:{apikey:cfg.publishableKey,Authorization:'Bearer '+token,'Content-Type':file.type,'x-upsert':'false'},body:file});
+    if(!res.ok)throw new Error('Não foi possível enviar o vídeo: '+(await res.text()).slice(0,180));
+    return cfg.url+'/storage/v1/object/public/willai-menu-videos/'+path;
+  }
   async function saveProduct(e) {
     e.preventDefault(); const f=e.currentTarget,button=f.querySelector('button[type=submit]');button.disabled=true;
     try {
@@ -136,9 +158,12 @@
       const whatsapp=f.elements.whatsapp.value.replace(/\D/g,'');
       if(whatsapp&&!/^\d{12,13}$/.test(whatsapp))throw new Error('WhatsApp: informe DDI 55, DDD e número.');
       const hero=await upload(f.elements.cover.files[0]);
+      const heroVideo=await uploadVideo(f.elements.cover_video.files[0]);
       const logo=await upload(f.elements.logo.files[0]);
       const heroProduct=await upload(f.elements.hero_product.files[0]);
-      const updates={name:f.elements.name.value.trim(),whatsapp,show_featured:f.elements.show_featured.checked,hero_url:hero||restaurant.hero_url,logo_url:logo||restaurant.logo_url,hero_eyebrow:f.elements.hero_eyebrow.value.trim().slice(0,45),hero_headline:f.elements.hero_headline.value.trim().slice(0,70),hero_caption:f.elements.hero_caption.value.trim().slice(0,90),hero_product_url:f.elements.remove_hero_product.checked?'':heroProduct||restaurant.hero_product_url||''};
+      const mediaType=f.elements.hero_media_type.value;
+      if(mediaType==='video'&&!heroVideo&&!restaurant.hero_video_url)throw new Error('Selecione um vídeo para usar como capa.');
+      const updates={name:f.elements.name.value.trim(),whatsapp,show_featured:f.elements.show_featured.checked,hero_media_type:mediaType,hero_url:hero||restaurant.hero_url,hero_video_url:heroVideo||restaurant.hero_video_url||'',logo_url:logo||restaurant.logo_url,hero_eyebrow:f.elements.hero_eyebrow.value.trim().slice(0,45),hero_headline:f.elements.hero_headline.value.trim().slice(0,70),hero_caption:f.elements.hero_caption.value.trim().slice(0,90),hero_product_url:f.elements.remove_hero_product.checked?'':heroProduct||restaurant.hero_product_url||''};
       const response=await rest('willai_menu_restaurants?id=eq.'+restaurant.id,{method:'PATCH',body:updates,headers:{Prefer:'return=representation'}});
       restaurant=response[0]||{...restaurant,...updates};populateSettings();toast('Restaurante atualizado no Supabase.');
     }catch(error){alert(error.message);}finally{btn.disabled=false;}
@@ -166,6 +191,7 @@
   $('product-form').addEventListener('submit',saveProduct);
   $('delete-product').addEventListener('click',removeProduct);
   $('settings-form').addEventListener('submit',saveSettings);
+  $('hero-media-type').addEventListener('change',toggleCoverMode);
   document.querySelectorAll('[data-tab]').forEach(btn=>btn.addEventListener('click',()=>{
     document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b===btn));
     $('products-panel').hidden=btn.dataset.tab!=='products';$('settings-panel').hidden=btn.dataset.tab!=='settings';

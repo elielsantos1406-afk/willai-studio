@@ -8,6 +8,7 @@
   const fallbackPhoto = base + 'assets/hero.webp';
   const defaultCover = base + 'assets/cover-premium.webp';
   const heroVideo = $('hero-video');
+  const defaultVideo = base + 'assets/cover-video.mp4';
   if (heroVideo) {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const saveData = navigator.connection && navigator.connection.saveData;
@@ -16,14 +17,13 @@
     } else {
       heroVideo.addEventListener('playing', () => heroVideo.classList.add('is-playing'));
       heroVideo.addEventListener('error', () => heroVideo.classList.remove('is-playing'));
-      heroVideo.play().catch(() => {});
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) heroVideo.pause();
-        else heroVideo.play().catch(() => {});
+        else if (restaurant.hero_media_type === 'video') heroVideo.play().catch(() => {});
       });
     }
   }
-  let restaurant = {name: 'WillAI Burger', whatsapp: '', hero_url: defaultCover};
+  let restaurant = {name: 'WillAI Burger', whatsapp: '', hero_url: defaultCover, hero_video_url: defaultVideo, hero_media_type:'video'};
   let products = [], category = 'Todos', cart = [], active = null;
 
   async function get(path) {
@@ -44,6 +44,18 @@
       catch { products = []; }
     }
     $('hero-photo').src = restaurant.hero_url || defaultCover;
+    if (heroVideo && heroVideo.isConnected) {
+      heroVideo.classList.remove('is-playing');
+      if (restaurant.hero_media_type === 'video' && (restaurant.hero_video_url || defaultVideo)) {
+        heroVideo.src = restaurant.hero_video_url || defaultVideo;
+        heroVideo.load();
+        heroVideo.play().catch(() => {});
+      } else {
+        heroVideo.pause();
+        heroVideo.removeAttribute('src');
+        heroVideo.load();
+      }
+    }
     $('hero-eyebrow').textContent = restaurant.hero_eyebrow || 'BEM-VINDO';
     const headline = restaurant.hero_headline || '';
     $('hero-headline').textContent = !headline || headline === 'Seu próximo favorito está aqui.' ? 'Bateu a fome?' : headline;
@@ -54,8 +66,7 @@
       $('hero-product').onerror = () => { $('hero-product').hidden = true; };
     }
     if (restaurant.logo_url) {
-      const defaultBrandLogo = /\/willaiburger\/assets\/logo\.webp(?:\?.*)?$/.test(restaurant.logo_url);
-      $('hero-logo').src = defaultBrandLogo ? base + 'assets/logo-dark.webp' : restaurant.logo_url;
+      $('hero-logo').src = restaurant.logo_url;
       document.querySelector('footer img').src = restaurant.logo_url;
     }
     const methods = $('fulfillment');
