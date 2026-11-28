@@ -43,6 +43,7 @@
     }
     const methods = $('fulfillment');
     methods.innerHTML = [restaurant.pickup_enabled !== false ? '<option value="Retirada">Retirar no local</option>' : '', restaurant.delivery_enabled !== false ? '<option value="Entrega">Receber por entrega</option>' : ''].join('');
+    configureDeliveryBands();
     updateFulfillment();
     drawCategories(); drawFeatured(); drawProducts(); reveal();
   }
@@ -62,7 +63,7 @@
   }
   function drawFeatured() {
     const promoted = products.filter(p => p.featured).slice(0,2);
-    const visible = category === 'Todos' && !$('search').value.trim() && promoted.length > 0;
+    const visible = restaurant.show_featured !== false && category === 'Todos' && !$('search').value.trim() && promoted.length > 0;
     $('featured').hidden = !visible;
     $('featured-title').hidden = !visible;
     $('featured').innerHTML = promoted.map(p => `<button class="feature" data-product="${p.id}" aria-label="Escolher ${safe(p.name)}"><img data-fallback src="${safe(imageOf(p))}" alt="${safe(p.name)}"><div class="feature-text"><small>MAIS PEDIDO</small><h3>${safe(p.name)}</h3><div class="feature-bottom"><strong>${money(p.price)}</strong><span class="feature-cta">Escolher</span></div></div></button>`).join('');
@@ -102,18 +103,42 @@
     $('product-dialog').close(); updateCart();
   }
   function sum() { return cart.reduce((total,item) => total + item.price,0); }
+  function deliveryTiers() {return Array.isArray(restaurant.delivery_distance_tiers)?restaurant.delivery_distance_tiers.filter(t=>Number.isFinite(Number(t.maxKm))&&Number.isFinite(Number(t.price))&&Number(t.maxKm)>0&&Number(t.price)>=0).sort((a,b)=>Number(a.maxKm)-Number(b.maxKm)):[];}
+  function configureDeliveryBands(){
+    const tiers=deliveryTiers();
+    const selector=$('distance-band');
+    selector.innerHTML='<option value="">Selecione a distância aproximada</option>'+tiers.map((t,i)=>`<option value="${i}">${i?'De '+tiers[i-1].maxKm+' a ':'Até '}${t.maxKm} km — ${money(t.price)}</option>`).join('')+(tiers.length?`<option value="consultar">Acima de ${tiers[tiers.length-1].maxKm} km — consultar taxa</option>`:'');
+    $('distance-band-field').hidden=!tiers.length;
+    $('distance-band-note').hidden=!tiers.length;
+    updateOrderTotal();
+  }
+  function deliveryFee(){
+    if($('fulfillment').value!=='Entrega')return 0;
+    const tiers=deliveryTiers();
+    const selected=$('distance-band').value;
+    return tiers.length&&selected!==''&&selected!=='consultar'&&tiers[Number(selected)]?Number(tiers[Number(selected)].price):null;
+  }
+  function updateOrderTotal(){
+    const isDelivery=$('fulfillment').value==='Entrega';
+    const fee=deliveryFee();
+    $('delivery-fee-row').hidden=!isDelivery;
+    $('delivery-fee-total').textContent=fee===null?'A confirmar':money(fee);
+    $('order-total-row').hidden=!isDelivery||fee===null;
+    $('order-total').textContent=money(sum()+(fee||0));
+  }
   function updateCart() {
     if ($('cart-number')) $('cart-number').textContent = cart.length;
     $('floating-total').textContent = money(sum());
     $('floating-cart').classList.toggle('shown', cart.length > 0);
     $('cart-total').textContent = money(sum());
+    updateOrderTotal();
     $('cart-items').innerHTML = cart.length ? cart.map((item,i) => `<div class="cart-item"><img data-fallback src="${safe(imageOf(item.product))}" alt=""><div><strong>${safe(item.product.name)}</strong><p>${item.extras.map(e => e.name).join(', ') || 'Sem adicionais'}${item.note ? ' • ' + safe(item.note) : ''}</p><b>${money(item.price)}</b><br><button data-remove="${i}">Remover</button></div></div>`).join('') : '<div class="empty">Sua sacola está vazia.</div>';
     $('cart-items').querySelectorAll('button').forEach(el => el.addEventListener('click', () => {cart.splice(Number(el.dataset.remove),1);updateCart();}));
     watchImages($('cart-items'));
   }
   function openCart(){ $('scrim').hidden=false; $('cart-drawer').classList.add('open'); $('cart-drawer').setAttribute('aria-hidden','false'); }
   function closeCart(){ $('scrim').hidden=true; $('cart-drawer').classList.remove('open'); $('cart-drawer').setAttribute('aria-hidden','true'); }
-  function updateFulfillment(){ $('delivery-fields').hidden = $('fulfillment').value !== 'Entrega'; }
+  function updateFulfillment(){ $('delivery-fields').hidden = $('fulfillment').value !== 'Entrega'; updateOrderTotal(); }
   async function lookupCep(){
     const cep=$('delivery-cep').value.replace(/\D/g,'');
     const status=$('cep-feedback');
@@ -138,6 +163,9 @@
     if (!cart.length) return alert('Adicione um produto.');
     if (!$('fulfillment').value) return alert('O restaurante ainda não configurou uma forma de recebimento.');
     const isDelivery=$('fulfillment').value==='Entrega';
+    const tiers=deliveryTiers();
+    if(isDelivery&&tiers.length&&!$('distance-band').value)return alert('Selecione a faixa aproximada de distância da entrega.');
+    const fee=deliveryFee();
     const addr=id=>$(id).value.trim();
     if(isDelivery && !['delivery-street','delivery-number','delivery-neighborhood','delivery-city','delivery-state'].every(id=>addr(id)))return alert('Para entrega, preencha rua, número, bairro, cidade e UF. O CEP é opcional.');
     const address=isDelivery?`${addr('delivery-street')}, ${addr('delivery-number')}${addr('delivery-complement')?', '+addr('delivery-complement'):''} — ${addr('delivery-neighborhood')} — ${addr('delivery-city')}/${addr('delivery-state').toUpperCase()}${addr('delivery-cep')?' — CEP '+addr('delivery-cep'):''}`:'';
@@ -161,7 +189,10 @@
       '*ITENS DO PEDIDO*',
       parts,
       '',
-      `*TOTAL DOS PRODUTOS: ${money(sum())}*`,
+      `*Produtos:* ${money(sum())}`,
+      ...(isDelivery?[`*Taxa de entrega:* ${fee===null?'A confirmar pelo restaurante':money(fee)}`]:[]),
+      `*${isDelivery&&fee===null?'SUBTOTAL DOS PRODUTOS':'TOTAL ESTIMADO'}: ${money(sum()+(fee||0))}*`,
+      ...(isDelivery&&tiers.length?[`*Distância informada:* ${$('distance-band').selectedOptions[0]?.textContent||'A confirmar'}`,'_Distância e taxa sujeitas à confirmação do restaurante._']:[]),
       `*Pagamento:* ${$('payment').value}`,
       ...(notes?[`*Observações gerais:* ${notes}`]:[]),
       '',
@@ -212,6 +243,7 @@
   $('close-product').addEventListener('click',()=> $('product-dialog').close());
   $('checkout-button').addEventListener('click',checkout);
   $('fulfillment').addEventListener('change',updateFulfillment);
+  $('distance-band').addEventListener('change',updateOrderTotal);
   $('delivery-cep').addEventListener('blur',lookupCep);
   $('delivery-cep').addEventListener('input',()=>{const input=$('delivery-cep');const digits=input.value.replace(/\D/g,'').slice(0,8);input.value=digits.length>5?digits.slice(0,5)+'-'+digits.slice(5):digits;if(digits.length===8)lookupCep();});
   load();

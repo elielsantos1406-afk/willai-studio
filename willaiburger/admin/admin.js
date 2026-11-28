@@ -51,6 +51,8 @@
     const f=$('settings-form');
     f.elements.name.value=restaurant.name;
     f.elements.whatsapp.value=restaurant.whatsapp||'';
+    f.elements.show_featured.checked=restaurant.show_featured!==false;
+    f.elements.delivery_distance_tiers.value=(Array.isArray(restaurant.delivery_distance_tiers)?restaurant.delivery_distance_tiers:[]).map(t=>`${t.maxKm}:${Number(t.price).toFixed(2).replace('.',',')}`).join('\n');
     f.elements.hero_eyebrow.value=restaurant.hero_eyebrow||'BEM-VINDO';
     f.elements.hero_headline.value=restaurant.hero_headline||'Seu próximo favorito está aqui.';
     f.elements.hero_caption.value=restaurant.hero_caption||'Toque na tela para começar';
@@ -117,6 +119,17 @@
     const id=Number($('product-form').elements.id.value);if(!id||!confirm('Excluir este produto do cardápio?'))return;
     try{await rest('willai_menu_products?id=eq.'+id,{method:'DELETE'});$('product-editor').close();await loadProducts();toast('Produto excluído.');}catch(e){alert(e.message);}
   }
+  function parseDeliveryTiers(value) {
+    const lines=value.split(/\r?\n/).map(v=>v.trim()).filter(Boolean);
+    if(lines.length>20)throw new Error('Use no máximo 20 faixas de entrega.');
+    const tiers=lines.map(line=>{
+      const match=line.match(/^(\d+(?:[.,]\d+)?)\s*[:;=-]\s*(\d+(?:[.,]\d{1,2})?)$/);
+      if(!match)throw new Error('Faixa inválida: '+line+'. Use 3:5,00');
+      return {maxKm:Number(match[1].replace(',','.')),price:Number(match[2].replace(',','.'))};
+    });
+    if(tiers.some((tier,i)=>!Number.isFinite(tier.maxKm)||tier.maxKm<=0||tier.maxKm>200||!Number.isFinite(tier.price)||tier.price<0||tier.price>1000||(i>0&&tier.maxKm<=tiers[i-1].maxKm)))throw new Error('Informe distâncias crescentes e valores válidos para as faixas.');
+    return tiers;
+  }
   async function saveSettings(e) {
     e.preventDefault();const f=e.currentTarget,btn=f.querySelector('button[type=submit]');btn.disabled=true;
     try{
@@ -125,7 +138,7 @@
       const hero=await upload(f.elements.cover.files[0]);
       const logo=await upload(f.elements.logo.files[0]);
       const heroProduct=await upload(f.elements.hero_product.files[0]);
-      const updates={name:f.elements.name.value.trim(),whatsapp,hero_url:hero||restaurant.hero_url,logo_url:logo||restaurant.logo_url,hero_eyebrow:f.elements.hero_eyebrow.value.trim().slice(0,45),hero_headline:f.elements.hero_headline.value.trim().slice(0,70),hero_caption:f.elements.hero_caption.value.trim().slice(0,90),hero_product_url:f.elements.remove_hero_product.checked?'':heroProduct||restaurant.hero_product_url||''};
+      const updates={name:f.elements.name.value.trim(),whatsapp,show_featured:f.elements.show_featured.checked,delivery_distance_tiers:parseDeliveryTiers(f.elements.delivery_distance_tiers.value),hero_url:hero||restaurant.hero_url,logo_url:logo||restaurant.logo_url,hero_eyebrow:f.elements.hero_eyebrow.value.trim().slice(0,45),hero_headline:f.elements.hero_headline.value.trim().slice(0,70),hero_caption:f.elements.hero_caption.value.trim().slice(0,90),hero_product_url:f.elements.remove_hero_product.checked?'':heroProduct||restaurant.hero_product_url||''};
       const response=await rest('willai_menu_restaurants?id=eq.'+restaurant.id,{method:'PATCH',body:updates,headers:{Prefer:'return=representation'}});
       restaurant=response[0]||{...restaurant,...updates};populateSettings();toast('Restaurante atualizado no Supabase.');
     }catch(error){alert(error.message);}finally{btn.disabled=false;}

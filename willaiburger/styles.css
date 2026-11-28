@@ -109,3 +109,9 @@ html.manual-scrolling{scroll-behavior:auto!important}
 .checkout-form .optional{color:#77736e;font-weight:500}
 .checkout-form .cep-feedback{color:#6b625b;font-size:12px;line-height:1.4;margin:-3px 0 9px}
 #delivery-fields[hidden]{display:none!important}
+
+#distance-band-field[hidden],#distance-band-note[hidden],#delivery-fee-row[hidden],#order-total-row[hidden]{display:none!important}
+#distance-band-note{color:#766b63;text-align:left;font-size:12px;line-height:1.4;margin:0 0 12px}
+#order-total-row{border-top:1px solid #e8e4dd;font-weight:900}
+footer a{color:#b7b2ad;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+footer a:hover{color:white}

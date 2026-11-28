@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/willaiburger/styles.css?v=10">
+<link rel="stylesheet" href="/willaiburger/styles.css?v=11">
   <script src="/config.js"></script>
-<script src="/willaiburger/app.js?v=11" defer></script>
+<script src="/willaiburger/app.js?v=12" defer></script>
 </head>
 <body>
   <main>
@@ -40,7 +40,7 @@
       </div>
     </section>
   </main>
-  <footer><img src="/willaiburger/assets/logo.webp" alt="WillAI Burger"><small>Desenvolvido por WillAI</small></footer>
+  <footer><img src="/willaiburger/assets/logo.webp" alt="WillAI Burger"><a href="https://willai.com.br/" target="_blank" rel="noopener noreferrer" aria-label="Visitar site da WillAI">Desenvolvido por WillAI</a></footer>
   <button class="floating-cart" id="floating-cart" type="button"><span>Sacola</span><strong id="floating-total">R$ 0,00</strong></button>
   <div class="scrim" id="scrim" hidden></div>
   <dialog class="product-dialog" id="product-dialog" aria-labelledby="dialog-name"><button class="dialog-close" id="close-product" aria-label="Fechar">×</button><div id="product-detail"></div></dialog>
@@ -51,6 +51,8 @@
       <label>Seu nome<input id="customer-name" placeholder="Nome para o pedido" autocomplete="name"></label>
       <label>Como deseja receber?<select id="fulfillment"><option value="Retirada">Retirar no local</option><option value="Entrega">Receber por entrega</option></select></label>
       <div id="delivery-fields" hidden>
+        <label id="distance-band-field" hidden>Distância aproximada da entrega<select id="distance-band"><option value="">Selecione a faixa de distância</option></select></label>
+        <small id="distance-band-note" hidden>Distância informada pelo cliente; o restaurante confirmará a taxa.</small>
         <label>CEP <span class="optional">(opcional)</span><input id="delivery-cep" inputmode="numeric" autocomplete="postal-code" maxlength="9" placeholder="00000-000"></label>
         <div id="cep-feedback" class="cep-feedback" role="status" aria-live="polite"></div>
         <label>Rua / avenida<input id="delivery-street" autocomplete="address-line1" placeholder="Nome da rua"></label>
@@ -61,6 +63,8 @@
       <label>Observações do pedido<textarea id="delivery-address" rows="2" placeholder="Referência, troco, instruções..."></textarea></label>
       <label>Pagamento<select id="payment"><option>Pix</option><option>Dinheiro</option><option>Cartão</option></select></label>
       <div class="total-row"><span>Total dos produtos</span><strong id="cart-total">R$ 0,00</strong></div>
+      <div id="delivery-fee-row" class="total-row" hidden><span>Taxa de entrega</span><strong id="delivery-fee-total">A combinar</strong></div>
+      <div id="order-total-row" class="total-row" hidden><span>Total estimado</span><strong id="order-total">R$ 0,00</strong></div>
       <button id="checkout-button" class="checkout-button" type="button">Continuar no WhatsApp</button>
       <small>O envio do pedido é confirmado no WhatsApp.</small>
     </div>
