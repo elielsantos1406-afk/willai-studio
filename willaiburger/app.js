@@ -103,7 +103,8 @@
     $('product-dialog').close(); updateCart();
   }
   function sum() { return cart.reduce((total,item) => total + item.price,0); }
-  function deliveryTiers() {return Array.isArray(restaurant.delivery_distance_tiers)?restaurant.delivery_distance_tiers.filter(t=>Number.isFinite(Number(t.maxKm))&&Number.isFinite(Number(t.price))&&Number(t.maxKm)>0&&Number(t.price)>=0).sort((a,b)=>Number(a.maxKm)-Number(b.maxKm)):[];}
+  // Frete é combinado no WhatsApp nesta fase; faixas futuras ficam desativadas.
+  function deliveryTiers() { return []; }
   function configureDeliveryBands(){
     const tiers=deliveryTiers();
     const selector=$('distance-band');

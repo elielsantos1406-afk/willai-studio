@@ -52,7 +52,7 @@
     f.elements.name.value=restaurant.name;
     f.elements.whatsapp.value=restaurant.whatsapp||'';
     f.elements.show_featured.checked=restaurant.show_featured!==false;
-    f.elements.delivery_distance_tiers.value=(Array.isArray(restaurant.delivery_distance_tiers)?restaurant.delivery_distance_tiers:[]).map(t=>`${t.maxKm}:${Number(t.price).toFixed(2).replace('.',',')}`).join('\n');
+
     f.elements.hero_eyebrow.value=restaurant.hero_eyebrow||'BEM-VINDO';
     f.elements.hero_headline.value=restaurant.hero_headline||'Seu próximo favorito está aqui.';
     f.elements.hero_caption.value=restaurant.hero_caption||'Toque na tela para começar';
@@ -138,7 +138,7 @@
       const hero=await upload(f.elements.cover.files[0]);
       const logo=await upload(f.elements.logo.files[0]);
       const heroProduct=await upload(f.elements.hero_product.files[0]);
-      const updates={name:f.elements.name.value.trim(),whatsapp,show_featured:f.elements.show_featured.checked,delivery_distance_tiers:parseDeliveryTiers(f.elements.delivery_distance_tiers.value),hero_url:hero||restaurant.hero_url,logo_url:logo||restaurant.logo_url,hero_eyebrow:f.elements.hero_eyebrow.value.trim().slice(0,45),hero_headline:f.elements.hero_headline.value.trim().slice(0,70),hero_caption:f.elements.hero_caption.value.trim().slice(0,90),hero_product_url:f.elements.remove_hero_product.checked?'':heroProduct||restaurant.hero_product_url||''};
+      const updates={name:f.elements.name.value.trim(),whatsapp,show_featured:f.elements.show_featured.checked,hero_url:hero||restaurant.hero_url,logo_url:logo||restaurant.logo_url,hero_eyebrow:f.elements.hero_eyebrow.value.trim().slice(0,45),hero_headline:f.elements.hero_headline.value.trim().slice(0,70),hero_caption:f.elements.hero_caption.value.trim().slice(0,90),hero_product_url:f.elements.remove_hero_product.checked?'':heroProduct||restaurant.hero_product_url||''};
       const response=await rest('willai_menu_restaurants?id=eq.'+restaurant.id,{method:'PATCH',body:updates,headers:{Prefer:'return=representation'}});
       restaurant=response[0]||{...restaurant,...updates};populateSettings();toast('Restaurante atualizado no Supabase.');
     }catch(error){alert(error.message);}finally{btn.disabled=false;}
