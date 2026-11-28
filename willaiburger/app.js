@@ -143,8 +143,30 @@
     const address=isDelivery?`${addr('delivery-street')}, ${addr('delivery-number')}${addr('delivery-complement')?', '+addr('delivery-complement'):''} — ${addr('delivery-neighborhood')} — ${addr('delivery-city')}/${addr('delivery-state').toUpperCase()}${addr('delivery-cep')?' — CEP '+addr('delivery-cep'):''}`:'';
     const phone=String(restaurant.whatsapp||'').replace(/\D/g,'');
     if (!/^\d{12,13}$/.test(phone)) return alert('O restaurante ainda não configurou o WhatsApp para pedidos.');
-    const parts=cart.map((x,i)=>`${i+1}. ${x.product.name} — ${money(x.price)}${x.extras.length?'\n   + '+x.extras.map(e=>e.name).join(', '):''}${x.note?'\n   Obs.: '+x.note:''}`).join('\n');
-    const message=`Olá! Meu pedido:\n\n${parts}\n\n*Total: ${money(sum())}*\nNome: ${$('customer-name').value.trim() || 'Não informado'}\nRecebimento: ${$('fulfillment').value}${isDelivery?'\nEndereço: '+address:''}\nObservações: ${$('delivery-address').value.trim() || '-'}\nPagamento: ${$('payment').value}`;
+    const parts=cart.map((item,i)=>{
+      const lines=[`*${i+1}. ${item.product.name}* — ${money(item.price)}`];
+      if(item.extras.length)lines.push(...item.extras.map(extra=>`   + ${extra.name} (${money(extra.price)})`));
+      if(item.note)lines.push(`   Obs.: ${item.note}`);
+      return lines.join('\n');
+    }).join('\n\n');
+    const customer=$('customer-name').value.trim()||'Não informado';
+    const notes=$('delivery-address').value.trim();
+    const message=[
+      `*NOVO PEDIDO | ${restaurant.name || 'Cardápio'}*`,
+      '',
+      `*Cliente:* ${customer}`,
+      `*Recebimento:* ${isDelivery?'Entrega':'Retirada no local'}`,
+      ...(isDelivery?[`*Endereço:* ${address}`]:[]),
+      '',
+      '*ITENS DO PEDIDO*',
+      parts,
+      '',
+      `*TOTAL DOS PRODUTOS: ${money(sum())}*`,
+      `*Pagamento:* ${$('payment').value}`,
+      ...(notes?[`*Observações gerais:* ${notes}`]:[]),
+      '',
+      '_Pedido enviado pelo cardápio digital WillAI._'
+    ].join('\n');
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`,'_blank','noopener,noreferrer');
   }
   function reveal() {
